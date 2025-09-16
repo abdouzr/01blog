@@ -1,0 +1,24 @@
+<!-- frontend/src/app/components/feed/feed.component.html -->
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="mb-4">Your Feed</h2>
+      
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && posts.length === 0" class="text-center">
+        <p>No posts yet. Follow some users to see their posts here!</p>
+      </div>
+
+      <app-post 
+        *ngFor="let post of posts" 
+        [post]="post" 
+        (like)="handleLike($event)">
+      </app-post>
+    </div>
+  </div>
+</div>

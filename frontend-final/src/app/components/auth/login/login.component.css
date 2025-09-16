@@ -1,0 +1,223 @@
+/* ===== Global ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: #2c2f36;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* ===== Wrapper ===== */
+.auth-wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Header ===== */
+.auth-header {
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3rem;
+  background: transparent;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+
+.auth-header .logo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.auth-header nav a {
+  margin-left: 2rem;
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.auth-header nav a:hover {
+  color: #4da6ff;
+}
+
+/* ===== Split layout ===== */
+.auth-container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+/* ===== Left form side ===== */
+.auth-form {
+  flex: 1;
+  max-width: 480px;
+  background: #1e2127;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 3rem;
+  position: relative;
+  border-radius: 0 25px 25px 0;
+  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Subtle glowing gradient background animation */
+.auth-form::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(77, 166, 255, 0.2),
+    rgba(125, 95, 255, 0.2),
+    rgba(255, 77, 109, 0.2),
+    rgba(77, 166, 255, 0.2)
+  );
+  animation: rotate 15s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-form * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Title */
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: #fff;
+}
+.auth-title span {
+  color: #4da6ff;
+}
+
+/* Labels */
+.form-label {
+  color: #bbb;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Inputs */
+.form-control {
+  background: #2a2d35;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  background: #2f333c;
+  border: 1px solid #4da6ff;
+  box-shadow: 0 0 12px rgba(77, 166, 255, 0.6);
+  outline: none;
+}
+
+/* Validation error */
+.invalid-feedback {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+/* Button */
+.btn-primary {
+  background: linear-gradient(135deg, #4da6ff, #1d7aff);
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #3399ff, #0066cc);
+  box-shadow: 0 8px 20px rgba(51, 153, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Footer text */
+.text-center p {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+.text-center a {
+  color: #4da6ff;
+  text-decoration: none;
+}
+.text-center a:hover {
+  color: #3399ff;
+}
+
+/* ===== Right side with background ===== */
+.auth-side {
+  flex: 2;
+  background: url('/assets/login-bg.jpg') center center / cover no-repeat;
+  position: relative;
+}
+
+.auth-side::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.65);
+}
+
+/* Decorative curve */
+.curve {
+  position: absolute;
+  top: 20%;
+  left: -50px;
+  width: 200%;
+  height: 60%;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+  }
+  .auth-form {
+    border-radius: 0;
+    max-width: 100%;
+    box-shadow: none;
+  }
+  .auth-side {
+    display: none;
+  }
+}

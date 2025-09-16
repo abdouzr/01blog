@@ -1,0 +1,17 @@
+01blog/
+├── backend/          # Spring Boot application
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/zerooneblog/
+│   │   │   └── resources/
+│   │   └── test/
+│   ├── pom.xml
+│   └── application.properties
+├── frontend/         # Angular application
+│   ├── src/
+│   │   ├── app/
+│   │   ├── assets/
+│   │   └── environments/
+│   ├── package.json
+│   └── angular.json
+└── README.md

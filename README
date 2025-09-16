@@ -1,0 +1,55 @@
+# 01Blog - Social Blogging Platform
+
+A fullstack social blogging platform built with Java Spring Boot backend and Angular frontend, where students can share their learning experiences and progress.
+
+## Features
+
+- User authentication and authorization with JWT
+- Create, read, update, and delete posts
+- Like and comment on posts
+- Follow other users and see their posts in your feed
+- Report inappropriate content
+- Admin panel for content moderation
+- Responsive design with Bootstrap and Angular Material
+
+## Technology Stack
+
+### Backend
+- Java 17
+- Spring Boot 3.2.0
+- Spring Security with JWT
+- Spring Data JPA
+- PostgreSQL
+- Maven
+
+### Frontend
+- Angular 16
+- TypeScript
+- Bootstrap 5
+- Angular Material
+- RxJS
+
+### Database
+- PostgreSQL
+
+### Deployment
+- Docker
+- Docker Compose
+
+## Prerequisites
+
+- Java 17 or higher
+- Node.js 18 or higher
+- Angular CLI
+- PostgreSQL
+- Maven
+- Docker (optional)
+
+## Installation and Setup
+
+### Manual Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd 01blog
