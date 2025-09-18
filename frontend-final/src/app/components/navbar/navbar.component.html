@@ -1,27 +1,46 @@
+<!-- src/app/components/navbar/navbar.component.html -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container">
-    <a class="navbar-brand" routerLink="/feed">01Blog</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <a class="navbar-brand" routerLink="/feed">
+      <i class="bi bi-journal-bookmark-fill"></i> 01Blog
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    
     <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Left side navigation -->
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/feed" routerLinkActive="active">Feed</a>
+          <a class="nav-link" routerLink="/feed" routerLinkActive="active">
+            <i class="bi bi-house"></i> Feed
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/create-post" routerLinkActive="active">Create Post</a>
+          <a class="nav-link" routerLink="/create-post" routerLinkActive="active">
+            <i class="bi bi-plus-square"></i> Create Post
+          </a>
         </li>
       </ul>
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-            {{ authService.currentUserValue?.username }}
+
+      <!-- Right side navigation -->
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/notifications" routerLinkActive="active">
+            <i class="bi bi-bell"></i> Notifications
+            <span class="notification-badge">3</span>
           </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" (click)="navigateToProfile()">Profile</a></li>
-            <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
-          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/profile/{{authService.currentUserValue?.id}}" routerLinkActive="active">
+            <i class="bi bi-person-circle"></i> {{ authService.currentUserValue?.username }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-outline-light" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
         </li>
       </ul>
     </div>

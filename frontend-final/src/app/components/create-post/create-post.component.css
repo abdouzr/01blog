@@ -1,0 +1,251 @@
+/* src/app/components/create-post/create-post.component.css */
+.create-post-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 30px 0;
+}
+
+.card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.card-body {
+  padding: 2.5rem;
+}
+
+.card-title {
+  color: #2d3748;
+  font-weight: 700;
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.form-control {
+  border: 2px solid #e2e8f0;
+  border-radius: 15px;
+  padding: 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  background: white;
+}
+
+.form-control::placeholder {
+  color: #a0aec0;
+}
+
+textarea.form-control {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.media-preview {
+  text-align: center;
+  padding: 20px;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 15px;
+  border: 2px dashed #e2e8f0;
+}
+
+.media-preview img,
+.media-preview video {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(229, 62, 62, 0.4);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #718096;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #4a5568;
+  transform: translateY(-2px);
+}
+
+.d-flex.gap-2 {
+  gap: 1rem !important;
+}
+
+/* Responsive design for Create Post */
+@media (max-width: 768px) {
+  .create-post-container {
+    padding: 20px 0;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .form-control {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
+  }
+  
+  .media-preview {
+    padding: 15px;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.8rem !important;
+  }
+  
+  .d-flex.gap-2 .btn {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .create-post-container {
+    padding: 15px 0;
+  }
+  
+  .card-body {
+    padding: 1.2rem;
+  }
+  
+  .card-title {
+    font-size: 1.6rem;
+  }
+  
+  .form-label {
+    font-size: 1rem;
+  }
+  
+  .form-control {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .media-preview {
+    padding: 12px;
+  }
+  
+  .btn-danger {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Loading spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* File input styling */
+input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: slideIn 0.6s ease-out;
+}
+
+/* Invalid state styling */
+.is-invalid {
+  border-color: #e53e3e !important;
+}
+
+.invalid-feedback {
+  color: #e53e3e;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}

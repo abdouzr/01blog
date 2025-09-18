@@ -1,0 +1,296 @@
+/* src/app/components/feed/feed.component.css */
+.feed-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.feed-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  pointer-events: none;
+}
+
+.feed-header {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.feed-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: rotate(45deg) translateX(-100%); }
+  100% { transform: rotate(45deg) translateX(100%); }
+}
+
+.feed-title {
+  color: #2d3748;
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.create-post-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 8px 25px rgba(102, 126, 234, 0.4),
+    0 0 0 0 rgba(102, 126, 234, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-post-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.create-post-btn:hover::before {
+  left: 100%;
+}
+
+.create-post-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 15px 35px rgba(102, 126, 234, 0.6),
+    0 0 0 10px rgba(102, 126, 234, 0.1);
+}
+
+.create-post-btn:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.create-post-btn i {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.text-muted {
+  color: #718096 !important;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.loading-spinner {
+  color: #667eea;
+  width: 4rem;
+  height: 4rem;
+  border-width: 0.3em;
+}
+
+.empty-feed {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 4rem 3rem;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.empty-feed .bi-inbox {
+  font-size: 4rem;
+  color: #cbd5e0;
+  margin-bottom: 1.5rem;
+}
+
+.empty-feed h3 {
+  color: #2d3748;
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.empty-feed p {
+  color: #718096;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Post animations */
+app-post {
+  display: block;
+  margin-bottom: 2rem;
+  animation: slideInUp 0.8s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced responsive design */
+@media (max-width: 1200px) {
+  .feed-header {
+    padding: 2rem;
+  }
+  
+  .feed-title {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .feed-container {
+    padding: 1.5rem 0;
+  }
+  
+  .feed-header {
+    padding: 1.8rem;
+    text-align: center;
+  }
+  
+  .feed-title {
+    font-size: 2rem;
+    margin-bottom: 1rem !important;
+  }
+  
+  .create-post-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.8rem;
+  }
+  
+  .empty-feed {
+    padding: 3rem 2rem;
+    margin: 0 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .feed-header {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+  
+  .feed-title {
+    font-size: 1.8rem;
+  }
+  
+  .create-post-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .empty-feed {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .empty-feed h3 {
+    font-size: 1.6rem;
+  }
+  
+  .empty-feed p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .feed-container {
+    padding: 1rem 0;
+  }
+  
+  .feed-header {
+    padding: 1.2rem;
+    border-radius: 18px;
+  }
+  
+  .feed-title {
+    font-size: 1.6rem;
+  }
+  
+  .text-muted {
+    font-size: 1rem;
+  }
+  
+  .empty-feed {
+    padding: 2rem 1rem;
+  }
+  
+  .empty-feed .bi-inbox {
+    font-size: 3rem;
+  }
+  
+  .empty-feed h3 {
+    font-size: 1.4rem;
+  }
+  
+  .empty-feed p {
+    font-size: 1rem;
+  }
+}
+
+/* Smooth transitions for all elements */
+.feed-header,
+.create-post-btn,
+.empty-feed,
+app-post {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states for accessibility */
+.create-post-btn:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 3px rgba(102, 126, 234, 0.3),
+    0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Loading text animation */
+.text-white.mt-3 {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

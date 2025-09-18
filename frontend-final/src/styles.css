@@ -24,3 +24,46 @@ body {
   width: 1rem;
   height: 1rem;
 }
+
+
+/* Optional: Add this to your global styles.css or post.component.css */
+.card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary {
+  border-radius: 20px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  transform: translateY(-1px);
+}
+
+
+/* Optional: Add to src/styles.css */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better focus states */
+.btn:focus,
+.nav-link:focus,
+.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3) !important;
+  border-color: #667eea !important;
+}

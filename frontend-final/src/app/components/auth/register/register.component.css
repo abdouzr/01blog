@@ -1,0 +1,165 @@
+/* ===== Override container & card wrapper for dark form style ===== */
+.container.mt-5 {
+  max-width: 480px;
+  margin: 5rem auto !important; /* vertical spacing and center */
+  padding: 0 1.5rem;
+  background: #1e2127;
+  border-radius: 20px;
+  box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+/* Wrap card-body styling to match form background and padding */
+.card-body {
+  background: transparent;
+  padding: 3rem 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* card title style */
+.card-title.text-center.mb-4 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: #fff;
+}
+
+/* Form label styling aligned with dark theme */
+.form-label {
+  color: #bbb;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 500;
+}
+
+/* Input styling */
+.form-control {
+  background: #2a2d35;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s ease;
+}
+
+/* Focus style for inputs */
+.form-control:focus {
+  background: #2f333c;
+  border: 1px solid #4da6ff;
+  box-shadow: 0 0 12px rgba(77, 166, 255, 0.6);
+  outline: none;
+}
+
+/* Validation error message */
+.invalid-feedback {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-top: -8px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+/* Primary submit button styling */
+.btn-primary {
+  background: linear-gradient(135deg, #4da6ff, #1d7aff);
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3399ff, #0066cc);
+  box-shadow: 0 8px 20px rgba(51, 153, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Spinner inside button */
+.spinner-border.spinner-border-sm.me-2 {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+  color: #fff;
+}
+
+/* Text center under form for login link */
+.text-center.mt-3 p {
+  color: #aaa;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.text-center.mt-3 p a {
+  color: #4da6ff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.text-center.mt-3 p a:hover,
+.text-center.mt-3 p a:focus {
+  color: #3399ff;
+  outline: none;
+}
+
+/* Optional: subtle animated gradient background behind card */
+.container.mt-5::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -30%;
+  width: 150%;
+  height: 220%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(77, 166, 255, 0.15),
+    rgba(125, 95, 255, 0.15),
+    rgba(255, 77, 109, 0.15),
+    rgba(77, 166, 255, 0.15)
+  );
+  z-index: 0;
+  border-radius: 40%;
+  animation: rotate 25s linear infinite;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+/* Keep rotate animation */
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .container.mt-5 {
+    margin: 3rem 1rem !important;
+    border-radius: 16px;
+    padding: 2.5rem 1.5rem;
+  }
+  .card-title.text-center.mb-4 {
+    font-size: 1.6rem;
+  }
+}

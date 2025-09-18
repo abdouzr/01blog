@@ -1,0 +1,109 @@
+/* Global Typography and Box-sizing */
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth; /* enables smooth scrolling */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa; /* light gray background for body */
+  color: #212529; /* default Bootstrap body text color */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+/* Base body styles */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%; /* prevent font scaling in mobile */
+  background-color: inherit;
+  line-height: 1.5;
+}
+
+/* Anchor tag base styles */
+a {
+  color: #0d6efd; /* Bootstrap primary color */
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+a:hover,
+a:focus {
+  color: #0a58ca; /* darker primary on hover */
+  outline: none;
+  text-decoration: underline;
+}
+
+/* Images and media responsive */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Form elements inherit font */
+input,
+button,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Remove default outline on mouse users but retain on keyboard navigation */
+:focus-visible {
+  outline: 3px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+/* Utility: Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsive container max-width overrides to align with Bootstrap */
+.container {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Adjust scrollbar for modern browsers */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(13, 110, 253, 0.4);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(13, 110, 253, 0.7);
+}
+
+/* Light autofocus glow with reduced motion support */
+@media (prefers-reduced-motion: no-preference) {
+  :focus-visible {
+    transition: outline-color 0.3s ease;
+  }
+}

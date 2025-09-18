@@ -5,11 +5,12 @@ import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { PostComponent } from '../post/post.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-feed',
-   standalone: true,
-  imports: [CommonModule, PostComponent], // Import other components you use
+  standalone: true,
+  imports: [CommonModule, PostComponent, RouterModule], // Add RouterModule here
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.css']
 })

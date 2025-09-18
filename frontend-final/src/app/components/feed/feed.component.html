@@ -1,24 +1,51 @@
-<!-- frontend/src/app/components/feed/feed.component.html -->
-<div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <h2 class="mb-4">Your Feed</h2>
-      
-      <div *ngIf="isLoading" class="text-center">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+<!-- src/app/components/feed/feed.component.html -->
+<div class="feed-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8 col-md-10">
+        <!-- Header with title and create button -->
+        <div class="feed-header">
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <h1 class="feed-title mb-3 mb-md-0">📝 Your Learning Feed</h1>
+            <a routerLink="/create-post" class="btn create-post-btn">
+              <i class="bi bi-plus-circle"></i> Share Your Journey
+            </a>
+          </div>
+          <p class="text-muted mt-3 mb-0 text-center text-md-start">Discover what others are learning and share your experiences</p>
+        </div>
+
+        <!-- Loading state -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border loading-spinner" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="text-white mt-3">Loading your learning community...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="!isLoading && posts.length === 0" class="empty-feed">
+          <div class="text-center">
+            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+            <h3 class="text-dark mb-3">Your feed is empty</h3>
+            <p class="text-muted mb-4">
+              No posts yet. Follow some fellow learners to see their journey,<br>
+              or be the first to share your learning experience!
+            </p>
+            <a routerLink="/create-post" class="btn create-post-btn">
+              <i class="bi bi-plus-circle"></i> Start Sharing
+            </a>
+          </div>
+        </div>
+
+        <!-- Posts list -->
+        <div *ngIf="!isLoading && posts.length > 0">
+          <app-post 
+            *ngFor="let post of posts" 
+            [post]="post" 
+            (like)="handleLike($event)">
+          </app-post>
         </div>
       </div>
-
-      <div *ngIf="!isLoading && posts.length === 0" class="text-center">
-        <p>No posts yet. Follow some users to see their posts here!</p>
-      </div>
-
-      <app-post 
-        *ngFor="let post of posts" 
-        [post]="post" 
-        (like)="handleLike($event)">
-      </app-post>
     </div>
   </div>
 </div>

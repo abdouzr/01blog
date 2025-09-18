@@ -1,6 +1,9 @@
 // backend/src/main/java/com/zerooneblog/controller/AuthController.java
 package com.zerooneblog.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,35 +65,29 @@ public class AuthController {
                                                  role));
     }
 
-   @PostMapping("/signup")
-public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-    if (userService.existsByUsername(signUpRequest.getUsername())) {
-        return ResponseEntity.badRequest().body("Error: Username is already taken!");
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+        }
+
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body("Error: Email is already in use!");
+        }
+
+        // Create new user's account
+        User user = new User(signUpRequest.getUsername(), 
+                             signUpRequest.getEmail(),
+                             encoder.encode(signUpRequest.getPassword()));
+
+        userService.saveUser(user);
+
+        // Return simple success message for now
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "User registered successfully!");
+        response.put("userId", user.getId());
+        response.put("username", user.getUsername());
+        
+        return ResponseEntity.ok(response);
     }
-
-    if (userService.existsByEmail(signUpRequest.getEmail())) {
-        return ResponseEntity.badRequest().body("Error: Email is already in use!");
-    }
-
-    // Create new user's account
-    User user = new User(signUpRequest.getUsername(), 
-                         signUpRequest.getEmail(),
-                         encoder.encode(signUpRequest.getPassword()));
-
-    userService.saveUser(user);
-
-    // Generate JWT token for the new user
-    String jwt = jwtUtils.generateTokenFromUsername(user.getUsername());
-    
-    // Convert Role enum to String for JwtResponse
-    String roleString = user.getRole().name(); // Use .name() to get enum value as String
-    
-    // Return JWT token like the signin endpoint
-    return ResponseEntity.ok(new JwtResponse(jwt, 
-                                             user.getId(), 
-                                             user.getUsername(), 
-                                             user.getEmail(), 
-                                             roleString)); // Use the String version
-}
-
 }
