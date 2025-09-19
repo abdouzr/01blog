@@ -41,19 +41,28 @@ export class AuthService {
   login(username: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/signin`, { username, password })
       .pipe(tap(response => {
+        console.log('Login response:', response);
+        console.log('Token received:', response.token);
+        
+        // Store user info
         localStorage.setItem('currentUser', JSON.stringify({
           id: response.id,
           username: response.username,
           email: response.email,
           role: response.role
         }));
+        
+        // Store token
         localStorage.setItem('token', response.token);
+        
         this.currentUserSubject.next({
           id: response.id,
           username: response.username,
           email: response.email,
           role: response.role
         });
+        
+        console.log('Token stored in localStorage:', localStorage.getItem('token'));
       }));
   }
 
@@ -69,11 +78,14 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    console.log('getToken() called, returning:', token);
+    return token;
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    return !!(token && token !== 'undefined' && token !== 'null' && token.trim() !== '');
   }
 
   isAdmin(): boolean {

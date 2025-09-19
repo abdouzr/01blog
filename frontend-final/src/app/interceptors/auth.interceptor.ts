@@ -1,25 +1,23 @@
-// interceptors/auth.interceptor.ts
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getToken();
+  // Get token directly from localStorage
+  const token = localStorage.getItem('token');
   
-  console.log('Auth Interceptor - Token:', token);
+  console.log('Auth Interceptor - Raw token from localStorage:', token);
   console.log('Auth Interceptor - Request URL:', req.url);
   
-  if (token) {
+  // Only add Authorization header if token exists and is valid
+  if (token && token !== 'undefined' && token !== 'null' && token.trim() !== '') {
+    console.log('Auth Interceptor - Adding valid Authorization header');
     const clonedReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log('Auth Interceptor - Adding Authorization header');
     return next(clonedReq);
   }
   
-  console.log('Auth Interceptor - No token available');
+  console.log('Auth Interceptor - No valid token available, skipping Authorization header');
   return next(req);
 };

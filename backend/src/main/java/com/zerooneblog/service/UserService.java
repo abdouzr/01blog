@@ -1,4 +1,3 @@
-// backend/src/main/java/com/zerooneblog/service/UserService.java
 package com.zerooneblog.service;
 
 import java.util.List;

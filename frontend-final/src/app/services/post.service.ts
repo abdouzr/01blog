@@ -1,4 +1,3 @@
-// frontend/src/app/services/post.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -24,11 +23,18 @@ export interface PostRequest {
   mediaType?: string;
 }
 
+export interface UploadResponse {
+  fileUrl: string;
+  mediaType: string;
+  publicId?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
   private apiUrl = 'http://localhost:8081/api/posts';
+  private uploadUrl = 'http://localhost:8081/api/upload';
 
   constructor(private http: HttpClient) { }
 
@@ -67,4 +73,21 @@ export class PostService {
   unlikePost(postId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${postId}/like`);
   }
+
+  uploadFile(file: File): Observable<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UploadResponse>(this.uploadUrl, formData);
+  }
+
+  deleteFile(publicId: string): Observable<any> {
+    return this.http.delete(`${this.uploadUrl}/${publicId}`);
+  }
+}
+
+export function getFullImageUrl(url: string | null): string {
+  if (!url) return '/assets/default-image.png';
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('data:')) return url;
+  return `http://localhost:8081${url}`;
 }

@@ -1,11 +1,24 @@
 // backend/src/main/java/com/zerooneblog/model/Post.java
 package com.zerooneblog.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "posts")
@@ -14,8 +27,17 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Add this field to your existing Post entity
+@Column(name = "cloudinary_public_id")
+private String cloudinaryPublicId;
+
+// Add getter and setter
+public String getCloudinaryPublicId() { return cloudinaryPublicId; }
+public void setCloudinaryPublicId(String cloudinaryPublicId) { this.cloudinaryPublicId = cloudinaryPublicId; }
     @NotBlank
     @Column(columnDefinition = "TEXT")
+
+    
     private String content;
 
     private String mediaUrl;

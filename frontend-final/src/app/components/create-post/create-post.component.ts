@@ -1,8 +1,7 @@
-// frontend/src/app/components/create-post/create-post.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PostService, PostRequest } from '../../services/post.service';
+import { PostService, PostRequest, UploadResponse, Post } from '../../services/post.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -19,6 +18,9 @@ export class CreatePostComponent {
   isLoading = false;
   selectedFile: File | null = null;
   previewUrl: string | null = null;
+  isUploading = false;
+  fileType: string = '';
+  publicId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -33,52 +35,141 @@ export class CreatePostComponent {
   }
 
   onFileSelected(event: any): void {
-    const file = event.target.files[0];
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+    
     if (file) {
-      this.selectedFile = file;
+      if (file.size > 50 * 1024 * 1024) {
+        this.snackBar.open('File size must be less than 50MB', 'Close', { duration: 3000 });
+        fileInput.value = '';
+        return;
+      }
+
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      const validVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
       
-      // Create preview for images
-      if (file.type.startsWith('image/')) {
+      if (!validImageTypes.includes(file.type) && !validVideoTypes.includes(file.type)) {
+        this.snackBar.open('Please select a valid image or video file', 'Close', { duration: 3000 });
+        fileInput.value = '';
+        return;
+      }
+
+      this.selectedFile = file;
+      this.fileType = file.type.split('/')[0];
+      
+      if (this.fileType === 'image') {
         const reader = new FileReader();
-        reader.onload = () => {
-          this.previewUrl = reader.result as string;
+        reader.onload = (e: any) => {
+          this.previewUrl = e.target.result;
+        };
+        reader.onerror = (error: any) => {
+          this.snackBar.open('Error loading image preview', 'Close', { duration: 3000 });
         };
         reader.readAsDataURL(file);
-      } else if (file.type.startsWith('video/')) {
-        this.previewUrl = 'assets/video-placeholder.png'; // You'll need to add this asset
+      } else if (this.fileType === 'video') {
+        this.previewUrl = URL.createObjectURL(file);
       }
     }
   }
 
-  onSubmit(): void {
+  isImageFile(): boolean {
+    return this.fileType === 'image';
+  }
+
+  isVideoFile(): boolean {
+    return this.fileType === 'video';
+  }
+
+  async onSubmit(): Promise<void> {
     if (this.postForm.valid) {
       this.isLoading = true;
       
-      const postRequest: PostRequest = {
-        content: this.postForm.value.content,
-        //mediaUrl: this.previewUrl, // In real app, you'd upload to server first
-        mediaType: this.selectedFile?.type.startsWith('image/') ? 'image' : 
-                  this.selectedFile?.type.startsWith('video/') ? 'video' : undefined
-      };
+      try {
+        let mediaUrl: string | undefined;
+        let mediaType: string | undefined;
 
-      this.postService.createPost(postRequest).subscribe({
-        next: () => {
-          this.snackBar.open('Post created successfully!', 'Close', { duration: 3000 });
-          this.router.navigate(['/feed']);
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.snackBar.open('Error creating post', 'Close', { duration: 3000 });
-          this.isLoading = false;
+        if (this.selectedFile) {
+          this.isUploading = true;
+          const uploadResponse = await this.postService.uploadFile(this.selectedFile).toPromise();
+          if (uploadResponse) {
+            mediaUrl = uploadResponse.fileUrl;
+            mediaType = uploadResponse.mediaType;
+            this.publicId = uploadResponse.publicId || null;
+          }
+          this.isUploading = false;
         }
-      });
+
+        const postRequest: PostRequest = {
+          content: this.postForm.value.content,
+          mediaUrl: mediaUrl,
+          mediaType: mediaType
+        };
+
+        this.postService.createPost(postRequest).subscribe({
+          next: (response: Post) => {
+            this.snackBar.open('Post created successfully!', 'Close', { duration: 3000 });
+            this.router.navigate(['/feed']);
+            this.isLoading = false;
+            this.cleanupPreview();
+          },
+          error: (error: any) => {
+            if (this.publicId) {
+              this.cleanupUploadedFile();
+            }
+            this.snackBar.open('Error creating post. Please try again.', 'Close', { duration: 3000 });
+            this.isLoading = false;
+            this.isUploading = false;
+            this.cleanupPreview();
+          }
+        });
+      } catch (error: any) {
+        if (this.publicId) {
+          this.cleanupUploadedFile();
+        }
+        this.snackBar.open('Error uploading file. Please try again.', 'Close', { duration: 3000 });
+        this.isLoading = false;
+        this.isUploading = false;
+        this.cleanupPreview();
+      }
+    }
+  }
+
+  private async cleanupUploadedFile(): Promise<void> {
+    if (this.publicId) {
+      try {
+        await this.postService.deleteFile(this.publicId).toPromise();
+      } catch (error: any) {
+        console.error('Error cleaning up uploaded file:', error);
+      }
     }
   }
 
   removeMedia(): void {
+    if (this.publicId) {
+      this.cleanupUploadedFile();
+    }
+    this.cleanupPreview();
     this.selectedFile = null;
     this.previewUrl = null;
-    this.postForm.patchValue({ media: null });
+    this.fileType = '';
+    this.publicId = null;
+    
+    const fileInput = document.getElementById('media') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
-  
+
+  private cleanupPreview(): void {
+    if (this.fileType === 'video' && this.previewUrl) {
+      URL.revokeObjectURL(this.previewUrl);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.cleanupPreview();
+    if (this.publicId && !this.isLoading) {
+      this.cleanupUploadedFile();
+    }
+  }
 }

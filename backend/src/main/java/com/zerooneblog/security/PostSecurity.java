@@ -1,15 +1,15 @@
 // backend/src/main/java/com/zerooneblog/security/PostSecurity.java
 package com.zerooneblog.security;
 
-import com.zerooneblog.model.Post;
-import com.zerooneblog.model.User;
-import com.zerooneblog.repository.PostRepository;
-import com.zerooneblog.service.UserService;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import com.zerooneblog.model.Post;
+import com.zerooneblog.repository.PostRepository;
+import com.zerooneblog.service.UserService;
 
 @Component("postSecurity")
 public class PostSecurity {

@@ -1,4 +1,6 @@
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/controller/TestController.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/PostRequest.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/config/Cloudinary.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/JwtUtils.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/UserRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Post.java
@@ -7,6 +9,7 @@
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/SignupRequest.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/LoginRequest.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/PostRepository.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/Cloudinary.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Comment.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/PostSecurity.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/PostService.java
@@ -16,16 +19,22 @@
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/AuthTokenFilter.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/ReportRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/User.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/config/WebConfig.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/controller/AuthController.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/UserDetailsServiceImpl.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/UserDetailsImpl.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/NotificationRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Report.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/CloudinaryService.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/UserService.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/CommentRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/LikeRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Like.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/ReportStatus.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/AuthEntryPointJwt.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/config/CloudinaryConfig.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/controller/UploadController.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/controller/FileUploadController.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/PostResponse.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Notification.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/ZeroOneBlogApplication.java

@@ -1,17 +1,17 @@
-// backend/src/main/java/com/zerooneblog/service/PostService.java
 package com.zerooneblog.service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.zerooneblog.dto.PostResponse;
 import com.zerooneblog.model.Post;
 import com.zerooneblog.model.User;
 import com.zerooneblog.repository.LikeRepository;
 import com.zerooneblog.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {

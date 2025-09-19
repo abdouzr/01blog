@@ -1,0 +1,32 @@
+/* Add some smooth transitions */
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Loading state for like button */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ensure media doesn't overflow */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Custom styles for the card */
+.card {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Avatar styling */
+.rounded-circle {
+  object-fit: cover;
+}

@@ -1,8 +1,8 @@
-// backend/src/main/java/com/zerooneblog/security/JwtUtils.java
 package com.zerooneblog.security;
 
-import java.security.Key;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,36 +21,33 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${zerooneblog.app.jwtSecret}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${zerooneblog.app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    // Remove the expiration field or provide a default value
+    private int jwtExpirationMs = 86400000; // 24 hours default
 
-    private Key getSigningKey() {
-        // Use the string directly as bytes for HS256
+    // Or if you want to keep it configurable but with default
+    // @Value("${jwt.expiration:86400000}") // 24 hours default
+    // private int jwtExpirationMs;
+
+    private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
     public String generateJwtToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    // Change this line:
+    UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    // Instead of:
+    // UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-        return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public String generateTokenFromUsername(String username) {
-        return Jwts.builder()
-            .setSubject(username)
+    return Jwts.builder()
+            .setSubject((userPrincipal.getUsername()))
             .setIssuedAt(new Date())
             .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
             .signWith(getSigningKey(), SignatureAlgorithm.HS256)
             .compact();
-    }
+}
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder()
@@ -68,6 +65,8 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(authToken);
             return true;
+        } catch (SecurityException e) {
+            logger.error("Invalid JWT signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {

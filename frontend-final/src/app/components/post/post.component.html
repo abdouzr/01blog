@@ -1,4 +1,3 @@
-<!-- frontend/src/app/components/post/post.component.html -->
 <div class="card mb-4">
   <div class="card-body">
     <div class="d-flex align-items-center mb-3">
@@ -6,7 +5,8 @@
            alt="{{ post.authorUsername }}" 
            class="rounded-circle me-3" 
            width="40" 
-           height="40">
+           height="40"
+           (error)="onImageError($event)">
       <div>
         <h6 class="card-title mb-0">{{ post.authorUsername }}</h6>
         <small class="text-muted">{{ formatDate(post.createdAt) }}</small>
@@ -16,21 +16,33 @@
     <p class="card-text">{{ post.content }}</p>
     
     <div *ngIf="post.mediaUrl" class="mb-3">
-      <img *ngIf="post.mediaType === 'image'" 
-           [src]="post.mediaUrl" 
+      <!-- Image -->
+      <img *ngIf="isImage(post.mediaType)" 
+           [src]="getMediaUrl(post.mediaUrl)" 
            alt="Post media" 
-           class="img-fluid rounded">
+           class="img-fluid rounded"
+           style="max-height: 400px; object-fit: cover;"
+           (error)="onImageError($event)"
+           loading="lazy">
       
-      <video *ngIf="post.mediaType === 'video'" 
+      <!-- Video -->
+      <video *ngIf="isVideo(post.mediaType)" 
              controls 
-             class="img-fluid rounded">
-        <source [src]="post.mediaUrl" type="video/mp4">
+             class="img-fluid rounded"
+             style="max-height: 400px;"
+             (error)="onVideoError($event)"
+             preload="metadata">
+        <source [src]="getMediaUrl(post.mediaUrl)" [type]="'video/' + getFileExtension(post.mediaUrl)">
         Your browser does not support the video tag.
       </video>
     </div>
     
     <div class="d-flex justify-content-between align-items-center">
-      <button class="btn btn-outline-primary btn-sm" (click)="onLike()">
+      <button class="btn btn-outline-primary btn-sm" 
+              (click)="onLike()"
+              [disabled]="isLiking"
+              [class.btn-primary]="post.likedByCurrentUser"
+              [class.btn-outline-primary]="!post.likedByCurrentUser">
         <i class="bi" [class.bi-heart]="!post.likedByCurrentUser" 
                     [class.bi-heart-fill]="post.likedByCurrentUser"></i>
         {{ post.likeCount }} Likes
