@@ -4,32 +4,50 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // Add this import
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule], // Add FormsModule here
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']})
+  styleUrls: ['./navbar.component.css']
+})
 export class NavbarComponent {
+  searchQuery: string = '';
+  notificationCount: number = 3; // You can get this from a service later
 
   constructor(public authService: AuthService, private router: Router) {}
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']); // Assuming you want to go to login after logout
+    this.router.navigate(['/login']);
   }
 
-  // --- ADD THIS METHOD ---
+  // Updated method to use the user ID instead of username
   navigateToProfile(): void {
-    // You'll need to decide the actual route based on your application structure
-    // For example, if your profile route is '/profile' or '/user/:username'
-    const username = this.authService.currentUserValue?.username;
-    if (username) {
-      this.router.navigate(['/profile', username]); // Example: /profile/abdon
+    const userId = this.authService.currentUserValue?.id;
+    if (userId) {
+      this.router.navigate(['/profile', userId]);
     } else {
-      // Fallback if username is not available, e.g., redirect to login
       this.router.navigate(['/login']);
+    }
+  }
+
+  // Search functionality
+  searchUsers(): void {
+    if (this.searchQuery.trim()) {
+      // For now, just log the search query
+      // You can implement actual search functionality later
+      console.log('Searching for:', this.searchQuery.trim());
+      
+      // Navigate to search results page (create this route later)
+      // this.router.navigate(['/search'], { 
+      //   queryParams: { q: this.searchQuery.trim() } 
+      // });
+      
+      // Clear search after searching
+      this.searchQuery = '';
     }
   }
 }

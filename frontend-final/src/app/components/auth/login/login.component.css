@@ -1,223 +1,805 @@
-/* ===== Global ===== */
+/* The Sun Theme CSS - Complete Version */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --color-gold: #FFD700;
+  --color-amber: #FFA500;
+  --color-deep-orange: #FF6B35;
+  --color-copper: #B87333;
+  --color-cream: #FFF8DC;
+  --color-dark-gold: #B8860B;
+  --color-sunset: #FF8C42;
+  --color-mystic: #8B4513;
+  --color-warm-brown: #A0522D;
+  --color-celestial-blue: #4A90E2;
+  --color-mountain: #2C5F2D;
+  --color-card-border: #8B4513;
+  --color-antique: #D2B48C;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-  font-family: 'Poppins', sans-serif;
-  background: #2c2f36;
-  color: #fff;
-  overflow: hidden;
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #FFF4E6 0%, #FFEDD5 50%, #FDE68A 100%);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
 }
 
-/* ===== Wrapper ===== */
-.auth-wrapper {
+/* Animated Background Sun Rays */
+.sun-rays-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
-  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.background-ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 150px;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    rgba(255, 215, 0, 0.08) 30%, 
+    rgba(255, 165, 0, 0.12) 50%, 
+    rgba(255, 215, 0, 0.08) 70%, 
+    transparent 100%
+  );
+  transform-origin: 50% 0;
+  animation: rayRotation 30s linear infinite;
+  border-radius: 50% 50% 0 0;
+}
+
+.background-ray:nth-child(even) {
+  animation-duration: 40s;
+  animation-direction: reverse;
+  opacity: 0.7;
+}
+
+.background-ray:nth-child(3n) {
+  animation-duration: 25s;
+  opacity: 0.5;
+}
+
+@keyframes rayRotation {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Main wrapper with tarot card aesthetic */
+.auth-wrapper {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 140, 66, 0.08) 0%, transparent 60%);
 }
 
-/* ===== Header ===== */
+/* Header with ornate styling */
 .auth-header {
-  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 3rem;
-  background: transparent;
-  position: absolute;
-  width: 100%;
+  padding: 1.5rem 2rem;
+  background: rgba(255, 248, 220, 0.95);
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid var(--color-card-border);
+  border-image: linear-gradient(90deg, transparent, var(--color-gold), transparent) 1;
+  position: relative;
   z-index: 10;
 }
 
-.auth-header .logo {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fff;
+.auth-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--color-amber) 25%, 
+    var(--color-gold) 50%, 
+    var(--color-amber) 75%, 
+    transparent 100%
+  );
 }
 
-.auth-header nav a {
-  margin-left: 2rem;
-  color: #aaa;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-dark-gold);
+  text-shadow: 0 2px 4px rgba(139, 69, 19, 0.3);
+}
+
+.logo-icon {
+  color: var(--color-amber);
+  animation: sunPulse 4s ease-in-out infinite;
+  font-size: 28px !important;
+  filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.6));
+}
+
+@keyframes sunPulse {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+    filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.6)); 
+  }
+  25% { 
+    transform: scale(1.05) rotate(90deg); 
+    filter: drop-shadow(0 0 15px rgba(255, 165, 0, 0.8)); 
+  }
+  50% { 
+    transform: scale(1.1) rotate(180deg); 
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.9)); 
+  }
+  75% { 
+    transform: scale(1.05) rotate(270deg); 
+    filter: drop-shadow(0 0 15px rgba(255, 165, 0, 0.8)); 
+  }
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: var(--color-mystic);
   text-decoration: none;
-  transition: color 0.3s ease;
-}
-.auth-header nav a:hover {
-  color: #4da6ff;
-}
-
-/* ===== Split layout ===== */
-.auth-container {
-  display: flex;
-  flex: 1;
-  height: 100%;
-}
-
-/* ===== Left form side ===== */
-.auth-form {
-  flex: 1;
-  max-width: 480px;
-  background: #1e2127;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 4rem 3rem;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 25px;
+  transition: all 0.4s ease;
   position: relative;
-  border-radius: 0 25px 25px 0;
-  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
+  border: 1px solid transparent;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
 }
 
-/* Subtle glowing gradient background animation */
+.nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: linear-gradient(45deg, var(--color-gold), var(--color-amber));
+  border-radius: 25px;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-gold);
+  background: rgba(255, 215, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+}
+
+/* Main container */
+.auth-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 100px);
+  position: relative;
+}
+
+/* Left form side with tarot card styling */
+.auth-form {
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 248, 220, 0.9);
+  backdrop-filter: blur(15px);
+  position: relative;
+  border-right: 3px solid var(--color-card-border);
+  flex-direction: column;
+}
+
 .auth-form::before {
-  content: "";
+  content: '';
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  right: 2rem;
+  bottom: 2rem;
+  border: 2px solid var(--color-antique);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.form-content {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Majestic Sun Logo */
+.sun-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.sun-spiral {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  animation: majesticspin 20s linear infinite;
+}
+
+.spiral-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, 
+    #FFFFFF 0%, 
+    var(--color-gold) 20%, 
+    var(--color-amber) 60%, 
+    var(--color-deep-orange) 100%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.8),
+    0 0 60px rgba(255, 165, 0, 0.4),
+    inset 0 0 15px rgba(255, 255, 255, 0.5);
+  border: 2px solid var(--color-dark-gold);
+}
+
+.spiral-ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 45px;
+  background: linear-gradient(to bottom, 
+    var(--color-gold) 0%, 
+    var(--color-amber) 50%, 
+    transparent 100%
+  );
+  transform-origin: 50% 0;
+  border-radius: 50% 50% 0 0;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+/* Create multiple rays around the sun */
+.spiral-ray:nth-child(2) { transform: translate(-50%, -50%) rotate(0deg); }
+.spiral-ray:nth-child(3) { transform: translate(-50%, -50%) rotate(30deg); }
+.spiral-ray:nth-child(4) { transform: translate(-50%, -50%) rotate(60deg); }
+.spiral-ray:nth-child(5) { transform: translate(-50%, -50%) rotate(90deg); }
+.spiral-ray:nth-child(6) { transform: translate(-50%, -50%) rotate(120deg); }
+.spiral-ray:nth-child(7) { transform: translate(-50%, -50%) rotate(150deg); }
+.spiral-ray:nth-child(8) { transform: translate(-50%, -50%) rotate(180deg); }
+.spiral-ray:nth-child(9) { transform: translate(-50%, -50%) rotate(210deg); }
+.spiral-ray:nth-child(10) { transform: translate(-50%, -50%) rotate(240deg); }
+.spiral-ray:nth-child(11) { transform: translate(-50%, -50%) rotate(270deg); }
+.spiral-ray:nth-child(12) { transform: translate(-50%, -50%) rotate(300deg); }
+.spiral-ray:nth-child(13) { transform: translate(-50%, -50%) rotate(330deg); }
+
+@keyframes majesticspin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Typography with tarot card styling */
+.auth-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--color-mystic);
+  text-shadow: 0 2px 4px rgba(139, 69, 19, 0.2);
+  letter-spacing: 1px;
+}
+
+.brand-highlight {
+  background: linear-gradient(135deg, 
+    var(--color-gold) 0%, 
+    var(--color-amber) 50%, 
+    var(--color-sunset) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 2px rgba(255, 215, 0, 0.3));
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--color-copper);
+  margin-bottom: 2.5rem;
+  font-style: italic;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+/* Form styling */
+.login-form {
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-mystic);
+  font-weight: 500;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--color-dark-gold); /* Changed to darker border */
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-mystic);
+  background: rgba(255, 248, 220, 0.9); /* Slightly less transparent */
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 4px rgba(139, 69, 19, 0.1); /* Added subtle shadow */
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-amber);
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.3); /* Enhanced focus shadow */
+  background: rgba(255, 248, 220, 1);
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-style: italic;
+  display: block;
+}
+
+/* Majestic Primary Button */
+.btn-primary {
+  width: 100% !important;
+  height: 60px !important;
+  background: linear-gradient(135deg, 
+    var(--color-gold) 0%, 
+    var(--color-amber) 30%, 
+    var(--color-sunset) 70%, 
+    var(--color-deep-orange) 100%
+  ) !important;
+  color: white !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  border-radius: 15px !important;
+  box-shadow: 
+    0 6px 20px rgba(255, 165, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transition: all 0.4s ease !important;
+  border: 2px solid var(--color-dark-gold) !important;
+  font-family: 'Cinzel', serif !important;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.btn-primary::before {
+  content: '';
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: conic-gradient(
-    from 0deg,
-    rgba(77, 166, 255, 0.2),
-    rgba(125, 95, 255, 0.2),
-    rgba(255, 77, 109, 0.2),
-    rgba(77, 166, 255, 0.2)
-  );
-  animation: rotate 15s linear infinite;
-  z-index: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  opacity: 0;
 }
 
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-3px) !important;
+  box-shadow: 
+    0 10px 30px rgba(255, 165, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.btn-primary:hover:not(:disabled)::before {
+  opacity: 1;
+  animation: shimmer 1.5s ease-in-out;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.btn-primary:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 2;
+}
+
+.spinner {
+  color: white !important;
+}
+
+.btn-text {
+  position: relative;
+  z-index: 2;
+  color: var(--color-cream) !important; /* Changed to cream color for better contrast */
+  text-shadow: 0 1px 2px rgba(7, 4, 1, 0.5); /* Darker text shadow */
+  font-weight: 700;
+}
+
+/* Optional: Add placeholder styling for better visibility */
+.form-control::placeholder {
+  color: rgba(160, 82, 45, 0.6);
+  font-style: italic;
+}
+
+/* Form footer */
+.form-footer {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.link-secondary {
+  color: var(--color-copper);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.link-secondary::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-amber));
+  transition: width 0.3s ease;
+}
+
+.link-secondary:hover {
+  color: var(--color-gold);
+  transform: translateY(-1px);
+}
+
+.link-secondary:hover::after {
+  width: 100%;
+}
+
+.divider {
+  color: rgba(139, 69, 19, 0.4);
+  font-weight: 300;
+}
+
+/* Right side - The Sun Tarot Card Inspired */
+.auth-side {
+  position: relative;
+  background: linear-gradient(135deg, 
+    var(--color-amber) 0%, 
+    var(--color-deep-orange) 30%, 
+    var(--color-sunset) 70%, 
+    #FF4500 100%
+  );
+  overflow: hidden;
+  border-left: 3px solid var(--color-card-border);
+}
+
+.celestial-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(255, 215, 0, 0.25) 0%, transparent 70%);
+  background-blend-mode: normal, normal;
+}
+
+
+/* Floating celestial orbs */
+.floating-orbs {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(255, 248, 220, 0.9) 0%, 
+    rgba(255, 215, 0, 0.6) 50%, 
+    rgba(255, 140, 66, 0.3) 100%
+  );
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  animation: celestialFloat 8s ease-in-out infinite;
+}
+
+.orb:nth-child(1) {
+  width: 12px;
+  height: 12px;
+  top: 15%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.orb:nth-child(2) {
+  width: 8px;
+  height: 8px;
+  top: 25%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.orb:nth-child(3) {
+  width: 15px;
+  height: 15px;
+  bottom: 30%;
+  left: 15%;
+  animation-delay: 4s;
+}
+
+.orb:nth-child(4) {
+  width: 10px;
+  height: 10px;
+  bottom: 20%;
+  right: 25%;
+  animation-delay: 6s;
+}
+
+@keyframes celestialFloat {
+  0%, 100% { 
+    transform: translateY(0px) scale(1); 
+    opacity: 0.7; 
+  }
+  25% { 
+    transform: translateY(-15px) scale(1.1); 
+    opacity: 1; 
+  }
+  50% { 
+    transform: translateY(-25px) scale(0.95); 
+    opacity: 0.8; 
+  }
+  75% { 
+    transform: translateY(-10px) scale(1.05); 
+    opacity: 0.9; 
   }
 }
 
-.auth-form * {
-  position: relative;
-  z-index: 1;
+/* Decorative corner flourishes */
+.corner-flourish {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: 
+    linear-gradient(45deg, var(--color-gold) 0%, transparent 50%),
+    linear-gradient(-45deg, var(--color-amber) 0%, transparent 50%);
+  opacity: 0.3;
 }
 
-/* Title */
-.auth-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 2.5rem;
-  color: #fff;
-}
-.auth-title span {
-  color: #4da6ff;
+.corner-flourish.top-left {
+  top: 20px;
+  left: 20px;
+  border-radius: 0 0 50% 0;
 }
 
-/* Labels */
-.form-label {
-  color: #bbb;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-  display: block;
+.corner-flourish.top-right {
+  top: 20px;
+  right: 20px;
+  border-radius: 0 0 0 50%;
 }
 
-/* Inputs */
-.form-control {
-  background: #2a2d35;
-  border: none;
-  border-radius: 12px;
-  padding: 14px 16px;
-  color: #fff;
+.corner-flourish.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  border-radius: 0 50% 0 0;
+}
+
+.corner-flourish.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50% 0 0 0;
+}
+
+/* Bootstrap-like utility classes */
+.mb-3 {
+  margin-bottom: 1.5rem !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
+.btn {
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
   font-size: 1rem;
-  margin-bottom: 1.2rem;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
-  transition: all 0.3s ease;
-}
-
-.form-control:focus {
-  background: #2f333c;
-  border: 1px solid #4da6ff;
-  box-shadow: 0 0 12px rgba(77, 166, 255, 0.6);
-  outline: none;
-}
-
-/* Validation error */
-.invalid-feedback {
-  color: #ff6b6b;
-  font-size: 0.85rem;
-  margin-top: -8px;
-  margin-bottom: 12px;
-}
-
-/* Button */
-.btn-primary {
-  background: linear-gradient(135deg, #4da6ff, #1d7aff);
-  border: none;
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  margin-top: 0.5rem;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #3399ff, #0066cc);
-  box-shadow: 0 8px 20px rgba(51, 153, 255, 0.4);
-  transform: translateY(-2px);
-}
-
-/* Footer text */
-.text-center p {
-  color: #aaa;
-  font-size: 0.9rem;
-}
-.text-center a {
-  color: #4da6ff;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
   text-decoration: none;
-}
-.text-center a:hover {
-  color: #3399ff;
-}
-
-/* ===== Right side with background ===== */
-.auth-side {
-  flex: 2;
-  background: url('/assets/login-bg.jpg') center center / cover no-repeat;
-  position: relative;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease-in-out;
 }
 
-.auth-side::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(20, 20, 20, 0.65);
+.btn-link {
+  color: var(--color-copper);
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
 }
 
-/* Decorative curve */
-.curve {
-  position: absolute;
-  top: 20%;
-  left: -50px;
-  width: 200%;
-  height: 60%;
-  border: 2px dashed rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  transform: rotate(-15deg);
+.btn-link:hover {
+  color: var(--color-gold);
+  text-decoration: underline;
 }
 
-/* ===== Responsive ===== */
+/* Responsive design */
 @media (max-width: 768px) {
   .auth-container {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
-  .auth-form {
-    border-radius: 0;
-    max-width: 100%;
-    box-shadow: none;
-  }
+  
   .auth-side {
     display: none;
+  }
+  
+  .auth-form {
+    padding: 2rem 1rem;
+    border-right: none;
+  }
+  
+  .form-content {
+    max-width: 100%;
+  }
+  
+  .auth-header {
+    padding: 1rem;
+  }
+  
+  .logo {
+    font-size: 1.25rem;
+  }
+  
+  nav {
+    gap: 1rem;
+  }
+  
+  .form-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .divider {
+    display: none;
+  }
+  
+  .sun-spiral {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .spiral-center {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .spiral-ray {
+    height: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form {
+    padding: 1.5rem 1rem;
+  }
+  
+  .auth-form::before {
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+  
+  .auth-title {
+    font-size: 1.8rem;
+  }
+  
+  .sun-spiral {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .spiral-center {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .spiral-ray {
+    height: 30px;
+    width: 3px;
+  }
+  
+  .btn-primary {
+    height: 50px !important;
+    font-size: 1rem !important;
   }
 }

@@ -1,10 +1,29 @@
+<!-- Animated Background Rays -->
+<div class="sun-rays-background">
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(0deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(30deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(60deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(90deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(120deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(150deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(180deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(210deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(240deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(270deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(300deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(330deg);"></div>
+</div>
+
 <div class="auth-wrapper">
   <!-- Header -->
   <header class="auth-header">
-    <div class="logo">Anywhere app.</div>
+    <div class="logo">
+      <i class="fas fa-sun logo-icon"></i>
+      Anywhere app.
+    </div>
     <nav>
-      <a href="#">Home</a>
-      <a href="#">Join</a>
+      <a href="#" class="nav-link">Home</a>
+      <a href="#" class="nav-link">Join</a>
     </nav>
   </header>
 
@@ -12,38 +31,84 @@
   <div class="auth-container">
     <!-- Left side form -->
     <div class="auth-form">
-      <h2 class="auth-title">Login to <span>01Blog</span></h2>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input type="text" class="form-control" id="username" formControlName="username"
-                 [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
-          <div class="invalid-feedback" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
-            Username is required
+      <div class="form-content">
+        <!-- Sun Logo -->
+        <div class="sun-logo">
+          <div class="sun-spiral">
+            <div class="spiral-center"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
+            <div class="spiral-ray"></div>
           </div>
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" formControlName="password"
-                 [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          <div class="invalid-feedback" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            Password is required
+
+        <h2 class="auth-title">Login to <span class="brand-highlight">01Blog</span></h2>
+        <p class="auth-subtitle">Enter the realm of endless possibilities</p>
+
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" formControlName="username"
+                   [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+            <div class="invalid-feedback" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+              Username is required
+            </div>
           </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" formControlName="password"
+                   [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <div class="invalid-feedback" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              Password is required
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary w-100" [disabled]="isLoading">
+            <div class="btn-content">
+              <span class="spinner" *ngIf="isLoading">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+              <span class="btn-text">{{ isLoading ? 'Entering...' : 'Enter the Light' }}</span>
+            </div>
+          </button>
+        </form>
+
+        <div class="form-footer text-center mt-3">
+          <a routerLink="/register" class="btn btn-link">Create an account</a>
         </div>
-        <button type="submit" class="btn-primary w-100" [disabled]="isLoading">
-          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-          Login
-        </button>
-      </form>
-      <div class="text-center mt-3">
-        <a routerLink="/register" class="btn btn-link">Create an account</a>
       </div>
     </div>
 
-    <!-- Right side background -->
+    <!-- Right side celestial background - Updated to include image -->
     <div class="auth-side">
-      <!-- Decorative curve -->
-      <div class="curve"></div>
+      <div class="celestial-bg">
+        <!-- Add your image here -->
+        <img src="assets/sun-tarot-card.jpg" alt="Sun Tarot Card" class="side-image">
+        
+        <!-- Floating Orbs -->
+        <div class="floating-orbs">
+          <div class="orb"></div>
+          <div class="orb"></div>
+          <div class="orb"></div>
+          <div class="orb"></div>
+        </div>
+
+        <!-- Corner Flourishes -->
+        <div class="corner-flourish top-left"></div>
+        <div class="corner-flourish top-right"></div>
+        <div class="corner-flourish bottom-left"></div>
+        <div class="corner-flourish bottom-right"></div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,70 +1,95 @@
-<!-- frontend/src/app/components/create-post/create-post.component.html -->
-<div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="card-title mb-4">Create New Post</h2>
-          
-          <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label for="content" class="form-label">What's on your mind?</label>
-              <textarea class="form-control" id="content" formControlName="content" 
-                        rows="4" placeholder="Share your learning experience..."
-                        [class.is-invalid]="postForm.get('content')?.invalid && postForm.get('content')?.touched">
-              </textarea>
-              <div class="invalid-feedback" *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched">
-                Post content is required
+<!-- Enhanced Create Post Component HTML with Beautiful Aesthetics -->
+<div class="create-post-container">
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-7">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">✨ Share Your Journey ✨</h2>
+            
+            <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+              <!-- Content Input -->
+              <div class="form-group mb-4">
+                <label for="content" class="form-label">What wisdom would you like to share?</label>
+                <textarea class="form-control" 
+                          id="content" 
+                          formControlName="content" 
+                          rows="6" 
+                          placeholder="Share your learning experience, insights, or thoughts that might inspire others on their journey..."
+                          [class.is-invalid]="postForm.get('content')?.invalid && postForm.get('content')?.touched">
+                </textarea>
+                <div class="invalid-feedback" *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched">
+                  Your thoughts are valuable - please share something with the community
+                </div>
               </div>
-            </div>
-            
-            <div class="mb-3">
-              <label for="media" class="form-label">Add Media (Optional)</label>
-              <input type="file" class="form-control" id="media" 
-                     (change)="onFileSelected($event)" accept="image/*,video/*">
-              <div class="form-text">Supported formats: Images (JPEG, PNG, GIF) and Videos (MP4, WebM)</div>
-            </div>
-            
-            <!-- Media Preview Section -->
-            <div class="mb-3" *ngIf="previewUrl">
-              <div class="media-preview">
-                <h6 class="mb-3 text-center">Media Preview</h6>
+              
+              <!-- Media Upload -->
+              <div class="form-group mb-4">
+                <label for="media" class="form-label">Illuminate with Visuals (Optional)</label>
+                <input type="file" 
+                       class="form-control" 
+                       id="media" 
+                       (change)="onFileSelected($event)" 
+                       accept="image/*,video/*">
+                <div class="form-text">
+                  ◇ Supported formats: Images (JPEG, PNG, GIF) and Videos (MP4, WebM) ◇<br>
+                  <em>Choose visuals that complement your story</em>
+                </div>
+              </div>
+              
+              <!-- Enhanced Media Preview -->
+              <div class="media-preview" *ngIf="previewUrl">
+                <h6>✧ Preview Your Creation ✧</h6>
                 
                 <div class="text-center">
                   <!-- Image Preview -->
                   <div *ngIf="isImageFile()">
-                    <img [src]="previewUrl" alt="Image preview" class="img-fluid rounded shadow" 
-                         style="max-height: 300px; max-width: 100%;">
+                    <img [src]="previewUrl" 
+                         alt="Your shared image" 
+                         class="img-fluid" 
+                         style="max-height: 350px; max-width: 100%;">
                   </div>
                   
                   <!-- Video Preview -->
                   <div *ngIf="isVideoFile()">
-                    <video controls class="img-fluid rounded shadow" style="max-height: 300px; max-width: 100%;">
+                    <video controls 
+                           class="img-fluid" 
+                           style="max-height: 350px; max-width: 100%;"
+                           preload="metadata">
                       <source [src]="previewUrl" [type]="selectedFile?.type">
-                      Your browser does not support the video tag.
+                      Your browser does not support this video format.
                     </video>
                   </div>
                   
-                  <div class="mt-3">
-                    <button type="button" class="btn btn-sm btn-danger" (click)="removeMedia()">
-                      Remove Media
+                  <div class="mt-4">
+                    <button type="button" 
+                            class="btn btn-danger btn-sm" 
+                            (click)="removeMedia()">
+                      <i class="bi bi-trash"></i> Remove Media
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary" [disabled]="postForm.invalid || isLoading">
-                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                {{ isUploading ? 'Uploading...' : (isLoading ? 'Posting...' : 'Create Post') }}
-              </button>
               
-              <button type="button" class="btn btn-secondary" routerLink="/feed">
-                Cancel
-              </button>
-            </div>
-          </form>
+              <!-- Action Buttons -->
+              <div class="d-flex gap-2 justify-content-center">
+                <button type="submit" 
+                        class="btn btn-primary" 
+                        [disabled]="postForm.invalid || isLoading">
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+                  <i class="bi bi-send" *ngIf="!isLoading"></i>
+                  {{ isUploading ? 'Uploading Media...' : (isLoading ? 'Sharing Your Light...' : 'Share Your Journey') }}
+                </button>
+                
+                <button type="button" 
+                        class="btn btn-secondary" 
+                        routerLink="/feed">
+                  <i class="bi bi-arrow-left"></i> 
+                  Return to Feed
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

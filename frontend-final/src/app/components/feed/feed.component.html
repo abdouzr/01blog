@@ -1,48 +1,51 @@
-<!-- src/app/components/feed/feed.component.html -->
+<!-- Enhanced Feed Component HTML with Sun Theme -->
 <div class="feed-container">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-8 col-md-10">
-        <!-- Header with title and create button -->
+        <!-- Enhanced Header with sun theme -->
         <div class="feed-header">
           <div class="d-flex justify-content-between align-items-center flex-wrap">
-            <h1 class="feed-title mb-3 mb-md-0">📝 Your Learning Feed</h1>
+            <h1 class="feed-title mb-3 mb-md-0">☀️ Your Sacred Learning Journey</h1>
             <a routerLink="/create-post" class="btn create-post-btn">
-              <i class="bi bi-plus-circle"></i> Share Your Journey
+              <i class="bi bi-plus-circle"></i> Share Your Light
             </a>
           </div>
-          <p class="text-muted mt-3 mb-0 text-center text-md-start">Discover what others are learning and share your experiences</p>
+          <p class="text-muted mt-3 mb-0 text-center text-md-start">
+            "In the pursuit of knowledge, every shared experience illuminates the path for others"
+          </p>
         </div>
 
-        <!-- Loading state -->
+        <!-- Loading state with enhanced styling -->
         <div *ngIf="isLoading" class="text-center py-5">
           <div class="spinner-border loading-spinner" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
-          <p class="text-white mt-3">Loading your learning community...</p>
+          <p class="text-white mt-3">Gathering wisdom from the celestial library...</p>
         </div>
 
-        <!-- Empty state -->
+        <!-- Enhanced empty state -->
         <div *ngIf="!isLoading && posts.length === 0" class="empty-feed">
           <div class="text-center">
-            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-            <h3 class="text-dark mb-3">Your feed is empty</h3>
+            <i class="bi bi-sun display-1 text-muted mb-3"></i>
+            <h3 class="text-dark mb-3">Your Learning Constellation Awaits</h3>
             <p class="text-muted mb-4">
-              No posts yet. Follow some fellow learners to see their journey,<br>
-              or be the first to share your learning experience!
+              The canvas of knowledge is blank, waiting for the first stroke of wisdom.<br>
+              Be the beacon that lights the way for fellow seekers on their journey.
             </p>
             <a routerLink="/create-post" class="btn create-post-btn">
-              <i class="bi bi-plus-circle"></i> Start Sharing
+              <i class="bi bi-plus-circle"></i> Ignite Your First Star
             </a>
           </div>
         </div>
 
-        <!-- Posts list -->
-        <div *ngIf="!isLoading && posts.length > 0">
+        <!-- Posts list with enhanced presentation -->
+        <div *ngIf="!isLoading && posts.length > 0" class="posts-constellation">
           <app-post 
             *ngFor="let post of posts" 
             [post]="post" 
-            (like)="handleLike($event)">
+            (like)="handleLike($event)"
+            class="post-star">
           </app-post>
         </div>
       </div>

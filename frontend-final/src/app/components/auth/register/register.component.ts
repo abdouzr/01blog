@@ -58,7 +58,14 @@ export class RegisterComponent {
     }
   }
 
-  navigateToLogin(): void {
-    this.router.navigate(['/login']);
-  }
+  // navigateToLogin(): void {
+  //   this.router.navigate(['/login']);
+  // }
+
+  // In your register.component.ts file, add this method:
+navigateToLogin(event: Event) {
+  event.preventDefault();
+  // Your navigation code here, for example:
+  this.router.navigate(['/login']);
+}
 }

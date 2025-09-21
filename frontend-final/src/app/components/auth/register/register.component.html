@@ -1,57 +1,142 @@
-<!-- frontend/src/app/components/auth/register/register.component.html -->
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="card-title text-center mb-4">Create Account</h2>
-          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" class="form-control" id="username" formControlName="username"
-                     [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
-                Username must be at least 3 characters
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" formControlName="email"
-                     [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-                Please enter a valid email
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="password" formControlName="password"
-                     [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-                Password must be at least 6 characters
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
-              <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"
-                     [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-                Please confirm your password
-              </div>
-            </div>
-            
-            <button type="submit" class="btn btn-primary w-100" [disabled]="isLoading">
-              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-              Register
-            </button>
-          </form>
-          
-          <div class="text-center mt-3">
-            <p>Already have an account? <a href="#" (click)="navigateToLogin()">Login here</a></p>
+<!-- Animated Background Evil Sun Rays -->
+<div class="evil-sun-rays-background">
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(0deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(30deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(60deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(90deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(120deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(150deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(180deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(210deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(240deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(270deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(300deg);"></div>
+  <div class="background-ray" style="transform: translate(-50%, -50%) rotate(330deg);"></div>
+</div>
+
+<div class="auth-wrapper">
+  <!-- Header -->
+  <header class="auth-header">
+    <div class="logo">
+      <i class="fas fa-fire logo-icon"></i>
+      Inferno Realm
+    </div>
+    <nav>
+      <a href="#" class="nav-link">Abyss</a>
+      <a href="#" class="nav-link">Enter</a>
+    </nav>
+  </header>
+
+  <!-- Main split layout -->
+  <div class="auth-container">
+    <!-- Left side form -->
+    <div class="auth-form">
+      <div class="form-content">
+        <!-- Evil Sun Logo -->
+        <div class="evil-sun-logo">
+          <div class="evil-sun-spiral">
+            <div class="evil-spiral-center"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
+            <div class="evil-spiral-ray"></div>
           </div>
         </div>
+
+        <h2 class="auth-title">Join the <span class="brand-highlight">Inferno</span></h2>
+        <p class="auth-subtitle">Embrace the scorching path of power</p>
+
+        <form class="login-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="username" class="form-label">Soul Name</label>
+            <input type="text" class="form-control" id="username" formControlName="username"
+                   placeholder="Your infernal identity"
+                   [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+            <div class="invalid-feedback" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+              A name of power is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Ember Address</label>
+            <input type="email" class="form-control" id="email" formControlName="email"
+                   placeholder="Where flames may reach you"
+                   [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <div class="invalid-feedback" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+              A valid ember address is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Forbidden Knowledge</label>
+            <input type="password" class="form-control" id="password" formControlName="password"
+                   placeholder="Whisper the secret words"
+                   [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <div class="invalid-feedback" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+              The knowledge must be at least 6 symbols
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirm Knowledge</label>
+            <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"
+                   placeholder="Repeat the dark incantation"
+                   [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+            <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+              The incantations must match
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary w-100" [disabled]="isLoading">
+            <div class="btn-content">
+              <span class="spinner" *ngIf="isLoading">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+              <span class="btn-text">{{ isLoading ? 'Binding Soul...' : 'Ignite the Flame' }}</span>
+            </div>
+          </button>
+        </form>
+
+        <div class="form-footer text-center mt-3">
+          <a routerLink="/login" class="link-secondary">Already burning? Enter the flames</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side infernal background -->
+    <div class="auth-side">
+      <div class="celestial-bg">
+        <!-- Add evil sun image here -->
+        <img src="assets/piv.png" alt="Evil Sun" class="side-image">
+        
+        <!-- Lava cracks -->
+        <div class="lava-cracks">
+          <div class="lava-crack"></div>
+          <div class="lava-crack"></div>
+          <div class="lava-crack"></div>
+        </div>
+        
+        <!-- Floating Orbs -->
+        <div class="floating-orbs">
+          <div class="orb"></div>
+          <div class="orb"></div>
+          <div class="orb"></div>
+          <div class="orb"></div>
+        </div>
+
+        <!-- Corner Flourishes -->
+        <div class="corner-flourish top-left"></div>
+        <div class="corner-flourish top-right"></div>
+        <div class="corner-flourish bottom-left"></div>
+        <div class="corner-flourish bottom-right"></div>
       </div>
     </div>
   </div>
