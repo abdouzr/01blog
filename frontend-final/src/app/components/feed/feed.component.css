@@ -113,27 +113,6 @@
   }
 }
 
-.feed-title {
-  color: var(--color-mystic);
-  font-weight: 900;
-  font-size: 3rem;
-  margin: 0;
-  text-shadow: 
-    2px 2px 4px rgba(139, 69, 19, 0.2),
-    0 0 20px rgba(255, 215, 0, 0.3);
-  font-family: 'Cinzel', serif;
-  letter-spacing: 2px;
-  background: linear-gradient(135deg, 
-    var(--color-gold) 0%, 
-    var(--color-amber) 30%, 
-    var(--color-sunset) 70%, 
-    var(--color-deep-orange) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
-}
 
 .feed-title::before {
   content: '☀';
@@ -546,3 +525,115 @@ app-post {
     transform: scale(1.2) rotate(180deg); 
   }
 }
+
+
+.feed-header {
+  background: rgba(255, 255, 220, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 3rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 
+    0 25px 50px rgba(139, 69, 19, 0.2),
+    0 0 0 3px var(--color-card-border),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 2px solid var(--color-antique);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fixed header content layout */
+.feed-header .d-flex {
+  position: relative;
+  z-index: 2;
+  gap: 2rem;
+}
+
+.feed-header .d-flex.justify-content-between.align-items-center {
+  align-items: flex-start !important; /* Change to flex-start to prevent overlap */
+}
+
+.feed-title {
+  font-weight: 900;
+  font-size: 2.8rem;
+  margin: 0 0 1rem 0;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, 
+    var(--color-gold) 0%, 
+    var(--color-amber) 30%, 
+    var(--color-sunset) 70%, 
+    var(--color-deep-orange) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; /* keeps gradient visible */
+  background-clip: text;
+  position: relative;
+  flex: 1;
+
+  /* subtle crisp shadow, not blurry */
+  text-shadow: 1px 1px 2px rgba(87, 37, 2);
+}
+
+
+.feed-title::before {
+  content: '☀';
+  position: absolute;
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: var(--color-amber);
+  animation: sunRotate 8s linear infinite;
+}
+
+.create-post-btn {
+  background: linear-gradient(135deg, 
+    var(--color-gold) 0%, 
+    var(--color-amber) 30%, 
+    var(--color-sunset) 70%, 
+    var(--color-deep-orange) 100%
+  );
+  border: 3px solid var(--color-dark-gold);
+  border-radius: 60px;
+  text-decoration: none;  /* removes underline */
+  padding: 1rem 2rem; /* Reduced padding */
+  font-weight: 800;
+  font-size: 1rem; /* Reduced font size */
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.5s ease;
+  box-shadow: 
+    0 12px 30px rgba(255, 165, 0, 0.4),
+    0 0 0 0 rgba(255, 215, 0, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  color: var(--color-cream);
+  text-shadow: 0 2px 4px rgba(7, 4, 1, 0.5);
+  white-space: nowrap; /* Prevent text wrapping */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+
+.feed-header .feed-title {
+  margin-bottom: 2rem !important; /* more space below title */
+  display: block;
+}
+
+.create-post-btn {
+  display: inline-block;     /* keep button width tight */
+  margin: 0 auto 2rem auto;  /* center horizontally + add bottom space */
+  text-decoration: none;     /* remove underline */
+}
+
+.feed-header {
+  text-align: center; /* centers everything inside */
+}
+
+.create-post-btn {
+  display: inline-block;
+  margin: 2rem auto; /* ensures centered horizontally */
+}
+

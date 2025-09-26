@@ -1,53 +1,67 @@
-<div class="card mb-4">
-  <div class="card-body">
-    <div class="d-flex align-items-center mb-3">
-      <img [src]="post.authorProfilePicture || 'assets/default-avatar.png'" 
-           alt="{{ post.authorUsername }}" 
-           class="rounded-circle me-3" 
-           width="40" 
-           height="40"
-           (error)="onImageError($event)">
-      <div>
-        <h6 class="card-title mb-0">{{ post.authorUsername }}</h6>
-        <small class="text-muted">{{ formatDate(post.createdAt) }}</small>
-      </div>
+<div class="post-card">
+  <!-- Post Header -->
+  <div class="post-header">
+    <img [src]="post.authorProfilePicture || 'assets/default-avatar.png'" 
+         alt="{{ post.authorUsername }}" 
+         class="post-avatar"
+         (error)="onImageError($event)">
+    
+    <div class="post-author-info">
+      <h6 class="post-author-name">{{ post.authorUsername }}</h6>
+      <small class="post-timestamp">{{ formatDate(post.createdAt) }}</small>
     </div>
+  </div>
+  
+  <!-- Post Content -->
+  <div class="post-content">
+    <p class="post-text">{{ post.content }}</p>
     
-    <p class="card-text">{{ post.content }}</p>
-    
-    <div *ngIf="post.mediaUrl" class="mb-3">
+    <!-- Post Media -->
+    <div *ngIf="post.mediaUrl" class="post-media">
       <!-- Image -->
       <img *ngIf="isImage(post.mediaType)" 
            [src]="getMediaUrl(post.mediaUrl)" 
            alt="Post media" 
-           class="img-fluid rounded"
-           style="max-height: 400px; object-fit: cover;"
+           class="post-image"
            (error)="onImageError($event)"
            loading="lazy">
       
       <!-- Video -->
       <video *ngIf="isVideo(post.mediaType)" 
              controls 
-             class="img-fluid rounded"
-             style="max-height: 400px;"
+             class="post-video"
              (error)="onVideoError($event)"
              preload="metadata">
         <source [src]="getMediaUrl(post.mediaUrl)" [type]="'video/' + getFileExtension(post.mediaUrl)">
         Your browser does not support the video tag.
       </video>
     </div>
-    
-    <div class="d-flex justify-content-between align-items-center">
-      <button class="btn btn-outline-primary btn-sm" 
-              (click)="onLike()"
-              [disabled]="isLiking"
-              [class.btn-primary]="post.likedByCurrentUser"
-              [class.btn-outline-primary]="!post.likedByCurrentUser">
-        <i class="bi" [class.bi-heart]="!post.likedByCurrentUser" 
+  </div>
+  
+  <!-- Post Actions -->
+  <div class="post-actions">
+    <button class="action-btn" 
+            [class.liked]="post.likedByCurrentUser"
+            (click)="onLike()"
+            [disabled]="isLiking">
+      <i class="bi" [class.bi-heart]="!post.likedByCurrentUser" 
                     [class.bi-heart-fill]="post.likedByCurrentUser"></i>
-        {{ post.likeCount }} Likes
-      </button>
-      <span class="text-muted">{{ post.commentCount }} Comments</span>
-    </div>
+      <span *ngIf="!isLiking">{{ post.likeCount }} {{ post.likeCount === 1 ? 'Like' : 'Likes' }}</span>
+      <div *ngIf="isLiking" class="spinner-border spinner-border-sm" role="status"></div>
+    </button>
+    
+    <button class="action-btn comments" 
+            (click)="toggleComments()">
+      <i class="bi bi-chat"></i>
+      <span>{{ post.commentCount }} {{ post.commentCount === 1 ? 'Comment' : 'Comments' }}</span>
+    </button>
+  </div>
+  
+  <!-- Comments Section -->
+  <div *ngIf="showComments" class="post-comments">
+    <app-comments 
+      [postId]="post.id"
+      [isExpanded]="showComments">
+    </app-comments>
   </div>
 </div>

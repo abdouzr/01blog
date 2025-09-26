@@ -1,4 +1,4 @@
-<!-- Clean Layout Navbar Component HTML with Sun Theme -->
+<!-- Updated navbar.component.html with emoji buttons -->
 <nav class="navbar">
   <div class="container-fluid">
     <!-- Left - Brand/Logo -->
@@ -6,34 +6,27 @@
       <i class="bi bi-journal-bookmark-fill"></i> 01Blog
     </a>
     
-    <!-- Center - Search Bar -->
-    <div class="search-container">
-      <i class="bi bi-search search-icon"></i>
-      <input type="text" 
-             class="search-input" 
-             placeholder="Search for users..."
-             [(ngModel)]="searchQuery"
-             (keyup.enter)="searchUsers()">
-    </div>
+    <!-- Center - Search Bar with Dropdown -->
+    <app-search-dropdown></app-search-dropdown>
     
     <!-- Right - User Actions -->
     <div class="navbar-actions">
-      <!-- Notifications with bell icon -->
+      <!-- Notifications with sun/light emoji -->
       <button class="notification-btn" 
               routerLink="/notifications" 
               routerLinkActive="active"
               title="Notifications">
-        <i class="bi bi-bell-fill"></i>
+        ☀️
         <span class="notification-badge" *ngIf="notificationCount > 0">
           {{notificationCount}}
         </span>
       </button>
       
-      <!-- Profile with user avatar -->
+      <!-- Profile with star/sparkle emoji -->
       <button class="profile-btn" 
               (click)="navigateToProfile()"
               title="Profile">
-        <i class="bi bi-person-fill"></i>
+        ✨
       </button>
       
       <!-- Logout in top right -->

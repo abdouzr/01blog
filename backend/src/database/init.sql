@@ -1,8 +1,6 @@
 -- database/init.sql
 CREATE DATABASE zerooneblog;
 
-\c zerooneblog;
-
 -- Create tables if they don't exist (Spring Boot JPA will handle this automatically)
 -- This is just for reference
 

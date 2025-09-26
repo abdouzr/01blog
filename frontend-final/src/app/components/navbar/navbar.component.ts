@@ -1,53 +1,49 @@
-// src/app/components/navbar/navbar.component.ts
-import { Component } from '@angular/core';
+// Updated navbar.component.ts
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // Add this import
+import { SearchDropdownComponent } from '../search-dropdown/search-dropdown.component';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule], // Add FormsModule here
+  imports: [CommonModule, RouterModule, SearchDropdownComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
-  searchQuery: string = '';
-  notificationCount: number = 3; // You can get this from a service later
+export class NavbarComponent implements OnInit {
+  notificationCount: number = 0;
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(
+    public authService: AuthService, 
+    private router: Router,
+    private notificationService: NotificationService
+  ) {}
+
+  ngOnInit(): void {
+    // Subscribe to real notification count
+    this.notificationService.unreadCount$.subscribe(count => {
+      this.notificationCount = count;
+    });
+
+    // Load initial count
+    this.notificationService.getUnreadCount().subscribe();
+  }
 
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 
-  // Updated method to use the user ID instead of username
   navigateToProfile(): void {
     const userId = this.authService.currentUserValue?.id;
     if (userId) {
       this.router.navigate(['/profile', userId]);
     } else {
       this.router.navigate(['/login']);
-    }
-  }
-
-  // Search functionality
-  searchUsers(): void {
-    if (this.searchQuery.trim()) {
-      // For now, just log the search query
-      // You can implement actual search functionality later
-      console.log('Searching for:', this.searchQuery.trim());
-      
-      // Navigate to search results page (create this route later)
-      // this.router.navigate(['/search'], { 
-      //   queryParams: { q: this.searchQuery.trim() } 
-      // });
-      
-      // Clear search after searching
-      this.searchQuery = '';
     }
   }
 }

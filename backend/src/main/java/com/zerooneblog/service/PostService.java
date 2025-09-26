@@ -2,7 +2,6 @@ package com.zerooneblog.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,9 @@ public class PostService {
         return postRepository.findByAuthorOrderByCreatedAtDesc(user);
     }
 
-    public List<Post> getPostsFromSubscribedUsers(User user) {
-        List<User> subscribedUsers = user.getSubscribedTo().stream().collect(Collectors.toList());
-        return postRepository.findByAuthorsOrderByCreatedAtDesc(subscribedUsers);
+    // Updated method to accept List<User> instead of single User
+    public List<Post> getPostsFromSubscribedUsers(List<User> users) {
+        return postRepository.findByAuthorsOrderByCreatedAtDesc(users);
     }
 
     public Optional<Post> getPostById(Long id) {

@@ -2,6 +2,7 @@ package com.zerooneblog.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,4 +50,29 @@ public class UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
+
+    // Add these methods to your existing UserService.java
+// backend/src/main/java/com/zerooneblog/service/UserService.java - Additional methods
+
+public void followUser(User follower, User userToFollow) {
+    follower.getSubscribedTo().add(userToFollow);
+    userRepository.save(follower);
+}
+
+public void unfollowUser(User follower, User userToUnfollow) {
+    follower.getSubscribedTo().remove(userToUnfollow);
+    userRepository.save(follower);
+}
+
+public List<User> getFollowers(User user) {
+    return user.getSubscribers().stream().collect(Collectors.toList());
+}
+
+public List<User> getFollowing(User user) {
+    return user.getSubscribedTo().stream().collect(Collectors.toList());
+}
+
+public boolean isFollowing(User follower, User target) {
+    return follower.getSubscribedTo().contains(target);
+}
 }

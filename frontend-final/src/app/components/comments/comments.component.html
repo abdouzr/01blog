@@ -1,0 +1,67 @@
+<!-- frontend/src/app/components/comments/comments.component.html -->
+<div class="comments-container">
+  <!-- Add Comment Form -->
+  <div class="add-comment-form mb-3">
+    <div class="d-flex">
+      <input 
+        type="text" 
+        class="form-control form-control-sm me-2" 
+        placeholder="Write a comment..."
+        [(ngModel)]="newComment"
+        (keyup.enter)="addComment()"
+        [disabled]="isSubmitting">
+      <button 
+        class="btn btn-primary btn-sm" 
+        (click)="addComment()"
+        [disabled]="!newComment.trim() || isSubmitting">
+        <i class="bi bi-send" *ngIf="!isSubmitting"></i>
+        <span class="spinner-border spinner-border-sm" *ngIf="isSubmitting"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-3">
+    <div class="spinner-border spinner-border-sm text-primary" role="status">
+      <span class="visually-hidden">Loading comments...</span>
+    </div>
+  </div>
+
+  <!-- Comments List -->
+  <div *ngIf="!isLoading" class="comments-list">
+    <div *ngIf="comments.length === 0" class="text-muted text-center py-2">
+      <small>No comments yet. Be the first to comment!</small>
+    </div>
+
+    <div *ngFor="let comment of comments" class="comment-item mb-2">
+      <div class="d-flex align-items-start">
+        <img 
+          [src]="comment.authorProfilePicture || 'assets/default-avatar.png'" 
+          alt="{{ comment.authorUsername }}" 
+          class="rounded-circle me-2" 
+          width="32" 
+          height="32"
+          style="object-fit: cover;">
+        
+        <div class="comment-content flex-grow-1">
+          <div class="comment-bubble p-2 rounded bg-light">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <strong class="comment-author">{{ comment.authorUsername }}</strong>
+                <p class="comment-text mb-0">{{ comment.content }}</p>
+              </div>
+              <button 
+                *ngIf="canDeleteComment(comment)"
+                class="btn btn-link btn-sm text-danger p-0 ms-2"
+                (click)="deleteComment(comment.id)"
+                title="Delete comment">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+          <small class="text-muted ms-2">{{ formatDate(comment.createdAt) }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

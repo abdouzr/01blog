@@ -2,29 +2,33 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService, Post } from '../../services/post.service';
+import { UserService, UserProfile } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import {  RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { PostComponent } from '../post/post.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule, PostComponent], // Import PostComponent
+  imports: [CommonModule, RouterModule, PostComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   userId!: number;
-  user: any = null;
+  user: UserProfile | null = null;
   posts: Post[] = [];
   isLoading = true;
   isOwnProfile = false;
+  isFollowing = false;
+  isProcessing = false;
 
   constructor(
     private route: ActivatedRoute,
     private postService: PostService,
+    private userService: UserService,
     private authService: AuthService,
     private snackBar: MatSnackBar
   ) {}
@@ -42,27 +46,27 @@ export class ProfileComponent implements OnInit {
   }
 
   loadUserProfile(): void {
-    // In a real app, you'd have a UserService to get user details
-    // For now, we'll use mock data or get from AuthService
-    const currentUser = this.authService.currentUserValue;
-    if (currentUser && currentUser.id === this.userId) {
-      this.user = {
-        id: currentUser.id,
-        username: currentUser.username,
-        email: currentUser.email,
-        bio: 'This is a sample bio. Update your profile to add your own bio!',
-        profilePicture: 'assets/default-avatar.png'
-      };
-    } else {
-      // Mock data for other users
-      this.user = {
-        id: this.userId,
-        username: 'user' + this.userId,
-        email: `user${this.userId}@example.com`,
-        bio: 'This user hasn\'t added a bio yet.',
-        profilePicture: 'assets/default-avatar.png'
-      };
-    }
+    this.userService.getUserById(this.userId).subscribe({
+      next: (user) => {
+        this.user = user;
+        this.isFollowing = user.isFollowedByCurrentUser;
+      },
+      error: (error) => {
+        this.snackBar.open('Error loading user profile', 'Close', { duration: 3000 });
+        // Fallback to mock data if API fails
+        this.user = {
+          id: this.userId,
+          username: `user${this.userId}`,
+          email: `user${this.userId}@example.com`,
+          bio: 'This user hasn\'t added a bio yet.',
+          profilePicture: '',
+          createdAt: new Date().toISOString(),
+          followerCount: 0,
+          followingCount: 0,
+          isFollowedByCurrentUser: false
+        };
+      }
+    });
   }
 
   loadUserPosts(): void {
@@ -77,6 +81,55 @@ export class ProfileComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  toggleFollow(): void {
+    if (!this.user || this.isProcessing) return;
+
+    this.isProcessing = true;
+
+    if (this.isFollowing) {
+      this.userService.unfollowUser(this.user.id).subscribe({
+        next: () => {
+          this.isFollowing = false;
+          this.user!.isFollowedByCurrentUser = false;
+          this.user!.followerCount--;
+          this.isProcessing = false;
+          this.snackBar.open(`Unfollowed ${this.user!.username}`, 'Close', { duration: 2000 });
+        },
+        error: (error) => {
+          this.snackBar.open('Error unfollowing user', 'Close', { duration: 3000 });
+          this.isProcessing = false;
+        }
+      });
+    } else {
+      this.userService.followUser(this.user.id).subscribe({
+        next: () => {
+          this.isFollowing = true;
+          this.user!.isFollowedByCurrentUser = true;
+          this.user!.followerCount++;
+          this.isProcessing = false;
+          this.snackBar.open(`Following ${this.user!.username}`, 'Close', { duration: 2000 });
+        },
+        error: (error) => {
+          this.snackBar.open('Error following user', 'Close', { duration: 3000 });
+          this.isProcessing = false;
+        }
+      });
+    }
+  }
+
+  reportUser(): void {
+    if (!this.user) return;
+
+    // Simple confirmation dialog
+    if (confirm(`Are you sure you want to report ${this.user.username}?`)) {
+      // For now, just show a message. You can implement actual reporting later
+      this.snackBar.open('User reported. Thank you for keeping our community safe.', 'Close', { duration: 4000 });
+      
+      // TODO: Implement actual reporting functionality
+      // this.reportService.reportUser(this.user.id, reason).subscribe(...)
+    }
   }
 
   handleLike(post: Post): void {

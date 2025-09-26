@@ -1,8 +1,21 @@
 // backend/src/main/java/com/zerooneblog/model/Notification.java
+
+// Updated Notification.java model
 package com.zerooneblog.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "notifications")
@@ -17,13 +30,24 @@ public class Notification {
     
     private LocalDateTime createdAt;
     
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
+    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id") // The user who receives the notification
     private User user;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "from_user_id") // The user who triggered the notification
+    private User fromUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "related_post_id")
     private Post relatedPost;
+    
+    public enum NotificationType {
+        LIKE, COMMENT, FOLLOW
+    }
     
     @PrePersist
     protected void onCreate() {
@@ -52,8 +76,14 @@ public class Notification {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
+    public NotificationType getType() { return type; }
+    public void setType(NotificationType type) { this.type = type; }
+    
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+    
+    public User getFromUser() { return fromUser; }
+    public void setFromUser(User fromUser) { this.fromUser = fromUser; }
     
     public Post getRelatedPost() { return relatedPost; }
     public void setRelatedPost(Post relatedPost) { this.relatedPost = relatedPost; }

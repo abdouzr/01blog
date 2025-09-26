@@ -1,3 +1,4 @@
+// Updated PostController.java with proper feed logic and LikeService injection
 package com.zerooneblog.controller;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import com.zerooneblog.dto.PostResponse;
 import com.zerooneblog.model.Post;
 import com.zerooneblog.model.User;
 import com.zerooneblog.security.PostSecurity;
+import com.zerooneblog.service.LikeService;
 import com.zerooneblog.service.PostService;
 import com.zerooneblog.service.UserService;
 
@@ -38,6 +40,9 @@ public class PostController {
     private UserService userService;
 
     @Autowired
+    private LikeService likeService;
+
+    @Autowired
     private PostSecurity postSecurity;
 
     @GetMapping
@@ -50,18 +55,29 @@ public class PostController {
         return ResponseEntity.ok(responses);
     }
 
-    // Add this endpoint for feed - should come BEFORE the /{id} endpoint
+    // Updated feed endpoint - shows posts from followed users + own posts
     @GetMapping("/feed")
     public ResponseEntity<List<PostResponse>> getFeed() {
         User currentUser = userService.getCurrentUser();
-        List<Post> posts = postService.getPostsFromSubscribedUsers(currentUser);
+        List<Post> posts;
+        
+        // Get posts from followed users + own posts
+        List<User> followedUsers = currentUser.getSubscribedTo().stream().collect(Collectors.toList());
+        followedUsers.add(currentUser); // Include own posts in feed
+        
+        if (followedUsers.isEmpty()) {
+            // If not following anyone, only show own posts
+            posts = postService.getPostsByUser(currentUser);
+        } else {
+            posts = postService.getPostsFromSubscribedUsers(followedUsers);
+        }
+        
         List<PostResponse> responses = posts.stream()
                 .map(post -> postService.convertToPostResponse(post, currentUser))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responses);
     }
 
-    // Add this endpoint to get posts by user ID
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PostResponse>> getPostsByUser(@PathVariable Long userId) {
         User currentUser = userService.getCurrentUser();
@@ -132,13 +148,25 @@ public class PostController {
 
     @PostMapping("/{id}/like")
     public ResponseEntity<?> likePost(@PathVariable Long id) {
-        // Your like implementation
-        return ResponseEntity.ok().build();
+        User currentUser = userService.getCurrentUser();
+        
+        return postService.getPostById(id)
+            .map(post -> {
+                likeService.likePost(post.getId(), currentUser.getId());
+                return ResponseEntity.ok().build();
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}/like")
     public ResponseEntity<?> unlikePost(@PathVariable Long id) {
-        // Your unlike implementation
-        return ResponseEntity.ok().build();
+        User currentUser = userService.getCurrentUser();
+        
+        return postService.getPostById(id)
+            .map(post -> {
+                likeService.unlikePost(post.getId(), currentUser.getId());
+                return ResponseEntity.ok().build();
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 }
