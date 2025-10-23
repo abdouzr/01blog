@@ -2,50 +2,69 @@
 <div class="container mt-4">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h2 class="mb-0">Notifications</h2>
-          <button class="btn btn-sm btn-outline-primary" (click)="markAllAsRead()">
-            Mark all as read
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+          <h2 class="mb-0 text-primary">🔔 Notifications</h2>
+          <button class="btn btn-sm btn-outline-primary" 
+                  (click)="markAllAsRead()"
+                  [disabled]="isLoading || allRead">
+            <i class="bi bi-check-all"></i> Mark all as read
           </button>
         </div>
         
         <div class="card-body p-0">
-          <div *ngIf="isLoading" class="text-center p-4">
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="text-center p-5">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
           </div>
 
-          <div *ngIf="!isLoading && notifications.length === 0" class="text-center p-4">
-            <p>No notifications yet.</p>
+          <!-- Empty State -->
+          <div *ngIf="!isLoading && notifications.length === 0" class="text-center p-5 text-muted">
+            <p class="mb-0">You're all caught up! No notifications yet. 🎉</p>
           </div>
 
+          <!-- Notification List -->
           <div *ngIf="!isLoading && notifications.length > 0" class="list-group list-group-flush">
             <div *ngFor="let notification of notifications" 
-                 class="list-group-item list-group-item-action"
-                 [class.list-group-item-light]="notification.isRead"
-                 (click)="markAsRead(notification)">
+                 class="list-group-item list-group-item-action py-3 px-4"
+                 [class.list-group-item-light-custom]="!notification.isRead"
+                 (click)="onMarkAsRead(notification)">
               
-              <div class="d-flex align-items-start">
+              <div class="d-flex align-items-center">
+                <!-- User Avatar - Removed optional chaining since 'fromUser' is required on the DTO -->
                 <img [src]="notification.fromUser.profilePicture || 'assets/default-avatar.png'"
                      alt="{{ notification.fromUser.username }}"
-                     class="rounded-circle me-3"
-                     width="40"
-                     height="40">
+                     class="rounded-circle me-3 border"
+                     width="45"
+                     height="45"
+                     style="object-fit: cover;">
                 
                 <div class="flex-grow-1">
-                  <div class="d-flex justify-content-between align-items-start">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <!-- Notification Message - Removed optional chaining -->
                     <div>
-                      <strong>{{ notification.fromUser.username }}</strong>
-                      {{ notification.message }}
+                      <strong class="text-dark">{{ notification.fromUser.username }}</strong>
+                      <span class="ms-1">{{ notification.message }}</span>
                     </div>
-                    <small class="text-muted">{{ formatDate(notification.createdAt) }}</small>
+                    
+                    <!-- Timestamp -->
+                    <small class="text-muted flex-shrink-0 ms-2">{{ formatDate(notification.createdAt) }}</small>
                   </div>
                   
+                  <!-- 'New' Badge -->
                   <div *ngIf="!notification.isRead" class="mt-1">
-                    <span class="badge bg-primary">New</span>
+                    <span class="badge bg-primary rounded-pill">New</span>
                   </div>
+                  
+                  <!-- Link to Post -->
+                  <a *ngIf="notification.relatedPostId" 
+                     [routerLink]="['/post', notification.relatedPostId]" 
+                     class="text-decoration-none text-info small mt-1 d-block"
+                     (click)="$event.stopPropagation()">
+                     View Post
+                  </a>
                 </div>
               </div>
             </div>
@@ -55,3 +74,14 @@
     </div>
   </div>
 </div>
+
+<!-- <style>
+.list-group-item-light-custom {
+  background-color: #f7f9fc; /* Light blueish background for unread */
+  border-left: 5px solid #0d6efd; /* Blue border for new */
+}
+
+.list-group-item:hover {
+  background-color: #e9ecef !important;
+}
+</style> -->

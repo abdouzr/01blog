@@ -10,6 +10,13 @@
       <h6 class="post-author-name">{{ post.authorUsername }}</h6>
       <small class="post-timestamp">{{ formatDate(post.createdAt) }}</small>
     </div>
+
+    <!-- Delete Button (Only visible to the post owner or Admin - assuming Admin check is done outside) -->
+    <button *ngIf="post.authorId === currentUserId" 
+            class="btn btn-sm btn-outline-danger ms-auto"
+            (click)="onDeletePost()">
+      <i class="bi bi-trash"></i>
+    </button>
   </div>
   
   <!-- Post Content -->
@@ -55,6 +62,12 @@
       <i class="bi bi-chat"></i>
       <span>{{ post.commentCount }} {{ post.commentCount === 1 ? 'Comment' : 'Comments' }}</span>
     </button>
+
+    <!-- Report Button: Fixed data-bs-target binding -->
+    <button class="action-btn ms-auto" data-bs-toggle="modal" [attr.data-bs-target]="'#reportModal-' + post.id">
+      <i class="bi bi-flag"></i>
+      <span>Report</span>
+    </button>
   </div>
   
   <!-- Comments Section -->
@@ -64,4 +77,11 @@
       [isExpanded]="showComments">
     </app-comments>
   </div>
+
+  <!-- Report Modal for Post -->
+  <app-report-modal 
+    [reportTargetId]="post.id" 
+    reportType="POST" 
+    [modalId]="'reportModal-' + post.id">
+  </app-report-modal>
 </div>

@@ -21,6 +21,11 @@ export class NotificationComponent implements OnInit {
     this.loadNotifications();
   }
 
+  get allRead(): boolean {
+    // This is the computed property that moves the complex logic out of the template
+    return this.notifications.length === 0 || this.notifications.every(n => n.isRead);
+  }
+
   loadNotifications(): void {
     this.isLoading = true;
     this.notificationService.getNotifications().subscribe({
@@ -35,12 +40,16 @@ export class NotificationComponent implements OnInit {
     });
   }
 
-  markAsRead(notification: Notification): void {
+  /**
+   * Renamed from 'markAsRead' to 'onMarkAsRead' to avoid the name conflict with the service,
+   * though the original issue was likely a caching problem. Using a different name for clarity.
+   */
+  onMarkAsRead(notification: Notification): void {
     if (!notification.isRead) {
       this.notificationService.markAsRead(notification.id).subscribe({
         next: () => {
           notification.isRead = true;
-          // Remove the 'New' badge by updating the notification
+          // Refresh the notifications list to update the badge/read status
           this.notifications = [...this.notifications];
         },
         error: (error) => console.error('Error marking notification as read:', error)

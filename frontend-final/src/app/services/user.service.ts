@@ -1,4 +1,3 @@
-// frontend/src/app/services/user.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,12 +6,14 @@ export interface UserProfile {
   id: number;
   username: string;
   email: string;
-  bio: string;
-  profilePicture: string;
+  bio: string | null;
+  profile_picture: string | null;
   createdAt: string;
   followerCount: number;
   followingCount: number;
-  isFollowedByCurrentUser: boolean;
+  isFollowedByCurrentUser?: boolean;
+  is_blocked: boolean;
+  roles?: string[];
 }
 
 @Injectable({
@@ -23,6 +24,7 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  // --- User-facing methods ---
   searchUsers(query: string): Observable<UserProfile[]> {
     const params = new HttpParams().set('query', query);
     return this.http.get<UserProfile[]>(`${this.apiUrl}/search`, { params });
@@ -47,4 +49,7 @@ export class UserService {
   getFollowing(userId: number): Observable<UserProfile[]> {
     return this.http.get<UserProfile[]>(`${this.apiUrl}/${userId}/following`);
   }
+  
+  // REMOVED: Admin methods - use AdminService instead
+  // The admin methods have been moved to AdminService for better separation of concerns
 }

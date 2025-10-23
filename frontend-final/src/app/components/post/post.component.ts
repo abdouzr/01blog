@@ -3,18 +3,21 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Post } from '../../services/post.service';
 import { CommonModule } from '@angular/common';
 import { CommentsComponent } from '../comments/comments.component';
+import { ReportModalComponent } from '../report-modal/report-modal.component'; // NEW IMPORT
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, CommentsComponent],
+  imports: [CommonModule, CommentsComponent, ReportModalComponent], // ADDED ReportModalComponent
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
 export class PostComponent {
   @Input() post!: Post;
+  @Input() currentUserId!: number; // Added for delete button logic
   @Output() like = new EventEmitter<Post>();
   @Output() unlike = new EventEmitter<Post>();
+  @Output() deletePost = new EventEmitter<number>(); // New event for deletion
 
   isLiking = false;
   showComments = false;
@@ -32,6 +35,12 @@ export class PostComponent {
     setTimeout(() => {
       this.isLiking = false;
     }, 500);
+  }
+
+  onDeletePost(): void {
+    if (confirm('Are you sure you want to delete this post? This action is irreversible.')) {
+      this.deletePost.emit(this.post.id);
+    }
   }
 
   toggleComments(): void {

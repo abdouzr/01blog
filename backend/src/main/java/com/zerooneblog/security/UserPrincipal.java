@@ -1,9 +1,9 @@
-// backend/src/main/java/com/zerooneblog/security/UserPrincipal.java
 package com.zerooneblog.security;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,14 +12,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.zerooneblog.model.User;
 
 public class UserPrincipal implements UserDetails {
-    private final Long id;
-    private final String username;
-    private final String email;
-    private final String password;
-    private final Collection<? extends GrantedAuthority> authorities;
+    private static final long serialVersionUID = 1L;
 
-    public UserPrincipal(Long id, String username, String email, String password, 
-            Collection<? extends GrantedAuthority> authorities) {
+    private Long id;
+    private String username;
+    private String email;
+    private String password;
+    private Collection<? extends GrantedAuthority> authorities;
+
+    public UserPrincipal(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -27,18 +28,18 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(User user) {
-        // Convert the Role enum to string for the authority
-        String roleName = user.getRole().name();
+    public static UserPrincipal build(User user) {
+        // FIXED: Convert the simple String role from the User model into a Spring Security GrantedAuthority
         List<GrantedAuthority> authorities = Collections.singletonList(
-                new SimpleGrantedAuthority(roleName));
+            new SimpleGrantedAuthority(user.getRole())
+        );
 
         return new UserPrincipal(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                authorities
+            user.getId(), 
+            user.getUsername(), 
+            user.getEmail(), 
+            user.getPassword(), 
+            authorities
         );
     }
 
@@ -51,8 +52,8 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
@@ -61,8 +62,8 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    public String getUsername() {
+        return username;
     }
 
     @Override
@@ -83,5 +84,13 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserPrincipal user = (UserPrincipal) o;
+        return Objects.equals(id, user.id);
     }
 }

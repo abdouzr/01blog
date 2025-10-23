@@ -1,4 +1,3 @@
-// Updated PostController.java with proper feed logic and LikeService injection
 package com.zerooneblog.controller;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ import com.zerooneblog.dto.PostResponse;
 import com.zerooneblog.model.Post;
 import com.zerooneblog.model.User;
 import com.zerooneblog.security.PostSecurity;
-import com.zerooneblog.service.LikeService;
+import com.zerooneblog.service.NotificationService; 
 import com.zerooneblog.service.PostService;
 import com.zerooneblog.service.UserService;
 
@@ -40,7 +39,7 @@ public class PostController {
     private UserService userService;
 
     @Autowired
-    private LikeService likeService;
+    private NotificationService notificationService;
 
     @Autowired
     private PostSecurity postSecurity;
@@ -55,18 +54,15 @@ public class PostController {
         return ResponseEntity.ok(responses);
     }
 
-    // Updated feed endpoint - shows posts from followed users + own posts
     @GetMapping("/feed")
     public ResponseEntity<List<PostResponse>> getFeed() {
         User currentUser = userService.getCurrentUser();
         List<Post> posts;
         
-        // Get posts from followed users + own posts
         List<User> followedUsers = currentUser.getSubscribedTo().stream().collect(Collectors.toList());
-        followedUsers.add(currentUser); // Include own posts in feed
+        followedUsers.add(currentUser); 
         
         if (followedUsers.isEmpty()) {
-            // If not following anyone, only show own posts
             posts = postService.getPostsByUser(currentUser);
         } else {
             posts = postService.getPostsFromSubscribedUsers(followedUsers);
@@ -115,12 +111,17 @@ public class PostController {
         post.setUpdatedAt(LocalDateTime.now());
 
         Post savedPost = postService.createPost(post);
+        
+        // Notify followers about the new post
+        notificationService.createNewPostNotification(savedPost);
+        
         PostResponse response = postService.convertToPostResponse(savedPost, currentUser);
         
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
+    // Only the post owner can edit
     @PreAuthorize("@postSecurity.isPostOwner(#id)")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostRequest postRequest) {
         User currentUser = userService.getCurrentUser();
@@ -140,33 +141,12 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    // Owner or Admin can delete
     @PreAuthorize("@postSecurity.isPostOwner(#id) or hasRole('ADMIN')")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/{id}/like")
-    public ResponseEntity<?> likePost(@PathVariable Long id) {
-        User currentUser = userService.getCurrentUser();
-        
-        return postService.getPostById(id)
-            .map(post -> {
-                likeService.likePost(post.getId(), currentUser.getId());
-                return ResponseEntity.ok().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}/like")
-    public ResponseEntity<?> unlikePost(@PathVariable Long id) {
-        User currentUser = userService.getCurrentUser();
-        
-        return postService.getPostById(id)
-            .map(post -> {
-                likeService.unlikePost(post.getId(), currentUser.getId());
-                return ResponseEntity.ok().build();
-            })
-            .orElse(ResponseEntity.notFound().build());
-    }
+    
+    // LIKE/UNLIKE ENDPOINTS REMOVED - Handled by LikeController
 }

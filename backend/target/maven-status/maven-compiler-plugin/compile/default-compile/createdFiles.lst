@@ -1,13 +1,16 @@
+com/zerooneblog/dto/ReportRequest.class
 com/zerooneblog/model/Notification.class
 com/zerooneblog/repository/UserRepository.class
 com/zerooneblog/dto/NotificationResponse.class
 com/zerooneblog/dto/LikeResponse.class
+com/zerooneblog/controller/ReportController.class
 com/zerooneblog/config/Cloudinary.class
 com/zerooneblog/controller/NotificationController.class
 com/zerooneblog/security/JwtUtils.class
 com/zerooneblog/dto/PostRequest.class
 com/zerooneblog/service/FollowService.class
 com/zerooneblog/model/Report.class
+com/zerooneblog/model/Report$TargetType.class
 com/zerooneblog/controller/FollowController.class
 com/zerooneblog/security/AuthTokenFilter.class
 com/zerooneblog/security/PostSecurity.class
@@ -18,6 +21,7 @@ com/zerooneblog/controller/UserController.class
 com/zerooneblog/service/PostService.class
 com/zerooneblog/service/CommentService.class
 com/zerooneblog/dto/PostResponse.class
+com/zerooneblog/model/ERole.class
 com/zerooneblog/model/Follow.class
 com/zerooneblog/service/LikeService.class
 com/zerooneblog/controller/TestController.class
@@ -26,12 +30,14 @@ com/zerooneblog/security/CommentSecurity.class
 com/zerooneblog/repository/NotificationRepository.class
 com/zerooneblog/security/UserDetailsImpl.class
 com/zerooneblog/repository/CommentRepository.class
+com/zerooneblog/model/Report$ReportStatus.class
 com/zerooneblog/dto/UserResponse.class
 com/zerooneblog/controller/PostController.class
 com/zerooneblog/dto/FollowResponse.class
 com/zerooneblog/model/Notification$NotificationType.class
 com/zerooneblog/controller/LikeController.class
 com/zerooneblog/service/Cloudinary.class
+com/zerooneblog/controller/AdminController.class
 com/zerooneblog/service/CloudinaryService.class
 com/zerooneblog/dto/NotificationResponse$FromUser.class
 com/zerooneblog/security/UserPrincipal.class
@@ -47,6 +53,7 @@ com/zerooneblog/repository/PostRepository.class
 com/zerooneblog/dto/LoginRequest.class
 com/zerooneblog/service/NotificationService.class
 com/zerooneblog/controller/AuthController.class
+com/zerooneblog/service/ReportService.class
 com/zerooneblog/config/WebConfig.class
 com/zerooneblog/repository/FollowRepository.class
 com/zerooneblog/controller/FileUploadController.class
@@ -59,4 +66,5 @@ com/zerooneblog/security/WebSecurityConfig.class
 com/zerooneblog/controller/UploadController.class
 com/zerooneblog/model/Role.class
 com/zerooneblog/model/ReportStatus.class
+com/zerooneblog/dto/UserDto.class
 com/zerooneblog/model/Comment.class

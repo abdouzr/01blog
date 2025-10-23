@@ -20,6 +20,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     List<Like> findByUser(User user);
     Long countByPost(Post post);
     boolean existsByUserAndPost(User user, Post post);
+    void deleteByUserAndPost(User user, Post post);
     
     @Query("SELECT l FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId")
     Optional<Like> findByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);

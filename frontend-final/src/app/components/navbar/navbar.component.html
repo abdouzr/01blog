@@ -1,17 +1,21 @@
-<!-- Updated navbar.component.html with emoji buttons -->
 <nav class="navbar">
   <div class="container-fluid">
-    <!-- Left - Brand/Logo -->
     <a class="navbar-brand" routerLink="/feed">
       <i class="bi bi-journal-bookmark-fill"></i> 01Blog
     </a>
     
-    <!-- Center - Search Bar with Dropdown -->
     <app-search-dropdown></app-search-dropdown>
     
-    <!-- Right - User Actions -->
     <div class="navbar-actions">
-      <!-- Notifications with sun/light emoji -->
+      
+      <button class="admin-btn" 
+              *ngIf="authService.isAdmin()" 
+              routerLink="/admin/dashboard"
+              routerLinkActive="active"
+              title="Admin Dashboard">
+        👑
+      </button>
+
       <button class="notification-btn" 
               routerLink="/notifications" 
               routerLinkActive="active"
@@ -22,14 +26,12 @@
         </span>
       </button>
       
-      <!-- Profile with star/sparkle emoji -->
       <button class="profile-btn" 
               (click)="navigateToProfile()"
               title="Profile">
         ✨
       </button>
       
-      <!-- Logout in top right -->
       <button class="logout-btn" 
               (click)="logout()"
               title="Logout">

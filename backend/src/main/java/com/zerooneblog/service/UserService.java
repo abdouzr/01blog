@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zerooneblog.model.User;
 import com.zerooneblog.repository.UserRepository;
@@ -51,28 +52,70 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Add these methods to your existing UserService.java
-// backend/src/main/java/com/zerooneblog/service/UserService.java - Additional methods
+    // User follow/unfollow logic
+    @Transactional
+    public void followUser(User follower, User userToFollow) {
+        follower.getSubscribedTo().add(userToFollow);
+        userRepository.save(follower);
+    }
 
-public void followUser(User follower, User userToFollow) {
-    follower.getSubscribedTo().add(userToFollow);
-    userRepository.save(follower);
-}
+    @Transactional
+    public void unfollowUser(User follower, User userToUnfollow) {
+        follower.getSubscribedTo().remove(userToUnfollow);
+        userRepository.save(follower);
+    }
 
-public void unfollowUser(User follower, User userToUnfollow) {
-    follower.getSubscribedTo().remove(userToUnfollow);
-    userRepository.save(follower);
-}
+    public List<User> getFollowers(User user) {
+        return user.getSubscribers().stream().collect(Collectors.toList());
+    }
 
-public List<User> getFollowers(User user) {
-    return user.getSubscribers().stream().collect(Collectors.toList());
-}
+    public List<User> getFollowing(User user) {
+        return user.getSubscribedTo().stream().collect(Collectors.toList());
+    }
 
-public List<User> getFollowing(User user) {
-    return user.getSubscribedTo().stream().collect(Collectors.toList());
-}
+    public boolean isFollowing(User follower, User target) {
+        return follower.getSubscribedTo().contains(target);
+    }
 
-public boolean isFollowing(User follower, User target) {
-    return follower.getSubscribedTo().contains(target);
-}
+    // --- Admin Action Methods ---
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        System.out.println("Attempting to delete user with ID: " + userId);
+        
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+        
+        userRepository.deleteById(userId);
+        System.out.println("User deleted successfully");
+    }
+
+    @Transactional
+    public void banUser(Long userId) {
+        System.out.println("Attempting to ban user with ID: " + userId);
+        
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+        
+        user.setIsBlocked(true);
+        userRepository.save(user);
+        System.out.println("User banned successfully");
+    }
+    
+    @Transactional
+    public void unbanUser(Long userId) {
+        System.out.println("Attempting to unban user with ID: " + userId);
+        
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+            
+        user.setIsBlocked(false);
+        userRepository.save(user);
+        System.out.println("User unbanned successfully");
+    }
+    
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
 }

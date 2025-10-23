@@ -89,4 +89,12 @@ public class LikeService {
         response.setCreatedAt(like.getCreatedAt());
         return response;
     }
+
+    public void likePost(Post post, User currentUser) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void unlikePost(Post post, User currentUser) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -5,7 +5,8 @@
       <!-- Profile Header -->
       <div class="card mb-4" *ngIf="user">
         <div class="card-body text-center">
-          <img [src]="user.profilePicture || 'assets/default-avatar.png'" 
+          <!-- FIX: Changed user.profilePicture to user.profile_picture -->
+          <img [src]="user.profile_picture || 'assets/default-avatar.png'" 
                alt="{{ user.username }}" 
                class="rounded-circle mb-3" 
                width="120" 
@@ -56,7 +57,7 @@
       </div>
 
       <!-- Loading state for profile -->
-      <div *ngIf="!user" class="text-center py-4">
+      <div *ngIf="!user && isLoading" class="text-center py-4">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading profile...</span>
         </div>

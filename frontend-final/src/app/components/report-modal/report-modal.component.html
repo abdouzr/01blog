@@ -1,0 +1,41 @@
+<div class="modal fade" [id]="modalId" tabindex="-1" [attr.aria-labelledby]="modalId + 'Label'" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" [id]="modalId + 'Label'">
+          Report {{ reportType === 'POST' ? 'Post' : 'User' }} (ID: {{ reportTargetId }})
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <p>Please provide a detailed reason for reporting this content/user. Your report is confidential.</p>
+          
+          <div class="form-group">
+            <label for="reportReason">Reason:</label>
+            <textarea 
+              id="reportReason" 
+              formControlName="reason" 
+              class="form-control" 
+              rows="5"
+              placeholder="e.g., Offensive content, spam, harassment, etc."
+              [class.is-invalid]="reportForm.get('reason')?.invalid && reportForm.get('reason')?.touched">
+            </textarea>
+            <div class="invalid-feedback" *ngIf="reportForm.get('reason')?.invalid && reportForm.get('reason')?.touched">
+              <span *ngIf="reportForm.get('reason')?.errors?.['required']">A reason is required.</span>
+              <span *ngIf="reportForm.get('reason')?.errors?.['minlength']">Please provide at least 10 characters.</span>
+              <span *ngIf="reportForm.get('reason')?.errors?.['maxlength']">Reason must be under 500 characters.</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger" [disabled]="reportForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Submit Report
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

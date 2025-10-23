@@ -1,4 +1,3 @@
-// frontend/src/app/components/search-dropdown/search-dropdown.component.ts
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -54,8 +53,9 @@ import { debounceTime, distinctUntilChanged, switchMap, Subject, of } from 'rxjs
             (click)="selectUser(user)"
             (mouseenter)="highlightedIndex = i">
             
+            <!-- FIX: Changed user.profilePicture to user.profile_picture -->
             <img 
-              [src]="user.profilePicture || 'assets/default-avatar.png'" 
+              [src]="user.profile_picture || 'assets/default-avatar.png'" 
               alt="{{ user.username }}" 
               class="rounded-circle me-2" 
               width="32" 
@@ -76,65 +76,16 @@ import { debounceTime, distinctUntilChanged, switchMap, Subject, of } from 'rxjs
     </div>
   `,
   styles: [`
-    .search-container {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-    }
-    
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6c757d;
-      z-index: 1;
-    }
-    
-    .search-input {
-      width: 100%;
-      padding: 8px 12px 8px 35px;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      background-color: rgba(255, 255, 255, 0.9);
-    }
-    
-    .search-input:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-    }
-    
-    .search-dropdown {
-      border: 1px solid #ddd;
-      border-top: none;
-    }
-    
-    .search-result-item {
-      transition: background-color 0.2s;
-      cursor: pointer;
-      border-bottom: 1px solid #f8f9fa;
-    }
-    
-    .search-result-item:hover,
-    .search-result-item.highlighted {
-      background-color: #f8f9fa;
-    }
-    
-    .search-result-item:last-child {
-      border-bottom: none;
-    }
-    
-    .cursor-pointer {
-      cursor: pointer;
-    }
-    
-    @media (max-width: 768px) {
-      .search-container {
-        max-width: 250px;
-      }
-    }
+    .search-container { position: relative; width: 100%; max-width: 400px; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d; z-index: 1; }
+    .search-input { width: 100%; padding: 8px 12px 8px 35px; border: 1px solid #ddd; border-radius: 20px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background-color: rgba(255, 255, 255, 0.9); }
+    .search-input:focus { border-color: #0d6efd; box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25); }
+    .search-dropdown { border: 1px solid #ddd; border-top: none; }
+    .search-result-item { transition: background-color 0.2s; cursor: pointer; border-bottom: 1px solid #f8f9fa; }
+    .search-result-item:hover, .search-result-item.highlighted { background-color: #f8f9fa; }
+    .search-result-item:last-child { border-bottom: none; }
+    .cursor-pointer { cursor: pointer; }
+    @media (max-width: 768px) { .search-container { max-width: 250px; } }
   `]
 })
 export class SearchDropdownComponent {
@@ -151,7 +102,6 @@ export class SearchDropdownComponent {
     private router: Router,
     private elementRef: ElementRef
   ) {
-    // Set up debounced search
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -221,7 +171,6 @@ export class SearchDropdownComponent {
     if (this.highlightedIndex >= 0 && this.highlightedIndex < this.searchResults.length) {
       this.selectUser(this.searchResults[this.highlightedIndex]);
     } else if (this.searchQuery.trim()) {
-      // Navigate to search results page if no specific user is highlighted
       this.router.navigate(['/search'], { 
         queryParams: { q: this.searchQuery.trim() } 
       });

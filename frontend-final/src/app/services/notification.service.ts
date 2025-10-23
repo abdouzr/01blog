@@ -15,7 +15,7 @@ export interface Notification {
   message: string;
   isRead: boolean;
   createdAt: string;
-  type: 'like' | 'comment' | 'follow';
+  type: 'post';
   relatedPostId?: number;
   fromUser: NotificationUser;
 }
@@ -33,21 +33,37 @@ export class NotificationService {
   }
 
   getNotifications(): Observable<Notification[]> {
-    return this.http.get<Notification[]>(this.apiUrl);
+    console.log('📬 Fetching notifications...');
+    return this.http.get<Notification[]>(this.apiUrl).pipe(
+      tap(notifications => console.log('✅ Received notifications:', notifications.length))
+    );
   }
 
   getUnreadNotifications(): Observable<Notification[]> {
-    return this.http.get<Notification[]>(`${this.apiUrl}/unread`);
+    console.log('📬 Fetching unread notifications...');
+    return this.http.get<Notification[]>(`${this.apiUrl}/unread`).pipe(
+      tap(notifications => console.log('✅ Received unread notifications:', notifications.length))
+    );
   }
 
   getUnreadCount(): Observable<number> {
+    console.log('🔢 Fetching unread count...');
     return this.http.get<number>(`${this.apiUrl}/count`).pipe(
-      tap(count => this.unreadCountSubject.next(count))
+      tap(count => {
+        console.log('✅ Unread count:', count);
+        this.unreadCountSubject.next(count);
+      })
     );
   }
 
   markAsRead(notificationId: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${notificationId}/read`, {}).pipe(
+      tap(() => this.loadUnreadCount())
+    );
+  }
+
+  markAsUnread(notificationId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${notificationId}/unread`, {}).pipe(
       tap(() => this.loadUnreadCount())
     );
   }
@@ -62,6 +78,7 @@ export class NotificationService {
     this.getUnreadCount().subscribe();
   }
 
+  // Method to refresh the unread count (call this after actions that might create notifications)
   refreshUnreadCount(): void {
     this.loadUnreadCount();
   }

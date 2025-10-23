@@ -1,4 +1,3 @@
-// frontend/src/app/components/profile/profile.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService, Post } from '../../services/post.service';
@@ -39,7 +38,6 @@ export class ProfileComponent implements OnInit {
       this.loadUserProfile();
       this.loadUserPosts();
       
-      // Check if this is the current user's profile
       const currentUser = this.authService.currentUserValue;
       this.isOwnProfile = currentUser ? currentUser.id === this.userId : false;
     });
@@ -49,21 +47,24 @@ export class ProfileComponent implements OnInit {
     this.userService.getUserById(this.userId).subscribe({
       next: (user) => {
         this.user = user;
-        this.isFollowing = user.isFollowedByCurrentUser;
+        // FIX: Safely handle the 'boolean | undefined' type error by defaulting to false
+        this.isFollowing = user.isFollowedByCurrentUser ?? false;
       },
       error: (error) => {
         this.snackBar.open('Error loading user profile', 'Close', { duration: 3000 });
-        // Fallback to mock data if API fails
+        // FIX: Fallback object now uses the correct property names
         this.user = {
           id: this.userId,
           username: `user${this.userId}`,
           email: `user${this.userId}@example.com`,
           bio: 'This user hasn\'t added a bio yet.',
-          profilePicture: '',
+          profile_picture: '', // Was profilePicture
           createdAt: new Date().toISOString(),
           followerCount: 0,
           followingCount: 0,
-          isFollowedByCurrentUser: false
+          isFollowedByCurrentUser: false,
+          is_blocked: false,
+          roles: []
         };
       }
     });
@@ -87,72 +88,47 @@ export class ProfileComponent implements OnInit {
     if (!this.user || this.isProcessing) return;
 
     this.isProcessing = true;
+    const action = this.isFollowing 
+      ? this.userService.unfollowUser(this.user.id) 
+      : this.userService.followUser(this.user.id);
 
-    if (this.isFollowing) {
-      this.userService.unfollowUser(this.user.id).subscribe({
-        next: () => {
-          this.isFollowing = false;
-          this.user!.isFollowedByCurrentUser = false;
-          this.user!.followerCount--;
-          this.isProcessing = false;
-          this.snackBar.open(`Unfollowed ${this.user!.username}`, 'Close', { duration: 2000 });
-        },
-        error: (error) => {
-          this.snackBar.open('Error unfollowing user', 'Close', { duration: 3000 });
-          this.isProcessing = false;
+    action.subscribe({
+      next: () => {
+        this.isFollowing = !this.isFollowing;
+        if (this.user) {
+          this.user.isFollowedByCurrentUser = this.isFollowing;
+          this.user.followerCount += this.isFollowing ? 1 : -1;
         }
-      });
-    } else {
-      this.userService.followUser(this.user.id).subscribe({
-        next: () => {
-          this.isFollowing = true;
-          this.user!.isFollowedByCurrentUser = true;
-          this.user!.followerCount++;
-          this.isProcessing = false;
-          this.snackBar.open(`Following ${this.user!.username}`, 'Close', { duration: 2000 });
-        },
-        error: (error) => {
-          this.snackBar.open('Error following user', 'Close', { duration: 3000 });
-          this.isProcessing = false;
-        }
-      });
-    }
+        this.snackBar.open(this.isFollowing ? `Following ${this.user?.username}` : `Unfollowed ${this.user?.username}`, 'Close', { duration: 2000 });
+        this.isProcessing = false;
+      },
+      error: (err) => {
+        this.snackBar.open('Action failed', 'Close', { duration: 3000 });
+        this.isProcessing = false;
+      }
+    });
   }
 
   reportUser(): void {
     if (!this.user) return;
-
-    // Simple confirmation dialog
     if (confirm(`Are you sure you want to report ${this.user.username}?`)) {
-      // For now, just show a message. You can implement actual reporting later
       this.snackBar.open('User reported. Thank you for keeping our community safe.', 'Close', { duration: 4000 });
-      
-      // TODO: Implement actual reporting functionality
-      // this.reportService.reportUser(this.user.id, reason).subscribe(...)
     }
   }
 
   handleLike(post: Post): void {
-    if (post.likedByCurrentUser) {
-      this.postService.unlikePost(post.id).subscribe({
-        next: () => {
-          post.likedByCurrentUser = false;
-          post.likeCount--;
-        },
-        error: (error) => {
-          this.snackBar.open('Error unliking post', 'Close', { duration: 3000 });
-        }
-      });
-    } else {
-      this.postService.likePost(post.id).subscribe({
-        next: () => {
-          post.likedByCurrentUser = true;
-          post.likeCount++;
-        },
-        error: (error) => {
-          this.snackBar.open('Error liking post', 'Close', { duration: 3000 });
-        }
-      });
-    }
+    const action = post.likedByCurrentUser 
+      ? this.postService.unlikePost(post.id) 
+      : this.postService.likePost(post.id);
+
+    action.subscribe({
+      next: () => {
+        post.likedByCurrentUser = !post.likedByCurrentUser;
+        post.likeCount += post.likedByCurrentUser ? 1 : -1;
+      },
+      error: (err) => {
+        this.snackBar.open('Error updating like status', 'Close', { duration: 3000 });
+      }
+    });
   }
 }

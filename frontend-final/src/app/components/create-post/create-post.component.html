@@ -1,95 +1,89 @@
-<!-- Enhanced Create Post Component HTML with Beautiful Aesthetics -->
-<div class="create-post-container">
-  <div class="container mt-4">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-7">
-        <div class="card">
-          <div class="card-body">
-            <h2 class="card-title">✨ Share Your Journey ✨</h2>
-            
-            <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-              <!-- Content Input -->
-              <div class="form-group mb-4">
-                <label for="content" class="form-label">What wisdom would you like to share?</label>
-                <textarea class="form-control" 
-                          id="content" 
-                          formControlName="content" 
-                          rows="6" 
-                          placeholder="Share your learning experience, insights, or thoughts that might inspire others on their journey..."
-                          [class.is-invalid]="postForm.get('content')?.invalid && postForm.get('content')?.touched">
-                </textarea>
-                <div class="invalid-feedback" *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched">
-                  Your thoughts are valuable - please share something with the community
-                </div>
-              </div>
-              
-              <!-- Media Upload -->
-              <div class="form-group mb-4">
-                <label for="media" class="form-label">Illuminate with Visuals (Optional)</label>
-                <input type="file" 
-                       class="form-control" 
-                       id="media" 
-                       (change)="onFileSelected($event)" 
-                       accept="image/*,video/*">
-                <div class="form-text">
-                  ◇ Supported formats: Images (JPEG, PNG, GIF) and Videos (MP4, WebM) ◇<br>
-                  <em>Choose visuals that complement your story</em>
-                </div>
-              </div>
-              
-              <!-- Enhanced Media Preview -->
-              <div class="media-preview" *ngIf="previewUrl">
-                <h6>✧ Preview Your Creation ✧</h6>
-                
-                <div class="text-center">
-                  <!-- Image Preview -->
-                  <div *ngIf="isImageFile()">
-                    <img [src]="previewUrl" 
-                         alt="Your shared image" 
-                         class="img-fluid" 
-                         style="max-height: 350px; max-width: 100%;">
-                  </div>
-                  
-                  <!-- Video Preview -->
-                  <div *ngIf="isVideoFile()">
-                    <video controls 
-                           class="img-fluid" 
-                           style="max-height: 350px; max-width: 100%;"
-                           preload="metadata">
-                      <source [src]="previewUrl" [type]="selectedFile?.type">
-                      Your browser does not support this video format.
-                    </video>
-                  </div>
-                  
-                  <div class="mt-4">
-                    <button type="button" 
-                            class="btn btn-danger btn-sm" 
-                            (click)="removeMedia()">
-                      <i class="bi bi-trash"></i> Remove Media
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Action Buttons -->
-              <div class="d-flex gap-2 justify-content-center">
-                <button type="submit" 
-                        class="btn btn-primary" 
-                        [disabled]="postForm.invalid || isLoading">
-                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
-                  <i class="bi bi-send" *ngIf="!isLoading"></i>
-                  {{ isUploading ? 'Uploading Media...' : (isLoading ? 'Sharing Your Light...' : 'Share Your Journey') }}
-                </button>
-                
-                <button type="button" 
-                        class="btn btn-secondary" 
-                        routerLink="/feed">
-                  <i class="bi bi-arrow-left"></i> 
-                  Return to Feed
+<!-- frontend/src/app/components/create-post/create-post.component.html -->
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="mb-0">Create New Post</h2>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="createPost()" #postForm="ngForm">
+            <!-- Content Textarea -->
+            <div class="mb-3">
+              <label for="content" class="form-label">What's on your mind?</label>
+              <textarea 
+                class="form-control" 
+                id="content" 
+                rows="5" 
+                [(ngModel)]="content" 
+                name="content"
+                placeholder="Share your thoughts..."
+                [disabled]="isSubmitting"></textarea>
+            </div>
+
+            <!-- File Upload -->
+            <div class="mb-3">
+              <label for="fileUpload" class="form-label">Upload Image or Video (Optional)</label>
+              <input 
+                type="file" 
+                class="form-control" 
+                id="fileUpload" 
+                (change)="onFileSelected($event)"
+                accept="image/*,video/*"
+                [disabled]="isSubmitting">
+            </div>
+
+            <!-- File Preview -->
+            <div *ngIf="previewUrl" class="mb-3">
+              <div class="position-relative">
+                <img 
+                  *ngIf="selectedFile && selectedFile.type.startsWith('image')" 
+                  [src]="previewUrl" 
+                  alt="Preview" 
+                  class="img-fluid rounded"
+                  style="max-height: 300px;">
+                <video 
+                  *ngIf="selectedFile && selectedFile.type.startsWith('video')" 
+                  [src]="previewUrl" 
+                  controls 
+                  class="img-fluid rounded"
+                  style="max-height: 300px;"></video>
+                <button 
+                  type="button" 
+                  class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                  (click)="removeFile()"
+                  [disabled]="isSubmitting">
+                  <i class="bi bi-x-circle"></i> Remove
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+
+            <!-- Upload Progress -->
+            <div *ngIf="isUploading" class="mb-3">
+              <div class="alert alert-info">
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Uploading file...
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between">
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="cancel()"
+                [disabled]="isSubmitting">
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                [disabled]="isSubmitting || (!content.trim() && !selectedFile)">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                {{ isSubmitting ? 'Creating...' : 'Create Post' }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

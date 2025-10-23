@@ -10,8 +10,8 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-   standalone: true, // ← Add this
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule], // ← Add imports
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -37,9 +37,23 @@ export class LoginComponent {
       const { username, password } = this.loginForm.value;
       
       this.authService.login(username, password).subscribe({
-        next: () => {
-          this.router.navigate(['/feed']);
+        next: (response) => { // Capture the login response
           this.isLoading = false;
+          
+          this.snackBar.open(`Welcome, ${response.username}!`, 'Close', { 
+            duration: 3000 
+          });
+
+          // ===================================================
+          // === THIS IS THE FIX ===
+          // Now that login is done, authService.isAdmin() will work.
+          // We check the role and navigate to the correct page.
+          // ===================================================
+          if (this.authService.isAdmin()) {
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            this.router.navigate(['/feed']);
+          }
         },
         error: (error) => {
           this.snackBar.open('Login failed. Please check your credentials.', 'Close', {

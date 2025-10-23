@@ -46,7 +46,7 @@ public class Notification {
     private Post relatedPost;
     
     public enum NotificationType {
-        LIKE, COMMENT, FOLLOW
+        LIKE, COMMENT, FOLLOW, POST
     }
     
     @PrePersist

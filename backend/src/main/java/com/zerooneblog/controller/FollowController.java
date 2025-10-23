@@ -1,4 +1,4 @@
-// backend/src/main/java/com/zerooneblog/controller/FollowController.java
+// Fixed FollowController.java - Remove notification call
 package com.zerooneblog.controller;
 
 import java.util.List;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zerooneblog.dto.FollowResponse;
 import com.zerooneblog.model.User;
 import com.zerooneblog.service.FollowService;
-import com.zerooneblog.service.NotificationService;
 import com.zerooneblog.service.UserService;
 
 @RestController
@@ -31,8 +30,7 @@ public class FollowController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private NotificationService notificationService;
+    // Removed NotificationService injection - we only notify on posts now
 
     @PostMapping("/follow/{userId}")
     public ResponseEntity<?> followUser(@PathVariable Long userId) {
@@ -46,8 +44,7 @@ public class FollowController {
 
             followService.followUser(currentUser.getId(), userId);
             
-            // Create notification for the followed user
-            notificationService.createFollowNotification(currentUser, userToFollow.get());
+            // Removed notification creation - notifications only for posts from followed users
             
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
@@ -117,3 +114,4 @@ public class FollowController {
         }
     }
 }
+

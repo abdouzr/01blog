@@ -65,12 +65,13 @@ public class WebSecurityConfig {
                     .requestMatchers("/api/public/**").permitAll()
                     .requestMatchers("/api/upload/**").permitAll()
                     .requestMatchers("/uploads/**").permitAll()
-                    .requestMatchers("/api/test/**").permitAll() // Add this line
+                    .requestMatchers("/api/test/**").permitAll()
                     
                     // User-specific endpoints - require authentication
                     .requestMatchers("/api/posts/feed").authenticated()
                     .requestMatchers("/api/posts/user/**").authenticated()
                     .requestMatchers("/api/posts/**").authenticated()
+                    .requestMatchers("/api/reports/**").authenticated()
                     
                     // Admin endpoints
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
