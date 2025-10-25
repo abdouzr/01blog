@@ -142,8 +142,7 @@
               <tbody>
                 <tr *ngFor="let report of reports">
                   <td>{{ report.id }}</td>
-                  <td>{{ report.reporter?.username || 'Unknown' }}</td>
-                  <td><span class="badge bg-info">{{ report.targetType }}</span></td>
+                  <td>{{ report.reporter.username || 'Unknown' }}</td>                  <td><span class="badge bg-info">{{ report.targetType }}</span></td>
                   <td>{{ report.targetId }}</td>
                   <td>{{ report.reason | slice:0:50 }}{{ report.reason.length > 50 ? '...' : '' }}</td>
                   <td>

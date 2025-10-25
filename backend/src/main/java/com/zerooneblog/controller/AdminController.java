@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,7 @@ import com.zerooneblog.service.UserService;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "*", maxAge = 3600)
+// @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
@@ -101,15 +100,18 @@ public class AdminController {
     // --- Post Management ---
 
     @GetMapping("/posts")
-    public ResponseEntity<List<Post>> getAllPosts() {
-        try {
-            List<Post> posts = postService.getAllPosts(); 
-            return ResponseEntity.ok(posts);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).build();
-        }
+public ResponseEntity<List<Post>> getAllPosts() {
+    try {
+        System.out.println("Admin requesting all posts...");
+        List<Post> posts = postService.getAllPosts();
+        System.out.println("Found " + posts.size() + " posts");
+        return ResponseEntity.ok(posts);
+    } catch (Exception e) {
+        System.err.println("Error loading posts: " + e.getMessage());
+        e.printStackTrace();
+        return ResponseEntity.status(500).build();
     }
+}
 
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
@@ -130,15 +132,18 @@ public class AdminController {
     // --- Report Management ---
     
     @GetMapping("/reports")
-    public ResponseEntity<List<Report>> getAllNewReports() {
-        try {
-            List<Report> reports = reportService.getAllNewReports();
-            return ResponseEntity.ok(reports);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).build();
-        }
+public ResponseEntity<List<Report>> getAllNewReports() {
+    try {
+        System.out.println("Admin requesting all reports...");
+        List<Report> reports = reportService.getAllNewReports();
+        System.out.println("Found " + reports.size() + " reports");
+        return ResponseEntity.ok(reports);
+    } catch (Exception e) {
+        System.err.println("Error loading reports: " + e.getMessage());
+        e.printStackTrace();
+        return ResponseEntity.status(500).build();
     }
+}
     
     @PostMapping("/reports/{id}/resolve")
     public ResponseEntity<?> resolveReport(@PathVariable Long id) {

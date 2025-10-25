@@ -11,12 +11,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zerooneblog.model.User;
+import com.zerooneblog.repository.CommentRepository;
+import com.zerooneblog.repository.LikeRepository;
+import com.zerooneblog.repository.PostRepository;
+import com.zerooneblog.repository.ReportRepository;
 import com.zerooneblog.repository.UserRepository;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private PostRepository postRepository;
+    
+    @Autowired
+    private LikeRepository likeRepository;
+    
+    @Autowired
+    private CommentRepository commentRepository;
+    
+    @Autowired
+    private ReportRepository reportRepository;
 
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -52,7 +68,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // User follow/unfollow logic
     @Transactional
     public void followUser(User follower, User userToFollow) {
         follower.getSubscribedTo().add(userToFollow);
@@ -83,12 +98,32 @@ public class UserService {
     public void deleteUser(Long userId) {
         System.out.println("Attempting to delete user with ID: " + userId);
         
-        if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("User not found with id: " + userId);
-        }
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
         
-        userRepository.deleteById(userId);
-        System.out.println("User deleted successfully");
+        try {
+            // Delete all related data in correct order to avoid foreign key constraints
+            System.out.println("Deleting reports by user...");
+            reportRepository.deleteByReporter(user);
+            
+            System.out.println("Deleting comments by user...");
+            commentRepository.deleteByUser(user);
+            
+            System.out.println("Deleting likes by user...");
+            likeRepository.deleteByUser(user);
+            
+            System.out.println("Deleting posts by user...");
+            postRepository.deleteByAuthor(user);
+            
+            System.out.println("Deleting user...");
+            userRepository.delete(user);
+            
+            System.out.println("User and all related data deleted successfully");
+        } catch (Exception e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete user: " + e.getMessage(), e);
+        }
     }
 
     @Transactional

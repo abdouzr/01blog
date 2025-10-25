@@ -1,8 +1,11 @@
+// FIXED FILE: /com/zerooneblog/model/User.java
 package com.zerooneblog.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +26,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ... (no changes to id, username, email, password, role, bio, profilePicture, isBlocked, createdAt) ...
     @Column(length = 20, unique = true, nullable = false)
     private String username;
 
@@ -33,7 +37,7 @@ public class User {
     private String password;
 
     @Column(name = "role", length = 20, nullable = false)
-    private String role = "ROLE_USER"; // Aligns with DB schema: simple String role
+    private String role = "ROLE_USER";
 
     @Column(columnDefinition = "TEXT")
     private String bio;
@@ -47,7 +51,8 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Relationships based on user_subscriptions table (Followers/Following)
+
+    // --- FIXED: Added @JsonIgnore to prevent infinite loops ---
     // Users who subscribe to this user (Followers)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -55,6 +60,7 @@ public class User {
         joinColumns = @JoinColumn(name = "subscribed_to_id"),
         inverseJoinColumns = @JoinColumn(name = "subscriber_id")
     )
+    @JsonIgnore // <-- This prevents the loop
     private Set<User> subscribers = new HashSet<>();
 
     // Users this user subscribes to (Following)
@@ -64,19 +70,20 @@ public class User {
         joinColumns = @JoinColumn(name = "subscriber_id"),
         inverseJoinColumns = @JoinColumn(name = "subscribed_to_id")
     )
+    @JsonIgnore // <-- This prevents the loop
     private Set<User> subscribedTo = new HashSet<>();
     
-    // Constructors
+    // --- Constructors (No Changes) ---
     public User() {}
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = "ROLE_USER"; // Explicit default role
+        this.role = "ROLE_USER";
     }
 
-    // --- Getters and Setters ---
+    // --- Getters and Setters (No Changes) ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
@@ -85,11 +92,8 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-    
-    // FIXED: Returns simple String role
     public String getRole() { return role; } 
     public void setRole(String role) { this.role = role; }
-    
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }
     public String getProfilePicture() { return profilePicture; }

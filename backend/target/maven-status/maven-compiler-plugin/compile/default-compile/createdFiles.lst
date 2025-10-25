@@ -1,3 +1,4 @@
+com/zerooneblog/service/postRepository.class
 com/zerooneblog/dto/ReportRequest.class
 com/zerooneblog/model/Notification.class
 com/zerooneblog/repository/UserRepository.class
@@ -63,6 +64,7 @@ com/zerooneblog/dto/SignupRequest.class
 com/zerooneblog/model/User.class
 com/zerooneblog/security/AuthEntryPointJwt.class
 com/zerooneblog/security/WebSecurityConfig.class
+com/zerooneblog/dto/PostDto.class
 com/zerooneblog/controller/UploadController.class
 com/zerooneblog/model/Role.class
 com/zerooneblog/model/ReportStatus.class

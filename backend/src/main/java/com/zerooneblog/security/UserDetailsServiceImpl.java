@@ -12,7 +12,6 @@ import com.zerooneblog.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     @Autowired
     UserRepository userRepository;
 
@@ -22,7 +21,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
-        // FIX: Changed 'create' to 'build' to match the method signature in UserPrincipal.java
-        return UserPrincipal.build(user); 
+        // CHECK IF USER IS BANNED
+        if (user.getIsBlocked() != null && user.getIsBlocked()) {
+            throw new UsernameNotFoundException("User account is banned");
+        }
+
+        // RETURN UserPrincipal instead of org.springframework.security.core.userdetails.User
+        return UserPrincipal.build(user);
     }
 }

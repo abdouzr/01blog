@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface UserDto {
@@ -42,9 +42,17 @@ export class AdminService {
     });
   }
 
-  getAllPosts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/posts`);
-  }
+getAllPosts(): Observable<any[]> {
+  const token = localStorage.getItem('token'); // Or from a cookie/auth service
+
+  // Properly create HttpHeaders
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+  return this.http.get<any[]>(`http://localhost:8081/api/posts/feed`, { headers });
+}
+
 
   deletePost(postId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/posts/${postId}`, { 

@@ -1,13 +1,16 @@
-// backend/src/main/java/com/zerooneblog/repository/PostRepository.java
 package com.zerooneblog.repository;
 
-import com.zerooneblog.model.Post;
-import com.zerooneblog.model.User;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.zerooneblog.model.Post;
+import com.zerooneblog.model.User;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -18,4 +21,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     
     @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
     List<Post> findAllOrderByCreatedAtDesc();
+    
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Post p WHERE p.author = :author")
+    void deleteByAuthor(@Param("author") User author);
 }

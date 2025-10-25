@@ -1,5 +1,4 @@
 <div class="post-card">
-  <!-- Post Header -->
   <div class="post-header">
     <img [src]="post.authorProfilePicture || 'assets/default-avatar.png'" 
          alt="{{ post.authorUsername }}" 
@@ -11,7 +10,6 @@
       <small class="post-timestamp">{{ formatDate(post.createdAt) }}</small>
     </div>
 
-    <!-- Delete Button (Only visible to the post owner or Admin - assuming Admin check is done outside) -->
     <button *ngIf="post.authorId === currentUserId" 
             class="btn btn-sm btn-outline-danger ms-auto"
             (click)="onDeletePost()">
@@ -19,13 +17,10 @@
     </button>
   </div>
   
-  <!-- Post Content -->
   <div class="post-content">
     <p class="post-text">{{ post.content }}</p>
     
-    <!-- Post Media -->
     <div *ngIf="post.mediaUrl" class="post-media">
-      <!-- Image -->
       <img *ngIf="isImage(post.mediaType)" 
            [src]="getMediaUrl(post.mediaUrl)" 
            alt="Post media" 
@@ -33,7 +28,6 @@
            (error)="onImageError($event)"
            loading="lazy">
       
-      <!-- Video -->
       <video *ngIf="isVideo(post.mediaType)" 
              controls 
              class="post-video"
@@ -45,7 +39,6 @@
     </div>
   </div>
   
-  <!-- Post Actions -->
   <div class="post-actions">
     <button class="action-btn" 
             [class.liked]="post.likedByCurrentUser"
@@ -63,14 +56,12 @@
       <span>{{ post.commentCount }} {{ post.commentCount === 1 ? 'Comment' : 'Comments' }}</span>
     </button>
 
-    <!-- Report Button: Fixed data-bs-target binding -->
     <button class="action-btn ms-auto" data-bs-toggle="modal" [attr.data-bs-target]="'#reportModal-' + post.id">
       <i class="bi bi-flag"></i>
       <span>Report</span>
     </button>
   </div>
   
-  <!-- Comments Section -->
   <div *ngIf="showComments" class="post-comments">
     <app-comments 
       [postId]="post.id"
@@ -78,7 +69,6 @@
     </app-comments>
   </div>
 
-  <!-- Report Modal for Post -->
   <app-report-modal 
     [reportTargetId]="post.id" 
     reportType="POST" 

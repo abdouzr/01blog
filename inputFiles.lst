@@ -51,14 +51,12 @@
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/UserDetailsServiceImpl.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/CommentService.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/NotificationRepository.java
-/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/PostDto.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/CloudinaryService.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/NotificationService.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Like.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/controller/ReportController.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/AuthEntryPointJwt.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/config/CloudinaryConfig.java
-/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/postRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/CommentResponse.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/controller/FileUploadController.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Notification.java

@@ -24,7 +24,7 @@ public class PostService {
     private UserService userService;
 
     public List<Post> getAllPosts() {
-        return postRepository.findAllOrderByCreatedAtDesc();
+    return postRepository.findAllOrderByCreatedAtDesc();
     }
 
     public List<Post> getPostsByUser(User user) {
