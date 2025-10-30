@@ -1,31 +1,58 @@
-/* Feed Component - Sun Theme CSS */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+/* Feed Component - Optimized Sun Theme CSS */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* ===================================
+   COLOR VARIABLES
+   =================================== */
 :root {
-  --color-gold: #FFD700;
-  --color-amber: #FFA500;
-  --color-deep-orange: #FF6B35;
-  --color-copper: #B87333;
-  --color-cream: #FFF8DC;
-  --color-dark-gold: #B8860B;
-  --color-sunset: #FF8C42;
-  --color-mystic: #8B4513;
-  --color-warm-brown: #A0522D;
-  --color-celestial-blue: #4A90E2;
-  --color-mountain: #2C5F2D;
-  --color-card-border: #8B4513;
-  --color-antique: #D2B48C;
+  /* Primary Sun Colors */
+  --sun-gold: #FFD700;
+  --sun-amber: #FFA500;
+  --sun-orange: #FF8C42;
+  --sun-deep-orange: #FF6B35;
+  
+  /* Supporting Colors */
+  --sun-cream: #FFF8DC;
+  --sun-light: #FFFAF0;
+  --sun-warm: #FFE4B5;
+  --sun-bronze: #CD7F32;
+  --sun-copper: #B87333;
+  
+  /* Dark Accents */
+  --sun-brown: #8B4513;
+  --sun-dark-brown: #654321;
+  --sun-text: #2E1A05;
+  --sun-text-light: #5D4037;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.1);
+  --shadow-md: 0 4px 16px rgba(139, 69, 19, 0.15);
+  --shadow-lg: 0 8px 32px rgba(139, 69, 19, 0.2);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
 }
 
+/* ===================================
+   FEED CONTAINER
+   =================================== */
 .feed-container {
-  background: linear-gradient(135deg, #FFF4E6 0%, #FFEDD5 50%, #FDE68A 100%);
+  background: linear-gradient(135deg, 
+    #FFFBF0 0%, 
+    #FFF4E0 25%, 
+    #FFE8CC 50%, 
+    #FFDDB3 75%, 
+    #FFD699 100%
+  );
   min-height: 100vh;
-  padding: 2rem 0;
+  padding: 2.5rem 0;
   position: relative;
-  overflow: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Majestic sun rays background */
+/* Decorative Sun Rays Background */
 .feed-container::before {
   content: '';
   position: absolute;
@@ -34,95 +61,101 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(255, 140, 66, 0.08) 0%, transparent 60%),
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="celestial" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(255,215,0,0.3)"/><circle cx="30" cy="30" r="1" fill="rgba(255,165,0,0.2)"/><path d="M20 15 L22 18 L20 21 L18 18 Z" fill="rgba(255,215,0,0.4)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23celestial)"/></svg>');
+    radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(255, 140, 66, 0.1) 0%, transparent 60%);
   pointer-events: none;
-  animation: celestialDrift 25s ease-in-out infinite;
+  animation: sunDrift 30s ease-in-out infinite alternate;
 }
 
-@keyframes celestialDrift {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg); 
-    opacity: 0.4; 
-  }
-  50% { 
-    transform: translateY(-10px) rotate(2deg); 
-    opacity: 0.7; 
-  }
+@keyframes sunDrift {
+  from { opacity: 0.6; transform: translateY(0); }
+  to { opacity: 0.9; transform: translateY(-20px); }
 }
 
+/* ===================================
+   FEED HEADER
+   =================================== */
 .feed-header {
-  background: rgba(255, 248, 220, 0.98);
-  backdrop-filter: blur(20px);
-  border-radius: 30px;
-  padding: 3rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 248, 220, 0.95) 0%, 
+    rgba(255, 235, 180, 0.95) 100%
+  );
+  border-radius: 24px;
+  padding: 2.5rem;
   margin-bottom: 2.5rem;
-  box-shadow: 
-    0 25px 50px rgba(139, 69, 19, 0.2),
-    0 0 0 3px var(--color-card-border),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  border: 2px solid var(--color-antique);
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--sun-bronze);
+  text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-/* Celestial header decoration */
+/* Top Decorative Border */
 .feed-header::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 6px;
+  height: 5px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    var(--color-amber) 20%, 
-    var(--color-gold) 40%, 
-    var(--color-sunset) 60%, 
-    var(--color-amber) 80%, 
+    var(--sun-amber) 20%, 
+    var(--sun-gold) 40%, 
+    var(--sun-orange) 60%, 
+    var(--sun-amber) 80%, 
     transparent 100%
   );
-  animation: auraBreathe 4s ease-in-out infinite;
 }
 
-@keyframes auraBreathe {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
+/* Star Decoration */
 .feed-header::after {
-  content: '✧ ✦ ✧';
+  content: '✦';
   position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--color-amber);
-  font-size: 1.5rem;
-  animation: starFloat 6s ease-in-out infinite;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  color: var(--sun-amber);
+  animation: starTwinkle 3s ease-in-out infinite;
 }
 
-@keyframes starFloat {
-  0%, 100% { 
-    transform: translateX(-50%) translateY(0px); 
-    opacity: 0.7; 
-  }
-  50% { 
-    transform: translateX(-50%) translateY(-8px); 
-    opacity: 1; 
-  }
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
 }
 
+/* ===================================
+   FEED TITLE
+   =================================== */
+.feed-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 2.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, 
+    var(--sun-gold) 0%, 
+    var(--sun-amber) 30%, 
+    var(--sun-orange) 70%, 
+    var(--sun-deep-orange) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.1);
+  position: relative;
+}
 
 .feed-title::before {
   content: '☀';
   position: absolute;
-  left: -60px;
+  left: -55px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 2rem;
-  color: var(--color-amber);
-  animation: sunRotate 8s linear infinite;
+  font-size: 2.5rem;
+  color: var(--sun-amber);
+  -webkit-text-fill-color: var(--sun-amber);
+  animation: sunRotate 10s linear infinite;
 }
 
 @keyframes sunRotate {
@@ -130,56 +163,69 @@
   to { transform: translateY(-50%) rotate(360deg); }
 }
 
-.create-post-btn {
-  background: linear-gradient(135deg, 
-    var(--color-gold) 0%, 
-    var(--color-amber) 30%, 
-    var(--color-sunset) 70%, 
-    var(--color-deep-orange) 100%
-  );
-  border: 3px solid var(--color-dark-gold);
-  border-radius: 60px;
-  padding: 1.2rem 2.5rem;
-  font-weight: 800;
+/* ===================================
+   MUTED TEXT
+   =================================== */
+.text-muted {
+  color: var(--sun-text-light) !important;
   font-size: 1.2rem;
+  font-weight: 500;
   font-family: 'Cinzel', serif;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ===================================
+   CREATE POST BUTTON
+   =================================== */
+.create-post-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, 
+    var(--sun-gold) 0%, 
+    var(--sun-amber) 50%, 
+    var(--sun-orange) 100%
+  );
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  font-size: 1.1rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  transition: all 0.5s ease;
+  text-decoration: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  border: 3px solid var(--sun-bronze);
   box-shadow: 
-    0 12px 30px rgba(255, 165, 0, 0.4),
-    0 0 0 0 rgba(255, 215, 0, 0.3),
+    0 8px 24px rgba(255, 165, 0, 0.4),
     inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  color: var(--color-cream);
-  text-shadow: 0 2px 4px rgba(7, 4, 1, 0.5);
+  margin: 1.5rem auto;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .create-post-btn::before {
   content: '';
   position: absolute;
-  top: -100%;
-  left: -100%;
-  width: 300%;
-  height: 300%;
-  background: radial-gradient(circle, 
-    rgba(255, 255, 255, 0.3) 0%, 
-    transparent 70%
-  );
-  transition: all 0.8s ease;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
   opacity: 0;
+  transition: opacity var(--transition-slow);
 }
 
 .create-post-btn::after {
   content: '✧';
   position: absolute;
-  right: 15px;
+  right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.2rem;
-  color: var(--color-cream);
-  animation: sparkle 3s ease-in-out infinite;
+  font-size: 1.3rem;
+  animation: sparkle 2.5s ease-in-out infinite;
 }
 
 @keyframes sparkle {
@@ -187,23 +233,23 @@
   50% { opacity: 1; transform: translateY(-50%) scale(1.3); }
 }
 
+.create-post-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 
+    0 12px 32px rgba(255, 165, 0, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  border-color: var(--sun-amber);
+}
+
 .create-post-btn:hover::before {
   opacity: 1;
-  animation: majesticShimmer 1.5s ease-in-out;
+  animation: shimmer 1.5s ease-in-out;
 }
 
-.create-post-btn:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 
-    0 20px 40px rgba(255, 165, 0, 0.6),
-    0 0 0 15px rgba(255, 215, 0, 0.1),
-    inset 0 2px 0 rgba(255, 255, 255, 0.4);
-  border-color: var(--color-amber);
-}
-
-@keyframes majesticShimmer {
-  0% { transform: translateX(-300%) translateY(-300%); }
-  100% { transform: translateX(300%) translateY(300%); }
+@keyframes shimmer {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translate(50%, 50%) scale(1); opacity: 0; }
 }
 
 .create-post-btn:active {
@@ -212,217 +258,206 @@
 
 .create-post-btn i {
   margin-right: 0.8rem;
-  font-size: 1.4rem;
-  color: var(--color-cream);
+  font-size: 1.3rem;
 }
 
-.text-muted {
-  color: rgba(139, 69, 19, 0.8) !important;
-  font-size: 1.3rem;
-  font-weight: 500;
+/* ===================================
+   LOADING SPINNER
+   =================================== */
+.loading-spinner {
+  width: 4rem;
+  height: 4rem;
+  border: 0.4rem solid rgba(255, 165, 0, 0.2);
+  border-top-color: var(--sun-amber);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.text-center.py-5 p {
+  color: var(--sun-text-light);
   font-family: 'Cinzel', serif;
   font-style: italic;
-  text-shadow: 0 1px 2px rgba(139, 69, 19, 0.1);
-  letter-spacing: 0.5px;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.loading-spinner {
-  color: var(--color-amber);
-  width: 4.5rem;
-  height: 4.5rem;
-  border-width: 0.4em;
-  animation: celestialSpin 2s linear infinite;
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
-@keyframes celestialSpin {
-  0% { 
-    transform: rotate(0deg); 
-    filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.4)); 
-  }
-  50% { 
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); 
-  }
-  100% { 
-    transform: rotate(360deg); 
-    filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.4)); 
-  }
-}
-
+/* ===================================
+   EMPTY FEED STATE
+   =================================== */
 .empty-feed {
-  background: rgba(255, 248, 220, 0.98);
-  backdrop-filter: blur(20px);
-  border-radius: 30px;
-  padding: 5rem 4rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 248, 220, 0.95) 0%, 
+    rgba(255, 235, 180, 0.95) 100%
+  );
+  border-radius: 24px;
+  padding: 4rem 3rem;
   text-align: center;
-  box-shadow: 
-    0 25px 50px rgba(139, 69, 19, 0.15),
-    0 0 0 3px var(--color-card-border),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  border: 2px solid var(--color-antique);
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--sun-bronze);
   position: relative;
 }
 
 .empty-feed::before {
-  content: '✧ ✦ ✧ ✦ ✧';
+  content: '✦ ✧ ✦';
   position: absolute;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--color-amber);
-  font-size: 1.2rem;
-  animation: starTwinkle 4s ease-in-out infinite;
+  color: var(--sun-amber);
+  font-size: 1.5rem;
+  animation: starFloat 4s ease-in-out infinite;
 }
 
-.empty-feed .bi-inbox {
+@keyframes starFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+  50% { transform: translateX(-50%) translateY(-8px); opacity: 1; }
+}
+
+.empty-feed .bi-sun {
   font-size: 5rem;
-  color: var(--color-antique);
+  color: var(--sun-amber);
   margin-bottom: 2rem;
   animation: glow 3s ease-in-out infinite;
 }
 
 @keyframes glow {
   0%, 100% { 
-    color: var(--color-antique); 
-    filter: drop-shadow(0 0 5px rgba(210, 180, 140, 0.3)); 
+    filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.3)); 
+    transform: scale(1);
   }
   50% { 
-    color: var(--color-copper); 
-    filter: drop-shadow(0 0 15px rgba(184, 115, 51, 0.5)); 
+    filter: drop-shadow(0 0 20px rgba(255, 165, 0, 0.6)); 
+    transform: scale(1.05);
   }
 }
 
 .empty-feed h3 {
-  color: var(--color-mystic);
-  font-weight: 800;
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
+  color: var(--sun-text);
   font-family: 'Cinzel', serif;
-  text-shadow: 0 2px 4px rgba(139, 69, 19, 0.2);
+  font-weight: 800;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
   letter-spacing: 1px;
 }
 
 .empty-feed p {
-  color: rgba(139, 69, 19, 0.8);
-  font-size: 1.4rem;
+  color: var(--sun-text-light);
+  font-size: 1.2rem;
   line-height: 1.7;
   margin-bottom: 2.5rem;
   font-family: 'Cinzel', serif;
   font-style: italic;
 }
 
-/* Post animations */
-app-post {
+/* ===================================
+   POSTS CONSTELLATION
+   =================================== */
+.posts-constellation app-post {
   display: block;
-  margin-bottom: 2.5rem;
-  animation: riseFromSun 1s ease-out;
-  position: relative;
+  margin-bottom: 2rem;
+  animation: riseFromSun 0.8s ease-out;
 }
 
 @keyframes riseFromSun {
   from {
     opacity: 0;
-    transform: translateY(80px) scale(0.9);
-    filter: blur(3px);
+    transform: translateY(60px) scale(0.95);
   }
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: blur(0px);
   }
 }
 
-/* Enhanced responsive design */
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
 @media (max-width: 1200px) {
-  .feed-header {
-    padding: 2.5rem;
-  }
-  
   .feed-title {
     font-size: 2.5rem;
   }
   
   .feed-title::before {
-    left: -50px;
-    font-size: 1.8rem;
+    left: -45px;
+    font-size: 2rem;
   }
 }
 
 @media (max-width: 992px) {
   .feed-container {
-    padding: 1.5rem 0;
+    padding: 2rem 0;
   }
   
   .feed-header {
     padding: 2rem;
-    text-align: center;
-    border-radius: 25px;
+    border-radius: 20px;
   }
   
   .feed-title {
     font-size: 2.2rem;
-    margin-bottom: 1.5rem !important;
   }
   
   .feed-title::before {
-    display: none; /* Hide sun icon on mobile for better layout */
+    display: none;
   }
   
   .create-post-btn {
     width: 100%;
-    margin-top: 2rem;
     padding: 1rem 2rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   .empty-feed {
-    padding: 4rem 3rem;
-    margin: 0 1rem;
-    border-radius: 25px;
+    padding: 3rem 2rem;
+    border-radius: 20px;
   }
 }
 
 @media (max-width: 768px) {
   .feed-header {
     padding: 1.8rem;
-    border-radius: 22px;
   }
   
   .feed-title {
     font-size: 2rem;
   }
   
-  .create-post-btn {
-    padding: 0.9rem 1.8rem;
-    font-size: 1rem;
-    border-radius: 50px;
+  .text-muted {
+    font-size: 1.1rem;
   }
   
-  .empty-feed {
-    padding: 3rem 2rem;
+  .create-post-btn {
+    padding: 0.9rem 1.8rem;
+    font-size: 0.95rem;
   }
   
   .empty-feed h3 {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
   
   .empty-feed p {
-    font-size: 1.2rem;
-  }
-  
-  .text-muted {
     font-size: 1.1rem;
   }
 }
 
 @media (max-width: 576px) {
   .feed-container {
-    padding: 1rem 0;
+    padding: 1.5rem 0;
   }
   
   .feed-header {
     padding: 1.5rem;
-    border-radius: 20px;
-    margin-bottom: 2rem;
+    border-radius: 18px;
   }
   
   .feed-title {
@@ -436,204 +471,47 @@ app-post {
   
   .create-post-btn {
     padding: 0.8rem 1.5rem;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     letter-spacing: 1px;
-  }
-  
-  .create-post-btn::after {
-    right: 10px;
-    font-size: 1rem;
   }
   
   .empty-feed {
     padding: 2.5rem 1.5rem;
-    border-radius: 20px;
   }
   
-  .empty-feed .bi-inbox {
+  .empty-feed .bi-sun {
     font-size: 3.5rem;
   }
   
   .empty-feed h3 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
   
   .empty-feed p {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   .loading-spinner {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3rem;
+    height: 3rem;
   }
 }
 
-/* Smooth transitions for all elements */
-.feed-header,
-.create-post-btn,
-.empty-feed,
-app-post {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Focus states for accessibility */
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
 .create-post-btn:focus {
-  outline: none;
-  box-shadow: 
-    0 0 0 4px rgba(255, 165, 0, 0.3),
-    0 12px 30px rgba(255, 165, 0, 0.4);
+  outline: 3px solid rgba(255, 165, 0, 0.5);
+  outline-offset: 3px;
 }
 
-/* Loading text animation */
-.text-white.mt-3 {
-  animation: celestialPulse 2.5s infinite;
-  color: var(--color-cream) !important;
-  font-family: 'Cinzel', serif;
-  font-style: italic;
-  text-shadow: 0 1px 3px rgba(139, 69, 19, 0.3);
-}
-
-@keyframes celestialPulse {
-  0%, 100% { 
-    opacity: 1; 
-    transform: scale(1);
-  }
-  50% { 
-    opacity: 0.7; 
-    transform: scale(1.05);
+/* Remove transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
-
-/* Additional celestial decorations */
-.feed-header .d-flex::after {
-  content: '✧';
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  color: var(--color-amber);
-  font-size: 1.5rem;
-  animation: starTwinkle 3s ease-in-out infinite;
-}
-
-@keyframes starTwinkle {
-  0%, 100% { 
-    opacity: 0.6; 
-    transform: scale(1) rotate(0deg); 
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.2) rotate(180deg); 
-  }
-}
-
-
-.feed-header {
-  background: rgba(255, 255, 220, 0.98);
-  backdrop-filter: blur(20px);
-  border-radius: 30px;
-  padding: 3rem;
-  margin-bottom: 2.5rem;
-  box-shadow: 
-    0 25px 50px rgba(139, 69, 19, 0.2),
-    0 0 0 3px var(--color-card-border),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  border: 2px solid var(--color-antique);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Fixed header content layout */
-.feed-header .d-flex {
-  position: relative;
-  z-index: 2;
-  gap: 2rem;
-}
-
-.feed-header .d-flex.justify-content-between.align-items-center {
-  align-items: flex-start !important; /* Change to flex-start to prevent overlap */
-}
-
-.feed-title {
-  font-weight: 900;
-  font-size: 2.8rem;
-  margin: 0 0 1rem 0;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 2px;
-  background: linear-gradient(135deg, 
-    var(--color-gold) 0%, 
-    var(--color-amber) 30%, 
-    var(--color-sunset) 70%, 
-    var(--color-deep-orange) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* keeps gradient visible */
-  background-clip: text;
-  position: relative;
-  flex: 1;
-
-  /* subtle crisp shadow, not blurry */
-  text-shadow: 1px 1px 2px rgba(87, 37, 2);
-}
-
-
-.feed-title::before {
-  content: '☀';
-  position: absolute;
-  left: -50px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2rem;
-  color: var(--color-amber);
-  animation: sunRotate 8s linear infinite;
-}
-
-.create-post-btn {
-  background: linear-gradient(135deg, 
-    var(--color-gold) 0%, 
-    var(--color-amber) 30%, 
-    var(--color-sunset) 70%, 
-    var(--color-deep-orange) 100%
-  );
-  border: 3px solid var(--color-dark-gold);
-  border-radius: 60px;
-  text-decoration: none;  /* removes underline */
-  padding: 1rem 2rem; /* Reduced padding */
-  font-weight: 800;
-  font-size: 1rem; /* Reduced font size */
-  font-family: 'Cinzel', serif;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all 0.5s ease;
-  box-shadow: 
-    0 12px 30px rgba(255, 165, 0, 0.4),
-    0 0 0 0 rgba(255, 215, 0, 0.3),
-    inset 0 2px 0 rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
-  color: var(--color-cream);
-  text-shadow: 0 2px 4px rgba(7, 4, 1, 0.5);
-  white-space: nowrap; /* Prevent text wrapping */
-  flex-shrink: 0; /* Prevent shrinking */
-}
-
-
-.feed-header .feed-title {
-  margin-bottom: 2rem !important; /* more space below title */
-  display: block;
-}
-
-.create-post-btn {
-  display: inline-block;     /* keep button width tight */
-  margin: 0 auto 2rem auto;  /* center horizontally + add bottom space */
-  text-decoration: none;     /* remove underline */
-}
-
-.feed-header {
-  text-align: center; /* centers everything inside */
-}
-
-.create-post-btn {
-  display: inline-block;
-  margin: 2rem auto; /* ensures centered horizontally */
-}
-

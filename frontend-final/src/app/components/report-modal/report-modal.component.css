@@ -1,168 +1,540 @@
-/* Post Component - Enhanced Sun Theme CSS with Better Text Visibility */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+/* Report Modal Component - Optimized Sun Theme CSS */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* ===================================
+   COLOR VARIABLES
+   =================================== */
 :root {
-  --color-gold: #FFD700;
-  --color-amber: #FFA500;
-  --color-deep-orange: #FF6B35;
-  --color-copper: #8B4513;
-  --color-cream: #FFF8DC;
-  --color-dark-gold: #B8860B;
-  --color-sunset: #FF8C42;
-  --color-mystic: #654321;
-  --color-warm-brown: #5D4037;
-  --color-celestial-blue: #4A90E2;
-  --color-mountain: #2C5F2D;
-  --color-card-border: #8B4513;
-  --color-antique: #D2B48C;
-  --color-text-primary: #2E1A05; /* Darker for better visibility */
-  --color-text-secondary: #3E2723; /* Darker */
-  --color-text-muted: #5D4037; /* Darker muted text */
+  /* Primary Sun Colors */
+  --sun-gold: #FFD700;
+  --sun-amber: #FFA500;
+  --sun-orange: #FF8C42;
+  --sun-deep-orange: #FF6B35;
+  
+  /* Supporting Colors */
+  --sun-cream: #FFF8DC;
+  --sun-light: #FFFAF0;
+  --sun-warm: #FFE4B5;
+  --sun-bronze: #CD7F32;
+  
+  /* Text Colors */
+  --sun-text: #2E1A05;
+  --sun-text-secondary: #3E2723;
+  --sun-text-muted: #5D4037;
+  
+  /* Accent Colors */
+  --sun-red: #DC2626;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.1);
+  --shadow-md: 0 4px 16px rgba(139, 69, 19, 0.15);
+  --shadow-lg: 0 8px 32px rgba(139, 69, 19, 0.2);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
 }
 
-/* Facebook-style post card - NO BORDERS, RESPONSIVE TO IMAGE SIZE */
-.post-card {
-  background: rgba(255, 248, 220, 0.95);
-  backdrop-filter: blur(8px);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.08);
-  margin-bottom: 20px;
+/* ===================================
+   MODAL BACKDROP
+   =================================== */
+.modal-backdrop {
+  background-color: rgba(139, 69, 19, 0.6);
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+}
+
+/* ===================================
+   MODAL DIALOG
+   =================================== */
+.modal-dialog {
+  margin: 1.75rem auto;
+}
+
+/* ===================================
+   MODAL CONTENT
+   =================================== */
+.modal-content {
+  background: linear-gradient(135deg, 
+    rgba(255, 248, 220, 0.98) 0%, 
+    rgba(255, 240, 200, 0.98) 100%
+  );
+  border: 3px solid var(--sun-bronze);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  transition: all 0.3s ease;
-  max-width: 680px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  position: relative;
 }
 
-.post-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 30px rgba(139, 69, 19, 0.12);
+/* Decorative Top Border */
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--sun-amber) 20%, 
+    var(--sun-gold) 40%, 
+    var(--sun-orange) 60%, 
+    var(--sun-amber) 80%, 
+    transparent 100%
+  );
+  animation: shimmer 3s ease-in-out infinite;
 }
 
-/* Post header */
-.post-header {
-  padding: 16px 20px 12px;
+@keyframes shimmer {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ===================================
+   MODAL HEADER
+   =================================== */
+.modal-header {
+  background: linear-gradient(135deg, 
+    rgba(255, 107, 53, 0.12) 0%, 
+    rgba(220, 38, 38, 0.08) 100%
+  );
+  border-bottom: 2px solid var(--sun-bronze);
+  padding: 1.5rem;
+  position: relative;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--sun-text);
+  letter-spacing: 0.5px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.modal-title::before {
+  content: '⚠';
+  font-size: 1.8rem;
+  color: var(--sun-deep-orange);
+}
+
+/* Close Button */
+.btn-close {
+  background-color: transparent;
+  border: 2px solid var(--sun-bronze);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  opacity: 0.7;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--sun-deep-orange);
+  box-shadow: 
+    0 4px 16px rgba(255, 107, 53, 0.2),
+    0 0 0 3px rgba(255, 107, 53, 0.1);
   background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.03) 0%, 
-    rgba(255, 165, 0, 0.02) 100%
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(255, 248, 220, 1) 100%
   );
 }
 
-.post-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.15);
-}
-
-.post-avatar:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.25);
-}
-
-.post-author-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.post-author-name {
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--color-text-primary);
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  letter-spacing: 0.3px;
-}
-
-.post-timestamp {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  font-family: 'Inter', sans-serif;
+.form-control::placeholder {
+  color: var(--sun-text-muted);
+  font-style: italic;
   font-weight: 400;
 }
 
-/* Post content */
-.post-content {
-  padding: 16px 20px;
+/* Invalid State */
+.form-control.is-invalid {
+  border-color: var(--sun-red);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
-.post-text {
-  color: var(--color-text-secondary);
-  font-size: 15px;
-  line-height: 1.6;
+.form-control.is-invalid:focus {
+  border-color: var(--sun-red);
+  box-shadow: 
+    0 4px 16px rgba(220, 38, 38, 0.25),
+    0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+/* Invalid Feedback */
+.invalid-feedback {
+  display: block;
+  color: var(--sun-red);
+  font-size: 13px;
   font-family: 'Inter', sans-serif;
-  margin-bottom: 16px;
-  word-wrap: break-word;
+  font-weight: 600;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(220, 38, 38, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid var(--sun-red);
+}
+
+/* ===================================
+   MODAL FOOTER
+   =================================== */
+.modal-footer {
+  background: linear-gradient(135deg, 
+    rgba(255, 215, 0, 0.08) 0%, 
+    rgba(255, 165, 0, 0.05) 100%
+  );
+  border-top: 2px solid var(--sun-bronze);
+  padding: 1.5rem;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Button Base Styles */
+.btn {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  border-radius: 24px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.btn:hover::before {
+  width: 300%;
+  height: 300%;
+}
+
+/* Secondary Button (Cancel) */
+.btn-secondary {
+  background: transparent;
+  color: var(--sun-text-muted);
+  border-color: var(--sun-bronze);
+}
+
+.btn-secondary:hover {
+  background: rgba(139, 69, 19, 0.15);
+  color: var(--sun-text);
+  border-color: var(--sun-text-muted);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+}
+
+/* Danger Button (Submit) */
+.btn-danger {
+  background: linear-gradient(135deg, 
+    var(--sun-deep-orange) 0%, 
+    var(--sun-red) 100%
+  );
+  color: white;
+  border-color: var(--sun-red);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, 
+    var(--sun-red) 0%, 
+    #B91C1C 100%
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  border-color: #B91C1C;
+}
+
+.btn-danger:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Disabled State */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn:disabled::before {
+  display: none;
+}
+
+/* Loading Spinner */
+.spinner-border-sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 1rem;
+  }
+  
+  .modal-content {
+    border-radius: 16px;
+  }
+  
+  .modal-header {
+    padding: 1.2rem;
+  }
+  
+  .modal-title {
+    font-size: 1.3rem;
+  }
+  
+  .modal-title::before {
+    font-size: 1.5rem;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .modal-body p {
+    font-size: 14px;
+  }
+  
+  .form-control {
+    min-height: 120px;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  
+  .modal-footer {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+  
+  .modal-content {
+    border-radius: 14px;
+    border-width: 2px;
+  }
+  
+  .modal-header {
+    padding: 1rem;
+  }
+  
+  .modal-title {
+    font-size: 1.2rem;
+  }
+  
+  .modal-body {
+    padding: 1.2rem;
+  }
+  
+  .form-control {
+    min-height: 100px;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 10px 20px;
+  }
+}
+
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
+.btn:focus {
+  outline: 3px solid rgba(255, 165, 0, 0.5);
+  outline-offset: 2px;
+}
+
+.form-control:focus {
+  outline: none;
+}
+
+/* ===================================
+   ANIMATION
+   =================================== */
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out;
+  transform: scale(0.9);
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+}
+
+/* Remove transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .modal.fade .modal-dialog {
+    transition: none;
+  }
+}
+
+.btn-close:hover {
+  opacity: 1;
+  transform: rotate(90deg) scale(1.1);
+  border-color: var(--sun-red);
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+.btn-close:focus {
+  outline: 3px solid rgba(255, 165, 0, 0.4);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ===================================
+   MODAL BODY
+   =================================== */
+.modal-body {
+  padding: 2rem;
+}
+
+.modal-body p {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--sun-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
   font-weight: 500;
 }
 
-/* Post media - FULLY RESPONSIVE TO IMAGE SIZE */
-.post-media {
-  margin: 16px 0 0 0;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  background: rgba(255, 215, 0, 0.03);
+/* Form Group */
+.form-group {
+  margin-bottom: 0;
 }
 
-.post-image,
-.post-video {
-  width: 100%;
-  height: auto;
+.form-group label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--sun-text);
+  margin-bottom: 10px;
   display: block;
-  object-fit: contain; /* Changed from cover to contain to preserve aspect ratio */
-  transition: transform 0.3s ease;
-  max-width: 100%;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
-/* Remove all max-height restrictions to let images be their natural size */
-/* .post-image {
-  /* No max-height - let image determine its own height */
-/* } */
-
-.post-video {
-  max-height: 600px; /* Keep some limit for videos for UX */
+/* Textarea Styling */
+.form-control {
+  width: 100%;
+  min-height: 140px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: var(--sun-text);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(255, 248, 220, 0.9) 100%
+  );
+  border: 2px solid var(--sun-bronze);
+  border-radius: 12px;
+  resize: vertical;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
 }
 
-.post-image:hover,
-.post-video:hover {
-  transform: scale(1.01);
+
+
+/* ===================================
+   REPORT MODAL FIX - Hide until triggered
+   =================================== */
+
+/* Hide modal by default */
+.modal {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Post actions */
-.post-actions {
-  padding: 8px 20px 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
+/* Show modal when it has the 'show' class */
+.modal.show {
+  display: block;
 }
 
-.action-btn {
+/* Modal backdrop */
+.modal-backdrop {
+  display: none;
+}
+
+.modal-backdrop.show {
+  display: block;
+  background-color: rgba(139, 69, 19, 0.6);
+  opacity: 1;
+}
+
+/* Ensure modal is properly positioned */
+.modal-dialog {
+  margin: 1.75rem auto;
+  transform: scale(0.9);
+  transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+}
+
+/* ===================================
+   REPORT BUTTON STYLING
+   =================================== */
+.post-actions .action-btn[data-bs-toggle="modal"] {
+  position: relative;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
   background: transparent;
-  color: var(--color-text-muted);
+  color: var(--sun-text-muted);
   font-size: 14px;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   border-radius: 20px;
-  cursor: pointer;
   transition: all 0.3s ease;
+  border: none;
   position: relative;
   overflow: hidden;
-  border: none;
 }
 
-.action-btn::before {
+.post-actions .action-btn[data-bs-toggle="modal"]::before {
   content: '';
   position: absolute;
   top: 0;
@@ -171,105 +543,134 @@
   height: 100%;
   background: linear-gradient(90deg, 
     transparent, 
-    rgba(255, 215, 0, 0.08), 
+    rgba(255, 107, 53, 0.08), 
     transparent
   );
   transition: left 0.5s ease;
 }
 
-.action-btn:hover::before {
+.post-actions .action-btn[data-bs-toggle="modal"]:hover::before {
   left: 100%;
 }
 
-.action-btn:hover {
-  background: rgba(255, 215, 0, 0.08);
-  color: var(--color-text-primary);
+.post-actions .action-btn[data-bs-toggle="modal"]:hover {
+  background: rgba(255, 107, 53, 0.08);
+  color: var(--sun-deep-orange);
   transform: translateY(-1px);
 }
 
-.action-btn i {
+.post-actions .action-btn[data-bs-toggle="modal"]:hover i {
+  color: var(--sun-deep-orange);
+}
+
+.post-actions .action-btn[data-bs-toggle="modal"] i {
   font-size: 16px;
   transition: all 0.3s ease;
 }
 
-/* Like button states */
-.action-btn.liked {
-  color: var(--color-amber);
-  background: rgba(255, 165, 0, 0.08);
-}
-
-.action-btn.liked i {
-  color: var(--color-amber);
-  animation: heartBeat 0.8s ease-in-out;
-}
-
-@keyframes heartBeat {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.1); }
-  50% { transform: scale(1.05); }
-  75% { transform: scale(1.1); }
-}
-
-.action-btn.liked:hover {
-  background: rgba(255, 165, 0, 0.12);
-  color: var(--color-dark-gold);
-}
-
-/* Comments button */
-.action-btn.comments:hover {
-  background: rgba(74, 144, 226, 0.08);
-  color: var(--color-celestial-blue);
-}
-
-.action-btn.comments:hover i {
-  color: var(--color-celestial-blue);
-}
-
-/* Report button (New CSS) */
-.action-btn.report-btn {
-  color: var(--color-deep-orange); /* Use a strong color for reporting */
-  margin-left: auto; /* Push it to the right */
-}
-
-.action-btn.report-btn:hover {
-  background: rgba(255, 107, 53, 0.08); 
-  color: var(--color-deep-orange);
-}
-
-.action-btn.report-btn i {
-  color: var(--color-deep-orange);
-}
-
-
-/* Button disabled state */
-.action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-.action-btn .spinner-border-sm {
-  width: 14px;
-  height: 14px;
-  margin-right: 4px;
-}
-
-/* Comments section */
-.post-comments {
+/* ===================================
+   MODAL CONTENT STYLING (Ensure it's visible when shown)
+   =================================== */
+.modal-content {
   background: linear-gradient(135deg, 
-    rgba(255, 248, 220, 0.2) 0%, 
-    rgba(255, 215, 0, 0.03) 100%
+    rgba(255, 248, 220, 0.98) 0%, 
+    rgba(255, 240, 200, 0.98) 100%
   );
-  padding: 16px 20px;
-  margin-top: 8px;
+  border: 3px solid var(--sun-bronze);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.2);
+  overflow: hidden;
+  position: relative;
 }
 
-/* Responsive design (omitted for brevity) */
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--sun-amber) 20%, 
+    var(--sun-gold) 40%, 
+    var(--sun-orange) 60%, 
+    var(--sun-amber) 80%, 
+    transparent 100%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+}
 
-/* Loading and error states (omitted for brevity) */
+@keyframes shimmer {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
 
-/* Animation for new posts (omitted for brevity) */
+/* ===================================
+   MODAL Z-INDEX FIX (Ensure it appears above everything)
+   =================================== */
+.modal {
+  z-index: 1055;
+}
 
-/* Focus states for accessibility (omitted for brevity) */
+.modal-backdrop {
+  z-index: 1050;
+}
 
-/* Special effects (omitted for brevity) */
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 1rem;
+  }
+  
+  .post-actions .action-btn[data-bs-toggle="modal"] {
+    padding: 6px 12px;
+    font-size: 13px;
+    gap: 6px;
+  }
+  
+  .post-actions .action-btn[data-bs-toggle="modal"] i {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+  
+  .post-actions .action-btn[data-bs-toggle="modal"] {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 16px;
+  }
+}
+
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
+.post-actions .action-btn[data-bs-toggle="modal"]:focus {
+  outline: 3px solid rgba(255, 165, 0, 0.4);
+  outline-offset: 2px;
+}
+
+/* Remove transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal-dialog {
+    transition: none;
+  }
+  
+  .post-actions .action-btn[data-bs-toggle="modal"] {
+    transition: none;
+  }
+  
+  .post-actions .action-btn[data-bs-toggle="modal"]:hover {
+    transform: none;
+  }
+  
+  .modal-content::before {
+    animation: none;
+  }
+}

@@ -1,166 +1,209 @@
+<!-- Admin Dashboard Component - All Sections Visible -->
 <div class="container mt-5">
   <div class="row">
     <div class="col-12">
-      <h1 class="display-4 mb-4 text-center text-primary">荘 Admin Dashboard 荘</h1>
-      <p class="lead text-center text-muted">A control center for moderation tasks and platform overview.</p>
+      <h1 class="display-4 mb-4 text-center text-primary">Admin Dashboard</h1>
+      <p class="lead text-center text-muted">Control center for moderation tasks and platform overview</p>
     </div>
   </div>
 
   <hr>
 
-  <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="true">Users</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts" type="button" role="tab" aria-controls="posts" aria-selected="false">Posts</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab" aria-controls="reports" aria-selected="false">Reports</button>
-    </li>
-  </ul>
-
-  <div class="tab-content" id="adminTabsContent">
-    
-    <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light">
-          <h4 class="mb-0">則 User Accounts Management</h4>
-        </div>
-        <div class="card-body">
-          <div *ngIf="isLoadingUsers" class="text-center p-3">
-            <div class="spinner-border text-primary" role="status"></div>
-          </div>
-          <div *ngIf="!isLoadingUsers" class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Username</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let user of users">
-                  <td>{{ user.id }}</td>
-                  <td><a [routerLink]="['/profile', user.id]" class="text-decoration-none">{{ user.username }}</a></td>
-                  
-                  <td>
-                    <span *ngIf="!user.isBlocked" class="badge bg-success">Active</span>
-                    <span *ngIf="user.isBlocked" class="badge bg-danger">Banned</span>
-                  </td>
-                  
-                  <td>
-                    <button *ngIf="!user.isBlocked" class="btn btn-warning btn-sm me-2" (click)="banUser(user)" title="Ban User">
-                      <i class="bi bi-person-slash"></i> Ban
-                    </button>
-                    
-                    <button *ngIf="user.isBlocked" class="btn btn-success btn-sm me-2" (click)="unbanUser(user)" title="Unban User">
-                      <i class="bi bi-person-check"></i> Unban
-                    </button>
-                    
-                    <button class="btn btn-danger btn-sm" (click)="deleteUser(user)" title="Delete User">
-                      <i class="bi bi-trash"></i> Delete
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+  <!-- USERS SECTION -->
+  <div class="section mb-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <h4 class="mb-0">User Accounts Management</h4>
       </div>
-    </div>
-    
-    <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light">
-          <h4 class="mb-0">統 Content Moderation (Posts)</h4>
-        </div>
-        <div class="card-body">
-          <div *ngIf="isLoadingPosts" class="text-center p-3">
-            <div class="spinner-border text-primary" role="status"></div>
-          </div>
-          <div *ngIf="!isLoadingPosts" class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Author</th>
-                  <th>Content Preview</th>
-                  <th>Likes</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let post of posts">
-                  <td>{{ post.id }}</td>
-                  <td>{{ post.authorUsername }}</td>
-                  <td>{{ post.content | slice:0:50 }}...</td>
-                  <td>{{ post.likeCount }}</td>
-                  <td>
-                    <button class="btn btn-warning btn-sm me-2" title="Hide/Un-hide Post">
-                      <i class="bi bi-eye-slash"></i> Hide
-                    </button>
-                    <button class="btn btn-danger btn-sm" (click)="deletePost(post.id)" title="Delete Post">
-                      <i class="bi bi-trash"></i> Delete
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <div class="card-body">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingUsers" class="text-center p-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading users...</span>
           </div>
         </div>
-      </div>
-    </div>
-    
-    <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
-      <div class="card shadow-sm">
-        <div class="card-header bg-light">
-          <h4 class="mb-0">圷 Submitted Reports</h4>
-        </div>
-        <div class="card-body">
-          <div *ngIf="isLoadingReports" class="text-center p-3">
-            <div class="spinner-border text-primary" role="status"></div>
-          </div>
-          <div *ngIf="!isLoadingReports && reports.length === 0" class="text-center p-3">
-            <p class="text-muted">No reports to review.</p>
-          </div>
-          <div *ngIf="!isLoadingReports && reports.length > 0" class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead>
-                <tr>
-                  <th>Report ID</th>
-                  <th>Reporter</th>
-                  <th>Target Type</th>
-                  <th>Target ID</th>
-                  <th>Reason</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let report of reports">
-                  <td>{{ report.id }}</td>
-                  <td>{{ report.reporter.username || 'Unknown' }}</td>                  <td><span class="badge bg-info">{{ report.targetType }}</span></td>
-                  <td>{{ report.targetId }}</td>
-                  <td>{{ report.reason | slice:0:50 }}{{ report.reason.length > 50 ? '...' : '' }}</td>
-                  <td>
-                    <span *ngIf="report.status === 'NEW'" class="badge bg-warning">New</span>
-                    <span *ngIf="report.status === 'REVIEWED'" class="badge bg-success">Reviewed</span>
-                  </td>
-                  <td>
-                    <button *ngIf="report.status === 'NEW'" class="btn btn-primary btn-sm" (click)="reviewReport(report)" title="Mark as Reviewed">
-                      <i class="bi bi-check-circle"></i> Review
-                    </button>
-                    <span *ngIf="report.status === 'REVIEWED'" class="text-muted">Reviewed</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        
+        <!-- Users Table -->
+        <div *ngIf="!isLoadingUsers" class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td>{{ user.id }}</td>
+                <td>
+                  <a [routerLink]="['/profile', user.id]" class="text-decoration-none">
+                    {{ user.username }}
+                  </a>
+                </td>
+                <td>{{ user.email || 'N/A' }}</td>
+                <td>
+                  <span *ngIf="!user.isBlocked" class="badge bg-success">Active</span>
+                  <span *ngIf="user.isBlocked" class="badge bg-danger">Banned</span>
+                </td>
+                <td>
+                  <button 
+                    *ngIf="!user.isBlocked" 
+                    class="btn btn-warning btn-sm me-2" 
+                    (click)="banUser(user)" 
+                    title="Ban User">
+                    <i class="bi bi-person-slash"></i> Ban
+                  </button>
+                  
+                  <button 
+                    *ngIf="user.isBlocked" 
+                    class="btn btn-success btn-sm me-2" 
+                    (click)="unbanUser(user)" 
+                    title="Unban User">
+                    <i class="bi bi-person-check"></i> Unban
+                  </button>
+                  
+                  <button 
+                    class="btn btn-danger btn-sm" 
+                    (click)="deleteUser(user)" 
+                    title="Delete User">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="users.length === 0">
+                <td colspan="5" class="text-center">No users found</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- POSTS SECTION -->
+  <div class="section mb-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <h4 class="mb-0">Content Moderation (Posts)</h4>
+      </div>
+      <div class="card-body">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingPosts" class="text-center p-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading posts...</span>
+          </div>
+        </div>
+        
+        <!-- Posts Table -->
+        <div *ngIf="!isLoadingPosts" class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Author</th>
+                <th>Content Preview</th>
+                <th>Likes</th>
+                <th>Comments</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let post of posts">
+                <td>{{ post.id }}</td>
+                <td>{{ post.authorUsername }}</td>
+                <td>{{ post.content | slice:0:50 }}{{ post.content.length > 50 ? '...' : '' }}</td>
+                <td>{{ post.likeCount }}</td>
+                <td>{{ post.commentCount || 0 }}</td>
+                <td>
+                  <button 
+                    class="btn btn-warning btn-sm me-2" 
+                    (click)="hidePost(post.id)"
+                    title="Hide Post">
+                    <i class="bi bi-eye-slash"></i> Hide
+                  </button>
+                  <button 
+                    class="btn btn-danger btn-sm" 
+                    (click)="deletePost(post.id)" 
+                    title="Delete Post">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="posts.length === 0">
+                <td colspan="6" class="text-center">No posts found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- REPORTS SECTION -->
+  <div class="section">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <h4 class="mb-0">Submitted Reports</h4>
+      </div>
+      <div class="card-body">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingReports" class="text-center p-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading reports...</span>
+          </div>
+        </div>
+        
+        <!-- Empty State -->
+        <div *ngIf="!isLoadingReports && reports.length === 0" class="text-center p-3">
+          <p class="text-muted">No reports to review</p>
+        </div>
+        
+        <!-- Reports Table -->
+        <div *ngIf="!isLoadingReports && reports.length > 0" class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Report ID</th>
+                <th>Reporter</th>
+                <th>Target Type</th>
+                <th>Target ID</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let report of reports">
+                <td>{{ report.id }}</td>
+                <td>{{ getReporterUsername(report) }}</td>
+                <td>
+                  <span class="badge bg-info">{{ report.targetType }}</span>
+                </td>
+                <td>{{ report.targetId }}</td>
+                <td>{{ report.reason | slice:0:50 }}{{ report.reason.length > 50 ? '...' : '' }}</td>
+                <td>
+                  <span *ngIf="report.status === 'NEW'" class="badge bg-warning">New</span>
+                  <span *ngIf="report.status === 'REVIEWED'" class="badge bg-success">Reviewed</span>
+                </td>
+                <td>
+                  <button 
+                    *ngIf="report.status === 'NEW'" 
+                    class="btn btn-primary btn-sm" 
+                    (click)="reviewReport(report)" 
+                    title="Mark as Reviewed">
+                    <i class="bi bi-check-circle"></i> Review
+                  </button>
+                  <span *ngIf="report.status === 'REVIEWED'" class="text-muted">Reviewed</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </div>

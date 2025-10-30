@@ -3,7 +3,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-8 col-md-10">
-        <!-- Enhanced Header with sun theme -->
+        <!-- ... feed-header, loading state, and empty state are unchanged ... -->
         <div class="feed-header">
           <div class="d-flex justify-content-between align-items-center flex-wrap">
             <h1 class="feed-title mb-3 mb-md-0">☀️ Your Sacred Learning Journey</h1>
@@ -15,16 +15,12 @@
             "In the pursuit of knowledge, every shared experience illuminates the path for others"
           </p>
         </div>
-
-        <!-- Loading state with enhanced styling -->
         <div *ngIf="isLoading" class="text-center py-5">
           <div class="spinner-border loading-spinner" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
           <p class="text-white mt-3">Gathering wisdom from the celestial library...</p>
         </div>
-
-        <!-- Enhanced empty state -->
         <div *ngIf="!isLoading && posts.length === 0" class="empty-feed">
           <div class="text-center">
             <i class="bi bi-sun display-1 text-muted mb-3"></i>
@@ -41,10 +37,17 @@
 
         <!-- Posts list with enhanced presentation -->
         <div *ngIf="!isLoading && posts.length > 0" class="posts-constellation">
+          <!-- 
+            --- THIS IS THE MODIFIED LINE ---
+            We are adding [currentUserId] to pass the ID down
+            We are adding (deletePost) to listen for the delete event
+          -->
           <app-post 
             *ngFor="let post of posts" 
             [post]="post" 
+            [currentUserId]="currentUserId" 
             (like)="handleLike($event)"
+            (deletePost)="onDeletePost($event)"
             class="post-star">
           </app-post>
         </div>

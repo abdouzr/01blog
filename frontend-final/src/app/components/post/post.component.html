@@ -10,11 +10,26 @@
       <small class="post-timestamp">{{ formatDate(post.createdAt) }}</small>
     </div>
 
-    <button *ngIf="post.authorId === currentUserId" 
-            class="btn btn-sm btn-outline-danger ms-auto"
-            (click)="onDeletePost()">
-      <i class="bi bi-trash"></i>
-    </button>
+    <!-- 
+      --- THIS IS THE MODIFIED SECTION ---
+      I've added <span>Edit</span> and <span>Delete</span> to the buttons.
+    -->
+    <div *ngIf="post.authorId === currentUserId" class="ms-auto d-flex gap-2">
+      <button 
+              class="btn btn-sm btn-outline-primary"
+              (click)="onEditPost()">
+        <i class="bi bi-pencil"></i>
+        <span>Edit</span>
+      </button>
+      <button 
+              class="btn btn-sm btn-outline-danger"
+              (click)="onDeletePost()">
+        <i class="bi bi-trash"></i>
+        <span>Delete</span>
+      </button>
+    </div>
+    <!-- END OF MODIFIED SECTION -->
+
   </div>
   
   <div class="post-content">
@@ -56,7 +71,8 @@
       <span>{{ post.commentCount }} {{ post.commentCount === 1 ? 'Comment' : 'Comments' }}</span>
     </button>
 
-    <button class="action-btn ms-auto" data-bs-toggle="modal" [attr.data-bs-target]="'#reportModal-' + post.id">
+    <button class="action-btn ms-auto" 
+            (click)="toggleReportModal()">
       <i class="bi bi-flag"></i>
       <span>Report</span>
     </button>
@@ -69,9 +85,45 @@
     </app-comments>
   </div>
 
-  <app-report-modal 
-    [reportTargetId]="post.id" 
-    reportType="POST" 
-    [modalId]="'reportModal-' + post.id">
-  </app-report-modal>
+  <!-- REPORT MODAL OVERLAY -->
+  <div *ngIf="showReportModal" class="report-modal-overlay" (click)="toggleReportModal()">
+    <div class="report-modal-content" (click)="$event.stopPropagation()">
+      <!-- SIMPLE REPORT FORM -->
+      <div class="report-form">
+        <div class="report-header">
+          <h3>Report Post</h3>
+          <button class="close-btn" (click)="toggleReportModal()">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        
+        <div class="report-body">
+          <p>Please provide a reason for reporting this post:</p>
+          
+          <textarea 
+            #reportTextarea
+            class="report-textarea" 
+            placeholder="Describe the issue..."
+            rows="5"
+            maxlength="500"
+            (input)="updateCharCount(reportTextarea.value)">
+          </textarea>
+          
+          <div class="char-count">{{ currentCharCount }}/500</div>
+        </div>
+        
+        <div class="report-footer">
+          <button class="btn btn-secondary" (click)="toggleReportModal()">Cancel</button>
+          <button 
+            class="btn btn-danger" 
+            (click)="submitReport(reportTextarea.value)"
+            [disabled]="!reportTextarea.value.trim() || isSubmittingReport">
+            <span *ngIf="!isSubmittingReport">Submit Report</span>
+            <span *ngIf="isSubmittingReport" class="spinner-border spinner-border-sm"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+

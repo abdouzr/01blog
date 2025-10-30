@@ -10,7 +10,7 @@ interface Report {
   reporter: {
     id: number;
     username: string;
-  };
+  } | null;
   targetType: 'POST' | 'USER';
   targetId: number;
   reason: string;
@@ -135,8 +135,28 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  hidePost(postId: number): void {
+    if (confirm('Are you sure you want to hide this post?')) {
+      // If your AdminService has a hidePost method, use it
+      // Otherwise, you might need to add this endpoint to your backend
+      this.snackBar.open('Hide post functionality - implement in backend if needed', 'Close', { duration: 3000 });
+      
+      // Example implementation if you have the service method:
+      // this.adminService.hidePost(postId).subscribe({
+      //   next: () => {
+      //     this.snackBar.open('Post hidden successfully.', 'Close', { duration: 3000 });
+      //     this.loadPosts();
+      //   },
+      //   error: (err) => {
+      //     console.error('Error hiding post:', err);
+      //     this.snackBar.open('Failed to hide post.', 'Close', { duration: 3000 });
+      //   }
+      // });
+    }
+  }
+
   deletePost(postId: number): void {
-    if (confirm('Are you sure you want to delete this post?')) {
+    if (confirm('Are you sure you want to delete this post? This action is IRREVERSIBLE.')) {
       this.adminService.deletePost(postId).subscribe({
         next: () => {
           this.snackBar.open('Post deleted successfully.', 'Close', { duration: 3000 });
@@ -161,5 +181,10 @@ export class AdminDashboardComponent implements OnInit {
         this.snackBar.open('Failed to review report.', 'Close', { duration: 3000 });
       }
     });
+  }
+
+  // Helper method to get reporter username safely
+  getReporterUsername(report: Report): string {
+    return report.reporter?.username || 'Unknown';
   }
 }

@@ -1,462 +1,507 @@
-/* Navbar Component - Enhanced Sun Theme CSS with Better Text Visibility */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+/* Navbar Component - Clean Sun Theme CSS */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* ===================================
+   COLOR VARIABLES
+   =================================== */
 :root {
-  --color-gold: #FFD700;
-  --color-amber: #FFA500;
-  --color-deep-orange: #FF6B35;
-  --color-copper: #8B4513;
-  --color-cream: #FFF8DC;
-  --color-dark-gold: #B8860B;
-  --color-sunset: #FF8C42;
-  --color-mystic: #654321;
-  --color-warm-brown: #5D4037;
-  --color-celestial-blue: #4A90E2;
-  --color-mountain: #2C5F2D;
-  --color-card-border: #8B4513;
-  --color-antique: #D2B48C;
-  --color-text-primary: #3E2723;
-  --color-text-secondary: #5D4037;
-  --color-text-muted: #6D4C41;
+  /* Primary Sun Colors */
+  --sun-gold: #FFD700;
+  --sun-amber: #FFA500;
+  --sun-orange: #FF8C42;
+  --sun-deep-orange: #FF6B35;
+  
+  /* Supporting Colors */
+  --sun-cream: #FFF8DC;
+  --sun-light: #FFFAF0;
+  --sun-warm: #FFE4B5;
+  --sun-bronze: #CD7F32;
+  
+  /* Text Colors */
+  --sun-text: #2E1A05;
+  --sun-text-secondary: #3E2723;
+  --sun-text-muted: #5D4037;
+  
+  /* Accent Colors */
+  --sun-red: #DC2626;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.1);
+  --shadow-md: 0 4px 12px rgba(139, 69, 19, 0.15);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
 }
 
+/* ===================================
+   NAVBAR BASE
+   =================================== */
 .navbar {
-  padding: 0.8rem 2rem;
-  background: rgba(255, 248, 220, 0.95);
-  box-shadow: 0 2px 15px rgba(139, 69, 19, 0.08);
-  backdrop-filter: blur(12px);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 248, 220, 0.98) 0%, 
+    rgba(255, 240, 200, 0.98) 100%
+  );
+  box-shadow: var(--shadow-md);
+  border-bottom: 3px solid var(--sun-bronze);
   position: sticky;
   top: 0;
   z-index: 1100;
   font-family: 'Inter', sans-serif;
 }
 
+/* ===================================
+   CONTAINER LAYOUT
+   =================================== */
 .container-fluid {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-/* Left - Brand */
+/* ===================================
+   BRAND (LEFT)
+   =================================== */
 .navbar-brand {
   font-size: 1.8rem;
   font-weight: 900;
-  color: var(--color-text-primary) !important;
-  text-shadow: 0 1px 3px rgba(139, 69, 19, 0.15);
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
+  color: var(--sun-text) !important;
   font-family: 'Cinzel', serif;
-  justify-self: start;
+  letter-spacing: 1px;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
 }
 
 .navbar-brand:hover {
   transform: scale(1.05);
-  color: var(--color-amber) !important;
+  color: var(--sun-amber) !important;
 }
 
 .navbar-brand i {
-  color: var(--color-amber);
-  margin-right: 0.5rem;
-  font-size: 1.6rem !important;
-  animation: sunPulse 4s ease-in-out infinite;
+  color: var(--sun-amber);
+  font-size: 1.6rem;
+  animation: iconPulse 3s ease-in-out infinite;
 }
 
-@keyframes sunPulse {
-  0%, 100% { 
-    transform: scale(1); 
-    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.3)); 
-  }
-  50% { 
-    transform: scale(1.1); 
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); 
-  }
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
-/* Center - Search bar */
+/* ===================================
+   SEARCH CONTAINER (CENTER)
+   =================================== */
 .search-container {
-  justify-self: center;
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
+  justify-self: center;
 }
 
-.search-input {
-  width: 100%;
-  padding: 0.7rem 1rem 0.7rem 2.8rem;
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 25px;
-  background: rgba(255, 248, 220, 0.9);
-  color: var(--color-text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--color-amber);
-  background: rgba(255, 248, 220, 1);
-  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.15);
-}
-
-.search-input::placeholder {
-  color: var(--color-text-muted);
-  font-style: italic;
-}
-
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-muted);
-  font-size: 1.1rem;
-}
-
-/* Right - Actions */
+/* ===================================
+   NAVBAR ACTIONS (RIGHT)
+   =================================== */
 .navbar-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 1rem;
+  justify-self: end;
 }
 
-/* Notification button with bell emoji */
-.notification-btn {
-  width: 44px;
-  height: 44px;
+/* ===================================
+   ADMIN BUTTON
+   =================================== */
+.admin-btn {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, 
+    var(--sun-gold) 0%, 
+    var(--sun-amber) 100%
+  );
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border: 2px solid var(--sun-bronze);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 3px 10px rgba(255, 165, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-btn::before {
+  content: '👑';
+  font-size: 1.1rem;
+}
+
+.admin-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 165, 0, 0.08) 100%);
-  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.admin-btn:hover::after {
+  width: 200%;
+  height: 200%;
+}
+
+.admin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(255, 165, 0, 0.35);
+  border-color: var(--sun-amber);
+}
+
+.admin-btn.active {
+  background: linear-gradient(135deg, 
+    var(--sun-orange) 0%, 
+    var(--sun-deep-orange) 100%
+  );
+  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.4);
+}
+
+/* ===================================
+   NOTIFICATION BUTTON
+   =================================== */
+.notification-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, 
+    rgba(255, 215, 0, 0.2) 0%, 
+    rgba(255, 165, 0, 0.15) 100%
+  );
+  border: 2px solid var(--sun-bronze);
+  color: var(--sun-text);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  position: relative;
-  font-size: 1.4rem;
   cursor: pointer;
-  border: none;
+  transition: all var(--transition-normal);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.notification-btn i {
+  font-size: 1.3rem;
+  color: var(--sun-amber);
 }
 
 .notification-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.12) 100%);
-  color: var(--color-amber);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.15);
-}
-
-/* Profile button with user emoji */
-.profile-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
   background: linear-gradient(135deg, 
-    var(--color-amber) 0%, 
-    var(--color-gold) 50%, 
-    var(--color-sunset) 100%
+    rgba(255, 215, 0, 0.3) 0%, 
+    rgba(255, 165, 0, 0.25) 100%
   );
-  color: #FFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  font-size: 1.4rem;
-  cursor: pointer;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 3px 8px rgba(255, 165, 0, 0.25);
-  border: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.25);
+  border-color: var(--sun-amber);
 }
 
-.profile-btn:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 15px rgba(255, 165, 0, 0.35);
+.notification-btn.active {
+  background: linear-gradient(135deg, 
+    rgba(255, 165, 0, 0.35) 0%, 
+    rgba(255, 140, 66, 0.3) 100%
+  );
+  border-color: var(--sun-amber);
 }
 
-/* Logout button */
-.logout-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  border-radius: 20px;
-  background: rgba(220, 38, 38, 0.03);
-  color: #DC2626;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.logout-btn:hover {
-  background: rgba(220, 38, 38, 0.08);
-  border-color: #DC2626;
-  color: #B91C1C;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
-}
-
-.logout-btn i {
-  font-size: 0.9rem;
-}
-
-/* Notification badge */
+/* Notification Badge */
 .notification-badge {
   position: absolute;
   top: -4px;
   right: -4px;
-  background: #DC2626;
+  background: var(--sun-red);
   color: white;
   font-size: 0.7rem;
-  padding: 0.1rem 0.4rem;
-  border-radius: 10px;
   font-weight: 700;
-  min-width: 18px;
+  padding: 0.15rem 0.45rem;
+  border-radius: 12px;
+  min-width: 20px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);
+  border: 2px solid white;
   animation: badgePulse 2s ease-in-out infinite;
 }
 
 @keyframes badgePulse {
-  0%, 100% { 
-    transform: scale(1); 
-  }
-  50% { 
-    transform: scale(1.1); 
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 0.6rem 1rem;
-  }
-  
+/* ===================================
+   PROFILE BUTTON
+   =================================== */
+.profile-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, 
+    var(--sun-gold) 0%, 
+    var(--sun-amber) 50%, 
+    var(--sun-orange) 100%
+  );
+  border: 2px solid var(--sun-bronze);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 3px 10px rgba(255, 165, 0, 0.3);
+}
+
+.profile-btn i {
+  font-size: 1.3rem;
+}
+
+.profile-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 5px 16px rgba(255, 165, 0, 0.4);
+}
+
+/* ===================================
+   LOGOUT BUTTON
+   =================================== */
+.logout-btn {
+  padding: 0.6rem 1.5rem;
+  background: rgba(220, 38, 38, 0.08);
+  border: 2px solid rgba(220, 38, 38, 0.4);
+  border-radius: 24px;
+  color: var(--sun-red);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.logout-btn:hover {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: var(--sun-red);
+  color: #B91C1C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.logout-btn i {
+  font-size: 1rem;
+}
+
+/* ===================================
+   NAV LINKS (IF USED)
+   =================================== */
+.navbar-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: var(--sun-text) !important;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem !important;
+  border-radius: 20px;
+  transition: all var(--transition-normal);
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: transparent;
+  border: 2px solid transparent;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-link:hover {
+  color: var(--sun-amber) !important;
+  background: rgba(255, 215, 0, 0.15);
+  border-color: var(--sun-bronze);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-link.active {
+  color: white !important;
+  background: linear-gradient(135deg, 
+    var(--sun-amber) 0%, 
+    var(--sun-orange) 100%
+  );
+  border-color: var(--sun-bronze);
+  box-shadow: 0 3px 10px rgba(255, 165, 0, 0.3);
+}
+
+.nav-link i {
+  font-size: 1.1rem;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 992px) {
   .container-fluid {
-    grid-template-columns: auto 1fr auto;
-    gap: 0.8rem;
+    gap: 1.5rem;
   }
   
   .search-container {
+    max-width: 350px;
+  }
+  
+  .navbar-actions {
+    gap: 0.8rem;
+  }
+  
+  .admin-btn,
+  .logout-btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.8rem 1rem;
+  }
+  
+  .container-fluid {
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+  }
+  
+  .search-container {
+    grid-column: 1 / -1;
     max-width: none;
   }
   
-  .search-input {
-    padding: 0.6rem 0.8rem 0.6rem 2.4rem;
-    font-size: 0.9rem;
+  .navbar-brand {
+    font-size: 1.5rem;
   }
   
-  .search-icon {
-    left: 0.8rem;
+  .navbar-brand i {
+    font-size: 1.4rem;
+  }
+  
+  .navbar-actions {
+    gap: 0.6rem;
+  }
+  
+  .notification-btn,
+  .profile-btn {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .notification-btn i,
+  .profile-btn i {
+    font-size: 1.2rem;
+  }
+  
+  .admin-btn::before {
     font-size: 1rem;
+  }
+  
+  .admin-btn,
+  .logout-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 0.7rem 0.8rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.3rem;
+  }
+  
+  .navbar-brand i {
+    font-size: 1.2rem;
+  }
+  
+  .navbar-actions {
+    gap: 0.5rem;
   }
   
   .notification-btn,
   .profile-btn {
     width: 38px;
     height: 38px;
-    font-size: 1.2rem;
+  }
+  
+  .notification-btn i,
+  .profile-btn i {
+    font-size: 1.1rem;
+  }
+  
+  .admin-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+  
+  .admin-btn::before {
+    font-size: 0.9rem;
   }
   
   .logout-btn {
     padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-  }
-  
-  .navbar-actions {
-    gap: 0.6rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .navbar-brand {
-    font-size: 1.5rem;
-  }
-  
-  .navbar-brand i {
-    font-size: 1.4rem !important;
-  }
-  
-  .container-fluid {
-    gap: 0.5rem;
-  }
-  
-  .notification-btn,
-  .profile-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.1rem;
-  }
-  
-  .logout-btn {
-    padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
   }
   
-  .navbar-actions {
-    gap: 0.4rem;
+  .logout-btn i {
+    font-size: 0.9rem;
   }
 }
 
-/* Additional styles for mobile navbar */
-.navbar-nav {
-  gap: 1rem;
-  align-items: center;
-}
-
-.nav-link {
-  color: var(--color-text-primary) !important;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 0.6rem 1rem !important;
-  border-radius: 12px;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.5px;
-  text-transform: capitalize;
-  background: rgba(255, 248, 220, 0.1);
-}
-
-.nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 215, 0, 0.2), 
-    transparent
-  );
-  transition: left 0.6s ease;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-gold), var(--color-amber));
-  border-radius: 2px;
-  transition: width 0.4s ease;
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
-}
-
-.nav-link:hover::before {
-  left: 100%;
-}
-
-.nav-link:hover::after {
-  width: 80%;
-}
-
-.nav-link:hover {
-  color: var(--color-amber) !important;
-  background: rgba(255, 215, 0, 0.12);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.2);
-}
-
-.nav-link.active {
-  color: var(--color-amber) !important;
-  background: rgba(255, 215, 0, 0.15);
-  font-weight: 800;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.25);
-}
-
-.nav-link.active::after {
-  width: 90%;
-  height: 4px;
-  animation: activeGlow 3s ease-in-out infinite;
-}
-
-@keyframes activeGlow {
-  0%, 100% { 
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); 
-  }
-  50% { 
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7); 
-  }
-}
-
-.nav-link i {
-  margin-right: 0.8rem;
-  font-size: 1.3rem;
-  filter: drop-shadow(0 1px 2px rgba(7, 4, 1, 0.2));
-}
-
-.btn-outline-light {
-  border: 1px solid rgba(255, 248, 220, 0.3);
-  color: var(--color-text-primary);
-  padding: 0.5rem 1.2rem;
-  border-radius: 25px;
-  font-weight: 600;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  transition: all 0.4s ease;
-  background: rgba(255, 215, 0, 0.08);
-  backdrop-filter: blur(5px);
-  position: relative;
-  overflow: hidden;
-  font-size: 0.9rem;
-}
-
-.btn-outline-light::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 248, 220, 0.15), 
-    transparent
-  );
-  transition: left 0.5s ease;
-}
-
-.btn-outline-light:hover::before {
-  left: 100%;
-}
-
-.btn-outline-light:hover {
-  background: rgba(255, 215, 0, 0.18);
-  border-color: rgba(255, 248, 220, 0.6);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.25);
-  color: var(--color-amber);
-}
-
-/* Focus states for accessibility */
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
+.admin-btn:focus,
 .notification-btn:focus,
 .profile-btn:focus,
-.logout-btn:focus {
-  outline: 2px solid rgba(255, 165, 0, 0.4);
+.logout-btn:focus,
+.nav-link:focus {
+  outline: 3px solid rgba(255, 165, 0, 0.5);
   outline-offset: 2px;
 }
 
-/* Animation for navbar items */
-.navbar-nav .nav-item {
-  animation: slideInFromTop 0.6s ease-out;
-}
-
-@keyframes slideInFromTop {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* Remove transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

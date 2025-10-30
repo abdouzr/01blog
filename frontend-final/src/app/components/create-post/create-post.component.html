@@ -4,7 +4,8 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h2 class="mb-0">Create New Post</h2>
+          <!-- MODIFIED: Dynamic title -->
+          <h2 class="mb-0">{{ editingPost ? 'Edit Post' : 'Create New Post' }}</h2>
         </div>
         <div class="card-body">
           <form (ngSubmit)="createPost()" #postForm="ngForm">
@@ -33,17 +34,19 @@
                 [disabled]="isSubmitting">
             </div>
 
-            <!-- File Preview -->
+            <!-- File Preview (MODIFIED for existing media) -->
             <div *ngIf="previewUrl" class="mb-3">
               <div class="position-relative">
+                <!-- Show existing image OR newly selected image -->
                 <img 
-                  *ngIf="selectedFile && selectedFile.type.startsWith('image')" 
+                  *ngIf="(selectedFile && selectedFile.type.startsWith('image')) || (previewUrl && !selectedFile && existingMediaType === 'image')" 
                   [src]="previewUrl" 
                   alt="Preview" 
                   class="img-fluid rounded"
                   style="max-height: 300px;">
+                <!-- Show existing video OR newly selected video -->
                 <video 
-                  *ngIf="selectedFile && selectedFile.type.startsWith('video')" 
+                  *ngIf="(selectedFile && selectedFile.type.startsWith('video')) || (previewUrl && !selectedFile && existingMediaType === 'video')" 
                   [src]="previewUrl" 
                   controls 
                   class="img-fluid rounded"
@@ -78,9 +81,10 @@
               <button 
                 type="submit" 
                 class="btn btn-primary" 
-                [disabled]="isSubmitting || (!content.trim() && !selectedFile)">
+                [disabled]="isSubmitting || (!content.trim() && !selectedFile && !existingMediaUrl)">
                 <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
-                {{ isSubmitting ? 'Creating...' : 'Create Post' }}
+                <!-- MODIFIED: Dynamic button text -->
+                {{ isSubmitting ? (editingPost ? 'Saving...' : 'Creating...') : (editingPost ? 'Save Changes' : 'Create Post') }}
               </button>
             </div>
           </form>
