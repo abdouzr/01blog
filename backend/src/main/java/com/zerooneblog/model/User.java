@@ -1,109 +1,257 @@
-// FIXED FILE: /com/zerooneblog/model/User.java
+// backend/src/main/java/com/zerooneblog/model/User.java
+
 package com.zerooneblog.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
-public class User {
-
+public class User implements UserDetails {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // ... (no changes to id, username, email, password, role, bio, profilePicture, isBlocked, createdAt) ...
-    @Column(length = 20, unique = true, nullable = false)
-    private String username;
-
-    @Column(length = 50, unique = true, nullable = false)
-    private String email;
-
-    @Column(length = 120, nullable = false)
-    private String password;
-
-    @Column(name = "role", length = 20, nullable = false)
-    private String role = "ROLE_USER";
-
-    @Column(columnDefinition = "TEXT")
-    private String bio;
-
-    @Column(name = "profile_picture", length = 255)
-    private String profilePicture;
-
-    @Column(name = "is_blocked", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isBlocked = false;
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-
-    // --- FIXED: Added @JsonIgnore to prevent infinite loops ---
-    // Users who subscribe to this user (Followers)
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_subscriptions",
-        joinColumns = @JoinColumn(name = "subscribed_to_id"),
-        inverseJoinColumns = @JoinColumn(name = "subscriber_id")
-    )
-    @JsonIgnore // <-- This prevents the loop
-    private Set<User> subscribers = new HashSet<>();
-
-    // Users this user subscribes to (Following)
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_subscriptions",
-        joinColumns = @JoinColumn(name = "subscriber_id"),
-        inverseJoinColumns = @JoinColumn(name = "subscribed_to_id")
-    )
-    @JsonIgnore // <-- This prevents the loop
-    private Set<User> subscribedTo = new HashSet<>();
     
-    // --- Constructors (No Changes) ---
+    @NotBlank
+    @Size(max = 50)
+    @Column(unique = true)
+    private String username;
+    
+    @NotBlank
+    @Size(max = 100)
+    @Email
+    @Column(unique = true)
+    private String email;
+    
+    @NotBlank
+    @Size(max = 255)
+    @JsonIgnore
+    private String password;
+    
+    @Column(length = 500)
+    private String bio;
+    
+    private String profilePicture;
+    
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.ROLE_USER;
+    
+    private boolean isBlocked = false;
+    
+    private LocalDateTime createdAt;
+    
+    // Relationships
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Post> posts = new HashSet<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Like> likes = new HashSet<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Comment> comments = new HashSet<>();
+    
+    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<UserSubscription> subscriptions = new HashSet<>();
+    
+    @OneToMany(mappedBy = "subscribedTo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<UserSubscription> subscribers = new HashSet<>();
+    
+    public enum Role {
+        ROLE_USER, ROLE_ADMIN
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+    
+    // Constructors
     public User() {}
-
+    
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = "ROLE_USER";
     }
-
-    // --- Getters and Setters (No Changes) ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public String getRole() { return role; } 
-    public void setRole(String role) { this.role = role; }
-    public String getBio() { return bio; }
-    public void setBio(String bio) { this.bio = bio; }
-    public String getProfilePicture() { return profilePicture; }
-    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
-    public Boolean getIsBlocked() { return isBlocked; }
-    public void setIsBlocked(Boolean isBlocked) { this.isBlocked = isBlocked; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public Set<User> getSubscribers() { return subscribers; }
-    public void setSubscribers(Set<User> subscribers) { this.subscribers = subscribers; }
-    public Set<User> getSubscribedTo() { return subscribedTo; }
-    public void setSubscribedTo(Set<User> subscribedTo) { this.subscribedTo = subscribedTo; }
+    
+    // UserDetails interface methods
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+    
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    
+    @Override
+    public String getUsername() {
+        return username;
+    }
+    
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+    
+    @Override
+    public boolean isAccountNonLocked() {
+        return !isBlocked;
+    }
+    
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return !isBlocked;
+    }
+    
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    public String getBio() {
+        return bio;
+    }
+    
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+    
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+    
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+    
+    public Role getRole() {
+        return role;
+    }
+    
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+    
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public Set<Post> getPosts() {
+        return posts;
+    }
+    
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+    
+    public Set<Like> getLikes() {
+        return likes;
+    }
+    
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
+    }
+    
+    public Set<Comment> getComments() {
+        return comments;
+    }
+    
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+    
+    public Set<UserSubscription> getSubscriptions() {
+        return subscriptions;
+    }
+    
+    public void setSubscriptions(Set<UserSubscription> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+    
+    public Set<UserSubscription> getSubscribers() {
+        return subscribers;
+    }
+    
+    public void setSubscribers(Set<UserSubscription> subscribers) {
+        this.subscribers = subscribers;
+    }
+    
+    @Transient
+    public List<User> getSubscribedTo() {
+        return subscriptions.stream()
+            .map(UserSubscription::getSubscribedTo)
+            .collect(Collectors.toList());
+    }
 }

@@ -1,3 +1,4 @@
+// frontend/src/app/services/post.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -55,10 +56,14 @@ export class PostService {
   }
 
   createPost(post: PostRequest): Observable<Post> {
+    console.log('📤 Sending POST request to:', this.apiUrl);
+    console.log('📦 Post data:', post);
     return this.http.post<Post>(this.apiUrl, post);
   }
 
   updatePost(id: number, post: PostRequest): Observable<Post> {
+    console.log('📤 Sending PUT request to:', `${this.apiUrl}/${id}`);
+    console.log('📦 Post data:', post);
     return this.http.put<Post>(`${this.apiUrl}/${id}`, post);
   }
 
@@ -77,6 +82,7 @@ export class PostService {
   uploadFile(file: File): Observable<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
+    console.log('📤 Uploading file:', file.name);
     return this.http.post<UploadResponse>(this.uploadUrl, formData);
   }
 

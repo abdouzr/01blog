@@ -31,7 +31,7 @@ public class UserPrincipal implements UserDetails {
     public static UserPrincipal build(User user) {
         // FIXED: Convert the simple String role from the User model into a Spring Security GrantedAuthority
         List<GrantedAuthority> authorities = Collections.singletonList(
-            new SimpleGrantedAuthority(user.getRole())
+            new SimpleGrantedAuthority(user.getRole().name())
         );
 
         return new UserPrincipal(

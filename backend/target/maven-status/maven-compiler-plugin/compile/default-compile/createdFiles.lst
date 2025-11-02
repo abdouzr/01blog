@@ -10,6 +10,7 @@ com/zerooneblog/controller/NotificationController.class
 com/zerooneblog/security/JwtUtils.class
 com/zerooneblog/dto/PostRequest.class
 com/zerooneblog/service/FollowService.class
+com/zerooneblog/repository/UserSubscriptionRepository.class
 com/zerooneblog/model/Report.class
 com/zerooneblog/model/Report$TargetType.class
 com/zerooneblog/controller/FollowController.class
@@ -33,6 +34,7 @@ com/zerooneblog/security/UserDetailsImpl.class
 com/zerooneblog/repository/CommentRepository.class
 com/zerooneblog/model/Report$ReportStatus.class
 com/zerooneblog/dto/UserResponse.class
+com/zerooneblog/model/UserSubscription.class
 com/zerooneblog/controller/PostController.class
 com/zerooneblog/dto/FollowResponse.class
 com/zerooneblog/model/Notification$NotificationType.class
@@ -44,6 +46,7 @@ com/zerooneblog/dto/NotificationResponse$FromUser.class
 com/zerooneblog/security/UserPrincipal.class
 com/zerooneblog/service/FileStorageService.class
 com/zerooneblog/config/CloudinaryConfig.class
+com/zerooneblog/controller/TestNotificationController.class
 com/zerooneblog/repository/ReportRepository.class
 com/zerooneblog/dto/FollowResponse$UserResponse.class
 com/zerooneblog/ZeroOneBlogApplication.class
@@ -64,6 +67,7 @@ com/zerooneblog/dto/SignupRequest.class
 com/zerooneblog/model/User.class
 com/zerooneblog/security/AuthEntryPointJwt.class
 com/zerooneblog/security/WebSecurityConfig.class
+com/zerooneblog/model/User$Role.class
 com/zerooneblog/dto/PostDto.class
 com/zerooneblog/controller/UploadController.class
 com/zerooneblog/model/Role.class

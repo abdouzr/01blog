@@ -1,3 +1,5 @@
+// backend/src/main/java/com/zerooneblog/repository/CommentRepository.java
+
 package com.zerooneblog.repository;
 
 import java.util.List;
@@ -15,12 +17,16 @@ import com.zerooneblog.model.User;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByPostOrderByCreatedAtAsc(Post post);
     
     List<Comment> findByPostOrderByCreatedAtDesc(Post post);
     
+    List<Comment> findByUser(User user);
+    
+    Long countByPost(Post post);
+    
+    // ✅ FIXED: Change c.author to c.user
     @Modifying
     @Transactional
-    @Query("DELETE FROM Comment c WHERE c.author = :user")
+    @Query("DELETE FROM Comment c WHERE c.user = :user")
     void deleteByUser(@Param("user") User user);
 }

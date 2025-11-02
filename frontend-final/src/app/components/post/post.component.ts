@@ -5,18 +5,18 @@ import { CommonModule } from '@angular/common';
 import { CommentsComponent } from '../comments/comments.component';
 import { ReportService } from '../../services/report.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, RouterModule } from '@angular/router'; // <-- Make sure Router and RouterModule are imported
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-post',
   standalone: true,
-  imports: [CommonModule, CommentsComponent, RouterModule], // <-- Make sure RouterModule is in imports
+  imports: [CommonModule, CommentsComponent, RouterModule],
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
 export class PostComponent {
   @Input() post!: Post;
-  @Input() currentUserId: number | null = null; // This is correct (accepts null)
+  @Input() currentUserId: number | null = null;
   @Output() like = new EventEmitter<Post>();
   @Output() unlike = new EventEmitter<Post>();
   @Output() deletePost = new EventEmitter<number>();
@@ -30,7 +30,7 @@ export class PostComponent {
   constructor(
     private reportService: ReportService,
     private snackBar: MatSnackBar,
-    private router: Router // <-- Inject Router
+    private router: Router
   ) {}
 
   updateCharCount(text: string): void {
@@ -74,11 +74,16 @@ export class PostComponent {
     }, 500);
   }
 
-  // --- THIS IS THE KEY FUNCTION ---
+  // --- FIXED EDIT METHOD ---
   onEditPost(): void {
-    // We navigate to create-post and pass the entire post object
+    console.log('📝 Editing post:', this.post);
+    
+    // Navigate to create-post and pass the entire post object
     // using the router's 'state'
-    this.router.navigate(['/create-post'], { state: { post: this.post } });
+    this.router.navigate(['/create-post'], { 
+      state: { post: this.post },
+      replaceUrl: false // Keep navigation history so back button works
+    });
   }
 
   onDeletePost(): void {
@@ -91,26 +96,47 @@ export class PostComponent {
     this.showComments = !this.showComments;
   }
 
-  // --- Utility functions (unchanged) ---
+  // --- Utility functions ---
   
   formatDate(dateString: string): string {
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) { return 'Invalid date'; }
+      if (isNaN(date.getTime())) { 
+        return 'Invalid date'; 
+      }
+      
       const now = new Date();
       const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-      if (diffInSeconds < 60) { return 'Just now'; }
-      if (diffInSeconds < 3600) { const m = Math.floor(diffInSeconds / 60); return `${m} minute${m !== 1 ? 's' : ''} ago`; }
-      if (diffInSeconds < 86400) { const h = Math.floor(diffInSeconds / 3600); return `${h} hour${h !== 1 ? 's' : ''} ago`; }
-      if (diffInSeconds < 604800) { const d = Math.floor(diffInSeconds / 86400); return `${d} day${d !== 1 ? 's' : ''} ago`; }
+      
+      if (diffInSeconds < 60) { 
+        return 'Just now'; 
+      }
+      if (diffInSeconds < 3600) { 
+        const m = Math.floor(diffInSeconds / 60); 
+        return `${m} minute${m !== 1 ? 's' : ''} ago`; 
+      }
+      if (diffInSeconds < 86400) { 
+        const h = Math.floor(diffInSeconds / 3600); 
+        return `${h} hour${h !== 1 ? 's' : ''} ago`; 
+      }
+      if (diffInSeconds < 604800) { 
+        const d = Math.floor(diffInSeconds / 86400); 
+        return `${d} day${d !== 1 ? 's' : ''} ago`; 
+      }
+      
       return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } catch (error) { console.error('Error formatting date:', error); return 'Invalid date'; }
+    } catch (error) { 
+      console.error('Error formatting date:', error); 
+      return 'Invalid date'; 
+    }
   }
 
   getMediaUrl(url: string): string {
     if (!url) return '';
-    if (url.startsWith('http') || url.startsWith('data:')) { return url; }
-    return `http://localhost:8081${url}`; // Using the base URL from your service
+    if (url.startsWith('http') || url.startsWith('data:')) { 
+      return url; 
+    }
+    return `http://localhost:8081${url}`;
   }
 
   getFileExtension(url: string): string {
@@ -119,11 +145,25 @@ export class PostComponent {
       const parts = url.split('.');
       const extension = parts[parts.length - 1].toLowerCase();
       return extension.split('?')[0];
-    } catch (error) { console.error('Error getting file extension:', error); return ''; }
+    } catch (error) { 
+      console.error('Error getting file extension:', error); 
+      return ''; 
+    }
   }
 
-  isImage(mediaType: string): boolean { return mediaType === 'image'; }
-  isVideo(mediaType: string): boolean { return mediaType === 'video'; }
-  onImageError(event: Event): void { (event.target as HTMLImageElement).style.display = 'none'; }
-  onVideoError(event: Event): void { (event.target as HTMLVideoElement).style.display = 'none'; }
+  isImage(mediaType: string): boolean { 
+    return mediaType === 'image'; 
+  }
+  
+  isVideo(mediaType: string): boolean { 
+    return mediaType === 'video'; 
+  }
+  
+  onImageError(event: Event): void { 
+    (event.target as HTMLImageElement).style.display = 'none'; 
+  }
+  
+  onVideoError(event: Event): void { 
+    (event.target as HTMLVideoElement).style.display = 'none'; 
+  }
 }

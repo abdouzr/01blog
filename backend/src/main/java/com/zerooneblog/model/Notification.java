@@ -1,6 +1,5 @@
 // backend/src/main/java/com/zerooneblog/model/Notification.java
 
-// Updated Notification.java model
 package com.zerooneblog.model;
 
 import java.time.LocalDateTime;
@@ -34,19 +33,23 @@ public class Notification {
     private NotificationType type;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") // The user who receives the notification
+    @JoinColumn(name = "user_id")
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_user_id") // The user who triggered the notification
+    @JoinColumn(name = "from_user_id")
     private User fromUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "related_post_id")
     private Post relatedPost;
     
+    // ✅ FIXED: This enum matches your database constraint
     public enum NotificationType {
-        LIKE, COMMENT, FOLLOW, POST
+        LIKE,      // When someone likes a post
+        COMMENT,   // When someone comments on a post
+        FOLLOW,    // When someone follows you
+        POST       // ⭐ THIS IS THE CORRECT VALUE - not NEW_POST
     }
     
     @PrePersist

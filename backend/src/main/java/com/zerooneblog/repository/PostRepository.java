@@ -26,4 +26,16 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Transactional
     @Query("DELETE FROM Post p WHERE p.author = :author")
     void deleteByAuthor(@Param("author") User author);
+
+
+
+    /**
+     * Find all posts ordered by creation date (newest first)
+     */
+    List<Post> findAllByOrderByCreatedAtDesc();
+    
+    /**
+     * Find posts by multiple authors (for feed), ordered by creation date
+     */
+    List<Post> findByAuthorInOrderByCreatedAtDesc(List<User> authors);
 }

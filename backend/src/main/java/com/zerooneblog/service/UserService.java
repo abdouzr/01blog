@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zerooneblog.model.User;
+import com.zerooneblog.model.UserSubscription;
 import com.zerooneblog.repository.CommentRepository;
 import com.zerooneblog.repository.LikeRepository;
 import com.zerooneblog.repository.PostRepository;
 import com.zerooneblog.repository.ReportRepository;
 import com.zerooneblog.repository.UserRepository;
+import com.zerooneblog.repository.UserSubscriptionRepository;
 
 @Service
 public class UserService {
@@ -33,6 +35,9 @@ public class UserService {
     
     @Autowired
     private ReportRepository reportRepository;
+    
+    @Autowired
+    private UserSubscriptionRepository userSubscriptionRepository;
 
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -70,26 +75,36 @@ public class UserService {
 
     @Transactional
     public void followUser(User follower, User userToFollow) {
-        follower.getSubscribedTo().add(userToFollow);
-        userRepository.save(follower);
+        // ✅ FIXED: Use UserSubscriptionRepository properly
+        if (!userSubscriptionRepository.existsBySubscriberAndSubscribedTo(follower, userToFollow)) {
+            UserSubscription subscription = new UserSubscription(follower, userToFollow);
+            userSubscriptionRepository.save(subscription);
+        }
     }
 
     @Transactional
     public void unfollowUser(User follower, User userToUnfollow) {
-        follower.getSubscribedTo().remove(userToUnfollow);
-        userRepository.save(follower);
+        // ✅ FIXED: Use UserSubscriptionRepository properly
+        userSubscriptionRepository.findBySubscriberAndSubscribedTo(follower, userToUnfollow)
+            .ifPresent(subscription -> userSubscriptionRepository.delete(subscription));
     }
 
     public List<User> getFollowers(User user) {
-        return user.getSubscribers().stream().collect(Collectors.toList());
+        // ✅ FIXED: Use the repository method
+        return userSubscriptionRepository.findSubscribersBySubscribedTo(user);
     }
 
     public List<User> getFollowing(User user) {
-        return user.getSubscribedTo().stream().collect(Collectors.toList());
+        // ✅ FIXED: Get subscriptions and map to users
+        return userSubscriptionRepository.findBySubscriber(user)
+            .stream()
+            .map(UserSubscription::getSubscribedTo)
+            .collect(Collectors.toList());
     }
 
     public boolean isFollowing(User follower, User target) {
-        return follower.getSubscribedTo().contains(target);
+        // ✅ FIXED: Use repository method
+        return userSubscriptionRepository.existsBySubscriberAndSubscribedTo(follower, target);
     }
 
     // --- Admin Action Methods ---
@@ -115,6 +130,10 @@ public class UserService {
             System.out.println("Deleting posts by user...");
             postRepository.deleteByAuthor(user);
             
+            System.out.println("Deleting subscriptions...");
+            userSubscriptionRepository.deleteAll(userSubscriptionRepository.findBySubscriber(user));
+            userSubscriptionRepository.deleteAll(userSubscriptionRepository.findBySubscribedTo(user));
+            
             System.out.println("Deleting user...");
             userRepository.delete(user);
             
@@ -133,7 +152,8 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
         
-        user.setIsBlocked(true);
+        // ✅ FIXED: Changed from setIsBlocked to setBlocked
+        user.setBlocked(true);
         userRepository.save(user);
         System.out.println("User banned successfully");
     }
@@ -144,8 +164,9 @@ public class UserService {
         
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
-            
-        user.setIsBlocked(false);
+        
+        // ✅ FIXED: Changed from setIsBlocked to setBlocked
+        user.setBlocked(false);
         userRepository.save(user);
         System.out.println("User unbanned successfully");
     }

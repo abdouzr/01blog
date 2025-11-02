@@ -1,9 +1,9 @@
 // frontend/src/app/components/create-post/create-post.component.ts
-import { Component, OnInit } from '@angular/core'; // <-- Import OnInit
+import { Component, OnInit } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PostService, Post, PostRequest } from '../../services/post.service'; // <-- Import Post & PostRequest
+import { PostService, Post, PostRequest } from '../../services/post.service'; 
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -13,18 +13,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.css']
 })
-export class CreatePostComponent implements OnInit { // <-- Implement OnInit
+export class CreatePostComponent implements OnInit {
   content: string = '';
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   isSubmitting: boolean = false;
   isUploading: boolean = false;
 
-  // --- NEW PROPERTIES FOR EDITING ---
+  // --- CRITICAL VARIABLE FOR EDIT MODE ---
   editingPost: Post | null = null;
+
   existingMediaUrl: string | null = null;
   existingMediaType: string | null = null;
-  // ------------------------------------
 
   constructor(
     private postService: PostService,
@@ -32,47 +32,56 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
     private snackBar: MatSnackBar
   ) {}
 
-  // --- THIS IS THE KEY NEW METHOD ---
+  // --- FIXED ngOnInit ---
   ngOnInit(): void {
-    // Check if the router passed us any 'state' data
+    // Try to get navigation state first
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state && navigation.extras.state['post']) {
       this.editingPost = navigation.extras.state['post'] as Post;
+      this.loadPostData();
+    } 
+    // Fallback: Check if there's data in history state (for page refresh)
+    else if (window.history.state && window.history.state['post']) {
+      this.editingPost = window.history.state['post'] as Post;
+      this.loadPostData();
+    }
+  }
+
+  // --- NEW METHOD: Load post data into form ---
+  private loadPostData(): void {
+    if (this.editingPost) {
+      console.log('📝 Loading post data for editing:', this.editingPost);
       
       // Populate the form with the existing post data
-      this.content = this.editingPost.content;
-      this.existingMediaUrl = this.editingPost.mediaUrl;
-      this.existingMediaType = this.editingPost.mediaType;
+      this.content = this.editingPost.content || '';
+      this.existingMediaUrl = this.editingPost.mediaUrl || null;
+      this.existingMediaType = this.editingPost.mediaType || null;
       
-      // If there's an existing media, show its preview
       if (this.existingMediaUrl) {
         this.previewUrl = this.getMediaUrl(this.existingMediaUrl);
       }
     }
   }
 
-  // Helper to build the full media URL
   getMediaUrl(url: string): string | null {
     if (!url) return null;
     if (url.startsWith('http') || url.startsWith('data:')) {
       return url;
     }
-    return `http://localhost:8081${url}`; // Using the base URL from your service
+    return `http://localhost:8081${url}`; 
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.selectedFile = input.files[0];
-      
-      // A new file selection *overrides* any existing media
+      // Clear existing media when new file is selected
       this.existingMediaUrl = null;
       this.existingMediaType = null;
       
-      // Create a local preview for the *new* file
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewUrl = e.target.result;
+      reader.onload = (e: any) => { 
+        this.previewUrl = e.target.result; 
       };
       reader.readAsDataURL(this.selectedFile);
     }
@@ -81,19 +90,17 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
   removeFile(): void {
     this.selectedFile = null;
     this.previewUrl = null;
-    this.existingMediaUrl = null; // Mark existing media for removal
+    this.existingMediaUrl = null; 
     this.existingMediaType = null;
 
-    // Reset the file input visually
     const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
   }
 
-  // --- THIS METHOD NOW HANDLES BOTH CREATE AND UPDATE ---
   async createPost(): Promise<void> {
-    // Updated check: allow saving if there is content OR a new file OR existing media
+    // Validation
     if (!this.content.trim() && !this.selectedFile && !this.existingMediaUrl) {
       this.snackBar.open('Please add some content or upload a file', 'Close', { duration: 3000 });
       return;
@@ -102,11 +109,10 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
     this.isSubmitting = true;
 
     try {
-      // Start with existing media, if any
       let mediaUrl = this.existingMediaUrl || '';
       let mediaType = this.existingMediaType || '';
 
-      // If a *new* file was selected, upload it and overwrite old media
+      // Upload new file if selected
       if (this.selectedFile) {
         this.isUploading = true;
         const uploadResult = await this.postService.uploadFile(this.selectedFile).toPromise();
@@ -117,24 +123,26 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
           mediaType = uploadResult.mediaType;
         }
       } 
-      // If no new file and no existing media (it was removed)
+      // If no new file and no existing media, clear the fields
       else if (!this.existingMediaUrl) {
         mediaUrl = '';
         mediaType = '';
       }
 
-      // This object holds the final data, matching 'PostRequest'
       const postData: PostRequest = {
         content: this.content.trim(),
         mediaUrl: mediaUrl,
         mediaType: mediaType
       };
 
-      // --- CHOOSE ACTION: UPDATE OR CREATE ---
+      // --- EDIT vs CREATE LOGIC ---
       if (this.editingPost) {
-        // --- UPDATE LOGIC ---
+        console.log('✏️ Updating post:', this.editingPost.id);
+        
+        // UPDATE existing post
         this.postService.updatePost(this.editingPost.id, postData).subscribe({
           next: (response) => {
+            console.log('✅ Post updated successfully:', response);
             this.snackBar.open('Post updated successfully!', 'Close', { duration: 3000 });
             this.resetFormAndNavigate();
           },
@@ -145,7 +153,9 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
           }
         });
       } else {
-        // --- CREATE LOGIC (Original) ---
+        console.log('📝 Creating new post');
+        
+        // CREATE new post
         this.postService.createPost(postData).subscribe({
           next: (response) => {
             console.log('✅ Post created successfully:', response);
@@ -167,13 +177,12 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
     }
   }
 
-  // Helper to reset form and navigate
   private resetFormAndNavigate(): void {
     this.content = '';
     this.selectedFile = null;
     this.previewUrl = null;
     this.isSubmitting = false;
-    this.editingPost = null;
+    this.editingPost = null; 
     this.existingMediaUrl = null;
     this.existingMediaType = null;
     
@@ -183,6 +192,6 @@ export class CreatePostComponent implements OnInit { // <-- Implement OnInit
   }
 
   cancel(): void {
-    this.resetFormAndNavigate(); // Use the new helper
+    this.resetFormAndNavigate();
   }
 }

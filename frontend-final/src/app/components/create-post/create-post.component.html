@@ -4,7 +4,7 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <!-- MODIFIED: Dynamic title -->
+          <!-- DYNAMIC TITLE -->
           <h2 class="mb-0">{{ editingPost ? 'Edit Post' : 'Create New Post' }}</h2>
         </div>
         <div class="card-body">
@@ -24,7 +24,7 @@
 
             <!-- File Upload -->
             <div class="mb-3">
-              <label for="fileUpload" class="form-label">Upload Image or Video (Optional)</label>
+              <label for="fileUpload" class="form-label">Upload New Image or Video (Optional)</label>
               <input 
                 type="file" 
                 class="form-control" 
@@ -34,7 +34,7 @@
                 [disabled]="isSubmitting">
             </div>
 
-            <!-- File Preview (MODIFIED for existing media) -->
+            <!-- DYNAMIC FILE PREVIEW -->
             <div *ngIf="previewUrl" class="mb-3">
               <div class="position-relative">
                 <!-- Show existing image OR newly selected image -->
@@ -69,7 +69,11 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- 
+              --- THIS IS THE FIX ---
+              The error was here. It said "classd-flex" before. 
+              It is now correctly "class='d-flex'".
+            -->
             <div class="d-flex justify-content-between">
               <button 
                 type="button" 
@@ -83,7 +87,6 @@
                 class="btn btn-primary" 
                 [disabled]="isSubmitting || (!content.trim() && !selectedFile && !existingMediaUrl)">
                 <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
-                <!-- MODIFIED: Dynamic button text -->
                 {{ isSubmitting ? (editingPost ? 'Saving...' : 'Creating...') : (editingPost ? 'Save Changes' : 'Create Post') }}
               </button>
             </div>

@@ -1,13 +1,13 @@
 // frontend/src/app/components/feed/feed.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core'; // Import OnDestroy
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PostService, Post } from '../../services/post.service';
-import { AuthService, User } from '../../services/auth.service'; // Import User
+import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { PostComponent } from '../post/post.component';
 import { RouterModule } from '@angular/router';
-import { Subject } from 'rxjs'; // Import Subject
-import { takeUntil } from 'rxjs/operators'; // Import takeUntil
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-feed',
@@ -16,13 +16,10 @@ import { takeUntil } from 'rxjs/operators'; // Import takeUntil
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.css']
 })
-export class FeedComponent implements OnInit, OnDestroy { // Implement OnDestroy
+export class FeedComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoading = true;
-  currentUserId: number | null = null; // This is correct
-
-  // --- ADDED ---
-  // Subject to manage component unsubscription
+  currentUserId: number | null = null;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -32,23 +29,18 @@ export class FeedComponent implements OnInit, OnDestroy { // Implement OnDestroy
   ) {}
 
   ngOnInit(): void {
-    // --- THIS IS THE FIX FOR ERROR 2 ---
-    // We subscribe to the currentUser observable
-    this.authService.currentUser
-      .pipe(takeUntil(this.destroy$)) // This prevents memory leaks
-      .subscribe((user: User | null) => {
-        // Assuming your User object has an 'id' property
-        // If user exists, set currentUserId to user.id, otherwise set it to null
-        this.currentUserId = user ? user.id : null;
-      });
-    // ------------------------------------
+    // Get the current user ID and store it
+    this.authService.currentUser.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(user => {
+      // Assuming your user object has an 'id' property
+      this.currentUserId = user ? (user as any).id : null; 
+    });
 
     this.loadFeed();
   }
 
-  // --- ADDED ---
   ngOnDestroy(): void {
-    // This cleans up the subscription when the component is destroyed
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -68,39 +60,42 @@ export class FeedComponent implements OnInit, OnDestroy { // Implement OnDestroy
   }
 
   handleLike(post: Post): void {
+    const originalLiked = post.likedByCurrentUser;
+    const originalCount = post.likeCount;
+
     if (post.likedByCurrentUser) {
+      post.likedByCurrentUser = false;
+      post.likeCount--;
       this.postService.unlikePost(post.id).subscribe({
-        next: () => {
-          post.likedByCurrentUser = false;
-          post.likeCount--;
-        },
-        error: (error) => {
+        error: () => {
+          post.likedByCurrentUser = originalLiked;
+          post.likeCount = originalCount;
           this.snackBar.open('Error unliking post', 'Close', { duration: 3000 });
         }
       });
     } else {
+      post.likedByCurrentUser = true;
+      post.likeCount++;
       this.postService.likePost(post.id).subscribe({
-        next: () => {
-          post.likedByCurrentUser = true;
-          post.likeCount++;
-        },
-        error: (error) => {
+        error: () => {
+          post.likedByCurrentUser = originalLiked;
+          post.likeCount = originalCount;
           this.snackBar.open('Error liking post', 'Close', { duration: 3000 });
         }
       });
     }
   }
 
-  onDeletePost(postId: number): void {
-    // We assume your PostService has a 'deletePost' method
+  // This function removes the post from the feed after deletion
+  handleDeletePost(postId: number): void {
     this.postService.deletePost(postId).subscribe({
       next: () => {
-        this.posts = this.posts.filter(post => post.id !== postId);
+        this.posts = this.posts.filter(p => p.id !== postId);
         this.snackBar.open('Post deleted successfully', 'Close', { duration: 3000 });
       },
-      error: (err) => {
-        console.error('Error deleting post:', err);
-        this.snackBar.open('Failed to delete post. Please try again.', 'Close', { duration: 3000 });
+      error: (error) => {
+        console.error('Error deleting post:', error);
+        this.snackBar.open('Error deleting post. Please try again.', 'Close', { duration: 3000 });
       }
     });
   }

@@ -1,57 +1,121 @@
+// backend/src/main/java/com/zerooneblog/service/PostService.java
 package com.zerooneblog.service;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zerooneblog.dto.PostResponse;
 import com.zerooneblog.model.Post;
 import com.zerooneblog.model.User;
-import com.zerooneblog.repository.LikeRepository;
 import com.zerooneblog.repository.PostRepository;
 
 @Service
 public class PostService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
+    
     @Autowired
     private PostRepository postRepository;
     
     @Autowired
-    private LikeRepository likeRepository;
+    private NotificationService notificationService;
     
     @Autowired
-    private UserService userService;
-
-    public List<Post> getAllPosts() {
-    return postRepository.findAllOrderByCreatedAtDesc();
+    private LikeService likeService;
+    
+    @Autowired
+    private CommentService commentService;
+    
+    /**
+     * Create a new post and send notifications to followers
+     */
+    @Transactional
+    public Post createPost(Post post) {
+        logger.info("💾 Saving post to database...");
+        Post savedPost = postRepository.save(post);
+        logger.info("✅ Post saved with ID: {}", savedPost.getId());
+        
+        // 🚨 CRITICAL: Create notifications for all followers
+        logger.info("🔔 About to create notifications for followers...");
+        try {
+            notificationService.createNewPostNotification(savedPost);
+            logger.info("✅ Notification creation completed");
+        } catch (Exception e) {
+            logger.error("❌ FAILED to create notifications: {}", e.getMessage());
+            e.printStackTrace();
+            // Don't fail the post creation if notifications fail
+        }
+        
+        return savedPost;
     }
-
-    public List<Post> getPostsByUser(User user) {
-        return postRepository.findByAuthorOrderByCreatedAtDesc(user);
+    
+    /**
+     * Update an existing post
+     */
+    @Transactional
+    public Post updatePost(Post post) {
+        Post updatedPost = postRepository.save(post);
+        logger.info("✅ Post {} updated successfully", updatedPost.getId());
+        return updatedPost;
     }
-
-    // Updated method to accept List<User> instead of single User
-    public List<Post> getPostsFromSubscribedUsers(List<User> users) {
-        return postRepository.findByAuthorsOrderByCreatedAtDesc(users);
+    
+    /**
+     * Delete a post and its related notifications
+     */
+    @Transactional
+    public void deletePost(Long postId) {
+        logger.info("🗑️ Deleting post with ID: {}", postId);
+        
+        // First, delete all notifications related to this post
+        try {
+            notificationService.deleteNotificationsByPost(postId);
+            logger.info("✅ Deleted notifications for post {}", postId);
+        } catch (Exception e) {
+            logger.error("⚠️ Failed to delete notifications for post {}: {}", postId, e.getMessage());
+        }
+        
+        // Then delete the post (this will cascade delete comments and likes due to JPA mappings)
+        postRepository.deleteById(postId);
+        logger.info("✅ Post {} deleted successfully", postId);
     }
-
+    
+    /**
+     * Get post by ID
+     */
     public Optional<Post> getPostById(Long id) {
         return postRepository.findById(id);
     }
-
-    public Post createPost(Post post) {
-        return postRepository.save(post);
+    
+    /**
+     * Get all posts
+     */
+    public List<Post> getAllPosts() {
+        return postRepository.findAllByOrderByCreatedAtDesc();
     }
-
-    public Post updatePost(Post post) {
-        return postRepository.save(post);
+    
+    /**
+     * Get posts by a specific user
+     */
+    public List<Post> getPostsByUser(User user) {
+        return postRepository.findByAuthorOrderByCreatedAtDesc(user);
     }
-
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
+    
+    /**
+     * Get posts from subscribed users (for feed)
+     */
+    public List<Post> getPostsFromSubscribedUsers(List<User> users) {
+        return postRepository.findByAuthorInOrderByCreatedAtDesc(users);
     }
-
+    
+    /**
+     * Convert Post entity to PostResponse DTO
+     */
     public PostResponse convertToPostResponse(Post post, User currentUser) {
         PostResponse response = new PostResponse();
         response.setId(post.getId());
@@ -60,12 +124,18 @@ public class PostService {
         response.setMediaType(post.getMediaType());
         response.setCreatedAt(post.getCreatedAt());
         response.setUpdatedAt(post.getUpdatedAt());
+        
+        // Author information
         response.setAuthorId(post.getAuthor().getId());
         response.setAuthorUsername(post.getAuthor().getUsername());
         response.setAuthorProfilePicture(post.getAuthor().getProfilePicture());
-        response.setLikeCount(likeRepository.countByPost(post));
+        
+        // Like and comment counts
+        response.setLikeCount(likeService.getLikeCount(post));
         response.setCommentCount((long) post.getComments().size());
-        response.setLikedByCurrentUser(likeRepository.findByUserAndPost(currentUser, post).isPresent());
+        
+        // Check if current user liked this post
+        response.setLikedByCurrentUser(likeService.hasUserLikedPost(post, currentUser));
         
         return response;
     }

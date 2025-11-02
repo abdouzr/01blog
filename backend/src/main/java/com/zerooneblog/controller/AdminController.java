@@ -91,8 +91,8 @@ public class AdminController {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setRole(user.getRole());
-        dto.setIsBlocked(user.getIsBlocked());
+        dto.setRole(user.getRole().name());
+        dto.setIsBlocked(user.isBlocked());
         dto.setCreatedAt(user.getCreatedAt());
         return dto;
     }
