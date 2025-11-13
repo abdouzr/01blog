@@ -1,5 +1,4 @@
-// frontend/src/app/components/post/post.component.ts
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Post } from '../../services/post.service';
 import { CommonModule } from '@angular/common';
 import { CommentsComponent } from '../comments/comments.component';
@@ -14,7 +13,7 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.css']
 })
-export class PostComponent {
+export class PostComponent implements OnInit {
   @Input() post!: Post;
   @Input() currentUserId: number | null = null;
   @Output() like = new EventEmitter<Post>();
@@ -27,11 +26,63 @@ export class PostComponent {
   isSubmittingReport = false;
   currentCharCount = 0;
 
+  // Add these properties
+  maxContentLength = 200; // Show only 200 characters in feed
+  maxMediaToShow = 3; // Show only 3 images in feed
+
   constructor(
     private reportService: ReportService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
+
+  ngOnInit(): void {
+    // Debug media URLs on component init
+    if (this.post.mediaUrls && this.post.mediaUrls.length > 0) {
+      console.log('🖼️ Post media URLs:', this.post.mediaUrls);
+      console.log('📝 Post media types:', this.post.mediaTypes);
+      this.post.mediaUrls.forEach((url, index) => {
+        const fullUrl = this.getMediaUrl(url);
+        console.log(`Media ${index + 1}: ${fullUrl}`);
+      });
+    }
+  }
+
+  // === ADD THESE MISSING METHODS ===
+
+  viewFullPost(): void {
+    this.router.navigate(['/post', this.post.id]);
+  }
+
+  getTruncatedContent(): string {
+    if (!this.post.content) return '';
+    if (this.post.content.length <= this.maxContentLength) {
+      return this.post.content;
+    }
+    return this.post.content.substring(0, this.maxContentLength) + '...';
+  }
+
+  isTruncated(): boolean {
+    return !!this.post.content && this.post.content.length > this.maxContentLength;
+  }
+
+  getVisibleMediaUrls(): string[] {
+    if (!this.post.mediaUrls || this.post.mediaUrls.length === 0) {
+      return [];
+    }
+    return this.post.mediaUrls.slice(0, this.maxMediaToShow);
+  }
+
+  hasMoreMedia(): boolean {
+    return this.post.mediaUrls && this.post.mediaUrls.length > this.maxMediaToShow;
+  }
+
+  getRemainingMediaCount(): number {
+    if (!this.post.mediaUrls) return 0;
+    return this.post.mediaUrls.length - this.maxMediaToShow;
+  }
+
+  // === END OF MISSING METHODS ===
 
   updateCharCount(text: string): void {
     this.currentCharCount = text.length;
@@ -74,15 +125,11 @@ export class PostComponent {
     }, 500);
   }
 
-  // --- FIXED EDIT METHOD ---
   onEditPost(): void {
-    console.log('📝 Editing post:', this.post);
-    
-    // Navigate to create-post and pass the entire post object
-    // using the router's 'state'
+    console.log('✏️ Editing post:', this.post);
     this.router.navigate(['/create-post'], { 
       state: { post: this.post },
-      replaceUrl: false // Keep navigation history so back button works
+      replaceUrl: false
     });
   }
 
@@ -96,7 +143,7 @@ export class PostComponent {
     this.showComments = !this.showComments;
   }
 
-  // --- Utility functions ---
+  // --- Media display functions ---
   
   formatDate(dateString: string): string {
     try {
@@ -132,11 +179,35 @@ export class PostComponent {
   }
 
   getMediaUrl(url: string): string {
-    if (!url) return '';
-    if (url.startsWith('http') || url.startsWith('data:')) { 
-      return url; 
+    if (!url) {
+      console.warn('⚠️ Empty media URL');
+      return '';
     }
-    return `http://localhost:8081${url}`;
+    
+    // If it's already a full URL (starts with http/https or data:)
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+      console.log('✅ Full URL:', url);
+      return url;
+    }
+    
+    // If it starts with /uploads, it's a backend path
+    if (url.startsWith('/uploads')) {
+      const fullUrl = `http://localhost:8081${url}`;
+      console.log('🔗 Backend URL:', fullUrl);
+      return fullUrl;
+    }
+    
+    // If it doesn't start with /, add it
+    if (!url.startsWith('/')) {
+      const fullUrl = `http://localhost:8081/${url}`;
+      console.log('🔗 Constructed URL:', fullUrl);
+      return fullUrl;
+    }
+    
+    // Default case
+    const fullUrl = `http://localhost:8081${url}`;
+    console.log('🔗 Default URL:', fullUrl);
+    return fullUrl;
   }
 
   getFileExtension(url: string): string {
@@ -144,6 +215,7 @@ export class PostComponent {
     try {
       const parts = url.split('.');
       const extension = parts[parts.length - 1].toLowerCase();
+      // Remove query parameters if any
       return extension.split('?')[0];
     } catch (error) { 
       console.error('Error getting file extension:', error); 
@@ -152,18 +224,55 @@ export class PostComponent {
   }
 
   isImage(mediaType: string): boolean { 
-    return mediaType === 'image'; 
+    const result = mediaType === 'image';
+    console.log(`🖼️ Is image? ${mediaType} => ${result}`);
+    return result;
   }
   
   isVideo(mediaType: string): boolean { 
-    return mediaType === 'video'; 
+    const result = mediaType === 'video';
+    console.log(`🎥 Is video? ${mediaType} => ${result}`);
+    return result;
   }
   
   onImageError(event: Event): void { 
-    (event.target as HTMLImageElement).style.display = 'none'; 
+    const img = event.target as HTMLImageElement;
+    console.error('❌ Image failed to load:', img.src);
+    img.style.display = 'none';
+    
+    // Show error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-warning mt-2';
+    errorDiv.innerHTML = `
+      <i class="bi bi-exclamation-triangle"></i> 
+      <strong>Image failed to load</strong><br>
+      <small>${img.src}</small>
+    `;
+    img.parentElement?.appendChild(errorDiv);
   }
   
   onVideoError(event: Event): void { 
-    (event.target as HTMLVideoElement).style.display = 'none'; 
+    const video = event.target as HTMLVideoElement;
+    console.error('❌ Video failed to load:', video.src);
+    video.style.display = 'none';
+    
+    // Show error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-warning mt-2';
+    errorDiv.innerHTML = `
+      <i class="bi bi-exclamation-triangle"></i> 
+      <strong>Video failed to load</strong><br>
+      <small>${video.src}</small>
+    `;
+    video.parentElement?.appendChild(errorDiv);
+  }
+
+  // Grid layout for multiple media
+  getMediaGridClass(totalMedia: number, index: number): string {
+    if (totalMedia === 1) return 'col-12';
+    if (totalMedia === 2) return 'col-6';
+    if (totalMedia === 3) return 'col-4';
+    if (totalMedia === 4) return 'col-6';
+    return 'col-4'; // For 5+ media, use 3-column layout
   }
 }

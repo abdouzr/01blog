@@ -1,10 +1,14 @@
+// backend/src/main/java/com/zerooneblog/model/Report.java
 package com.zerooneblog.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,19 +22,20 @@ import jakarta.persistence.Table;
 public class Report {
     
     public enum TargetType {
-        POST, USER
+        POST, USER, COMMENT
     }
     
     public enum ReportStatus {
-        NEW, REVIEWED
+        NEW, REVIEWED, PENDING, APPROVED, REJECTED
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id", nullable = false)
+    @JsonIgnore // Prevent circular reference
     private User reporter;
 
     @Enumerated(EnumType.STRING)

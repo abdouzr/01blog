@@ -21,4 +21,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Transactional
     @Query("DELETE FROM Report r WHERE r.reporter = :reporter")
     void deleteByReporter(@Param("reporter") User reporter);
+
+    public long countByStatus(ReportStatus reportStatus);
 }

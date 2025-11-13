@@ -138,28 +138,56 @@ public class PostController {
     }
 
     /**
-     * Create a new post
+     * Create a new post with multiple media files
      * IMPORTANT: This triggers notifications to all followers
      */
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest) {
         User currentUser = userService.getCurrentUser();
         
-        logger.info("📝 Creating post for user: {}", currentUser.getUsername());
+        logger.info("📝 Creating post with {} media files for user: {}", 
+            postRequest.getMediaUrls().size(), currentUser.getUsername());
         
         try {
+            // Validate media arrays have the same size
+            if (postRequest.getMediaUrls().size() != postRequest.getMediaTypes().size() || 
+                postRequest.getMediaUrls().size() != postRequest.getCloudinaryPublicIds().size()) {
+                logger.error("❌ Media arrays size mismatch");
+                return ResponseEntity.badRequest().body("Media arrays size mismatch");
+            }
+            
+            // Validate maximum number of media files
+            if (postRequest.getMediaUrls().size() > 10) {
+                logger.error("❌ Maximum 10 media files allowed");
+                return ResponseEntity.badRequest().body("Maximum 10 media files allowed");
+            }
+
             // Create the post entity
             Post post = new Post();
             post.setContent(postRequest.getContent());
-            post.setMediaUrl(postRequest.getMediaUrl());
-            post.setMediaType(postRequest.getMediaType());
             post.setAuthor(currentUser);
             post.setCreatedAt(LocalDateTime.now());
             post.setUpdatedAt(LocalDateTime.now());
+            
+            // Add all media files
+            for (int i = 0; i < postRequest.getMediaUrls().size(); i++) {
+                String mediaUrl = postRequest.getMediaUrls().get(i);
+                String mediaType = postRequest.getMediaTypes().get(i);
+                String publicId = postRequest.getCloudinaryPublicIds().get(i);
+                
+                // Validate media type
+                if (!"image".equals(mediaType) && !"video".equals(mediaType)) {
+                    logger.error("❌ Invalid media type: {}", mediaType);
+                    return ResponseEntity.badRequest().body("Invalid media type: " + mediaType);
+                }
+                
+                post.addMedia(mediaUrl, mediaType, publicId);
+            }
 
             // Save the post (this will trigger notifications in PostService)
             Post savedPost = postService.createPost(post);
-            logger.info("✅ Post created successfully with ID: {}", savedPost.getId());
+            logger.info("✅ Post created successfully with ID: {} and {} media files", 
+                savedPost.getId(), savedPost.getMediaUrls().size());
             
             // Convert to response DTO
             PostResponse response = postService.convertToPostResponse(savedPost, currentUser);
@@ -174,26 +202,55 @@ public class PostController {
     }
 
     /**
-     * Update an existing post
+     * Update an existing post with multiple media files
      */
     @PutMapping("/{id}")
     @PreAuthorize("@postSecurity.isPostOwner(#id)")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody PostRequest postRequest) {
         User currentUser = userService.getCurrentUser();
         
-        logger.info("✏️ Updating post {} for user: {}", id, currentUser.getUsername());
+        logger.info("✏️ Updating post {} with {} media files for user: {}", 
+            id, postRequest.getMediaUrls().size(), currentUser.getUsername());
         
         return postService.getPostById(id)
                 .map(post -> {
+                    // Validate media arrays have the same size
+                    if (postRequest.getMediaUrls().size() != postRequest.getMediaTypes().size() || 
+                        postRequest.getMediaUrls().size() != postRequest.getCloudinaryPublicIds().size()) {
+                        logger.error("❌ Media arrays size mismatch for post {}", id);
+                        throw new IllegalArgumentException("Media arrays size mismatch");
+                    }
+                    
+                    // Validate maximum number of media files
+                    if (postRequest.getMediaUrls().size() > 10) {
+                        logger.error("❌ Maximum 10 media files allowed for post {}", id);
+                        throw new IllegalArgumentException("Maximum 10 media files allowed");
+                    }
+                    
                     post.setContent(postRequest.getContent());
-                    post.setMediaUrl(postRequest.getMediaUrl());
-                    post.setMediaType(postRequest.getMediaType());
                     post.setUpdatedAt(LocalDateTime.now());
+                    
+                    // Clear existing media and add new ones
+                    post.clearMedia();
+                    for (int i = 0; i < postRequest.getMediaUrls().size(); i++) {
+                        String mediaUrl = postRequest.getMediaUrls().get(i);
+                        String mediaType = postRequest.getMediaTypes().get(i);
+                        String publicId = postRequest.getCloudinaryPublicIds().get(i);
+                        
+                        // Validate media type
+                        if (!"image".equals(mediaType) && !"video".equals(mediaType)) {
+                            logger.error("❌ Invalid media type: {} for post {}", mediaType, id);
+                            throw new IllegalArgumentException("Invalid media type: " + mediaType);
+                        }
+                        
+                        post.addMedia(mediaUrl, mediaType, publicId);
+                    }
                     
                     Post updatedPost = postService.updatePost(post);
                     PostResponse response = postService.convertToPostResponse(updatedPost, currentUser);
                     
-                    logger.info("✅ Post {} updated successfully", id);
+                    logger.info("✅ Post {} updated successfully with {} media files", 
+                        id, updatedPost.getMediaUrls().size());
                     return ResponseEntity.ok(response);
                 })
                 .orElseGet(() -> {
@@ -204,7 +261,7 @@ public class PostController {
 
     /**
      * Delete a post
-     * IMPORTANT: This also deletes all related notifications
+     * IMPORTANT: This also deletes all related notifications and media files
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("@postSecurity.isPostOwner(#id) or hasRole('ADMIN')")
@@ -213,6 +270,7 @@ public class PostController {
         
         try {
             // This will delete the post and all related notifications
+            // Note: You might want to add Cloudinary file deletion here
             postService.deletePost(id);
             logger.info("✅ Post {} deleted successfully", id);
             return ResponseEntity.ok().build();

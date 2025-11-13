@@ -18,6 +18,12 @@ export const routes: Routes = [
   { path: 'create-post', component: CreatePostComponent, canActivate: [AuthGuard] },
   { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'notifications', component: NotificationComponent, canActivate: [AuthGuard] },
+  {
+    path: 'post/:id',
+    loadComponent: () => import('./components/post-detail/post-detail.component')
+      .then(m => m.PostDetailComponent),
+    canActivate: [AuthGuard]
+  },
   
   // --- THIS ROUTE IS UPDATED ---
   { 

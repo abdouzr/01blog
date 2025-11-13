@@ -4,7 +4,6 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <!-- DYNAMIC TITLE -->
           <h2 class="mb-0">{{ editingPost ? 'Edit Post' : 'Create New Post' }}</h2>
         </div>
         <div class="card-body">
@@ -24,56 +23,77 @@
 
             <!-- File Upload -->
             <div class="mb-3">
-              <label for="fileUpload" class="form-label">Upload New Image or Video (Optional)</label>
+              <label for="fileUpload" class="form-label">
+                Upload Images or Videos (Max 10 files, 50MB each)
+              </label>
               <input 
                 type="file" 
                 class="form-control" 
                 id="fileUpload" 
                 (change)="onFileSelected($event)"
                 accept="image/*,video/*"
-                [disabled]="isSubmitting">
+                multiple
+                [disabled]="isSubmitting || previewUrls.length >= 10">
+              <div class="form-text">
+                You can select multiple files. {{ previewUrls.length }}/10 files selected.
+              </div>
             </div>
 
-            <!-- DYNAMIC FILE PREVIEW -->
-            <div *ngIf="previewUrl" class="mb-3">
-              <div class="position-relative">
-                <!-- Show existing image OR newly selected image -->
-                <img 
-                  *ngIf="(selectedFile && selectedFile.type.startsWith('image')) || (previewUrl && !selectedFile && existingMediaType === 'image')" 
-                  [src]="previewUrl" 
-                  alt="Preview" 
-                  class="img-fluid rounded"
-                  style="max-height: 300px;">
-                <!-- Show existing video OR newly selected video -->
-                <video 
-                  *ngIf="(selectedFile && selectedFile.type.startsWith('video')) || (previewUrl && !selectedFile && existingMediaType === 'video')" 
-                  [src]="previewUrl" 
-                  controls 
-                  class="img-fluid rounded"
-                  style="max-height: 300px;"></video>
-                <button 
-                  type="button" 
-                  class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
-                  (click)="removeFile()"
-                  [disabled]="isSubmitting">
-                  <i class="bi bi-x-circle"></i> Remove
-                </button>
+            <!-- File Previews Grid -->
+            <div *ngIf="previewUrls.length > 0" class="mb-3">
+              <h6>Media Preview ({{ previewUrls.length }} files)</h6>
+              <div class="row g-2">
+                <div *ngFor="let preview of previewUrls; let i = index" class="col-6 col-md-4 col-lg-3">
+                  <div class="position-relative media-preview-container">
+                    <!-- Image Preview -->
+                    <img 
+                      *ngIf="preview.type === 'image'" 
+                      [src]="preview.url" 
+                      alt="Preview" 
+                      class="img-fluid rounded media-preview"
+                      [class.existing-media]="isExistingFile(preview)">
+                    
+                    <!-- Video Preview -->
+                    <video 
+                      *ngIf="preview.type === 'video'" 
+                      [src]="preview.url" 
+                      class="img-fluid rounded media-preview"
+                      [class.existing-media]="isExistingFile(preview)"
+                      muted>
+                    </video>
+                    
+                    <!-- Remove Button -->
+                    <button 
+                      type="button" 
+                      class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                      (click)="removeFile(i)"
+                      [disabled]="isSubmitting">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                    
+                    <!-- Existing File Badge -->
+                    <span *ngIf="isExistingFile(preview)" class="badge bg-info position-absolute top-0 start-0 m-1">
+                      Existing
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
             <!-- Upload Progress -->
             <div *ngIf="isUploading" class="mb-3">
               <div class="alert alert-info">
-                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                Uploading file...
+                <div class="d-flex align-items-center">
+                  <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                  <span>Uploading files... {{ uploadProgress | number:'1.0-0' }}%</span>
+                </div>
+                <div class="progress mt-2">
+                  <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+                </div>
               </div>
             </div>
 
-            <!-- 
-              --- THIS IS THE FIX ---
-              The error was here. It said "classd-flex" before. 
-              It is now correctly "class='d-flex'".
-            -->
+            <!-- Action Buttons -->
             <div class="d-flex justify-content-between">
               <button 
                 type="button" 
@@ -85,7 +105,7 @@
               <button 
                 type="submit" 
                 class="btn btn-primary" 
-                [disabled]="isSubmitting || (!content.trim() && !selectedFile && !existingMediaUrl)">
+                [disabled]="isSubmitting || (!content.trim() && previewUrls.length === 0)">
                 <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
                 {{ isSubmitting ? (editingPost ? 'Saving...' : 'Creating...') : (editingPost ? 'Save Changes' : 'Create Post') }}
               </button>

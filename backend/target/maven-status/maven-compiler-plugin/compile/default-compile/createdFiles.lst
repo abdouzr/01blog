@@ -62,6 +62,7 @@ com/zerooneblog/config/WebConfig.class
 com/zerooneblog/repository/FollowRepository.class
 com/zerooneblog/controller/FileUploadController.class
 com/zerooneblog/security/UserDetailsServiceImpl.class
+com/zerooneblog/dto/ReportResponse.class
 com/zerooneblog/dto/JwtResponse.class
 com/zerooneblog/dto/SignupRequest.class
 com/zerooneblog/model/User.class

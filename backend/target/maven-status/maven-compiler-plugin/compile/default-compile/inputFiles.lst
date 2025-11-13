@@ -42,6 +42,7 @@
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/SignupRequest.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/repository/PostRepository.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/Cloudinary.java
+/home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/dto/ReportResponse.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/service/TestNotificationController.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/model/Role.java
 /home/abdouzr/Desktop/01blog/backend/src/main/java/com/zerooneblog/security/CommentSecurity.java

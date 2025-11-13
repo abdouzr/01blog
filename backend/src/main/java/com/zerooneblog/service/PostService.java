@@ -116,27 +116,28 @@ public class PostService {
     /**
      * Convert Post entity to PostResponse DTO
      */
-    public PostResponse convertToPostResponse(Post post, User currentUser) {
-        PostResponse response = new PostResponse();
-        response.setId(post.getId());
-        response.setContent(post.getContent());
-        response.setMediaUrl(post.getMediaUrl());
-        response.setMediaType(post.getMediaType());
-        response.setCreatedAt(post.getCreatedAt());
-        response.setUpdatedAt(post.getUpdatedAt());
-        
-        // Author information
-        response.setAuthorId(post.getAuthor().getId());
-        response.setAuthorUsername(post.getAuthor().getUsername());
-        response.setAuthorProfilePicture(post.getAuthor().getProfilePicture());
-        
-        // Like and comment counts
-        response.setLikeCount(likeService.getLikeCount(post));
-        response.setCommentCount((long) post.getComments().size());
-        
-        // Check if current user liked this post
-        response.setLikedByCurrentUser(likeService.hasUserLikedPost(post, currentUser));
-        
-        return response;
-    }
+    // In PostService.java - update the convertToPostResponse method
+public PostResponse convertToPostResponse(Post post, User currentUser) {
+    PostResponse response = new PostResponse();
+    response.setId(post.getId());
+    response.setContent(post.getContent());
+    response.setMediaUrls(post.getMediaUrls());
+    response.setMediaTypes(post.getMediaTypes());
+    response.setCreatedAt(post.getCreatedAt());
+    response.setUpdatedAt(post.getUpdatedAt());
+    
+    // Author information
+    response.setAuthorId(post.getAuthor().getId());
+    response.setAuthorUsername(post.getAuthor().getUsername());
+    response.setAuthorProfilePicture(post.getAuthor().getProfilePicture());
+    
+    // Like and comment counts
+    response.setLikeCount(likeService.getLikeCount(post));
+    response.setCommentCount((long) post.getComments().size());
+    
+    // Check if current user liked this post
+    response.setLikedByCurrentUser(likeService.hasUserLikedPost(post, currentUser));
+    
+    return response;
+}
 }

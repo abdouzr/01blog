@@ -2,12 +2,14 @@
 package com.zerooneblog.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PostResponse {
     private Long id;
     private String content;
-    private String mediaUrl;
-    private String mediaType;
+    private List<String> mediaUrls = new ArrayList<>();
+    private List<String> mediaTypes = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long authorId;
@@ -17,17 +19,17 @@ public class PostResponse {
     private Long commentCount;
     private boolean likedByCurrentUser;
 
-    // Constructors, getters, and setters
+    // Constructors
     public PostResponse() {}
 
-    public PostResponse(Long id, String content, String mediaUrl, String mediaType, 
+    public PostResponse(Long id, String content, List<String> mediaUrls, List<String> mediaTypes, 
             LocalDateTime createdAt, LocalDateTime updatedAt, Long authorId, 
             String authorUsername, String authorProfilePicture, Long likeCount, 
             Long commentCount, boolean likedByCurrentUser) {
         this.id = id;
         this.content = content;
-        this.mediaUrl = mediaUrl;
-        this.mediaType = mediaType;
+        this.mediaUrls = mediaUrls;
+        this.mediaTypes = mediaTypes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.authorId = authorId;
@@ -45,11 +47,11 @@ public class PostResponse {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
     
-    public String getMediaUrl() { return mediaUrl; }
-    public void setMediaUrl(String mediaUrl) { this.mediaUrl = mediaUrl; }
+    public List<String> getMediaUrls() { return mediaUrls; }
+    public void setMediaUrls(List<String> mediaUrls) { this.mediaUrls = mediaUrls; }
     
-    public String getMediaType() { return mediaType; }
-    public void setMediaType(String mediaType) { this.mediaType = mediaType; }
+    public List<String> getMediaTypes() { return mediaTypes; }
+    public void setMediaTypes(List<String> mediaTypes) { this.mediaTypes = mediaTypes; }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
