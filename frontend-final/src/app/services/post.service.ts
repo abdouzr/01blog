@@ -17,6 +17,7 @@ export interface Post {
   likeCount: number;
   commentCount: number;
   likedByCurrentUser: boolean;
+  isHidden?: boolean; // ✅ Already added
   mediaUrl?: string;
   mediaType?: string;
 }
@@ -43,20 +44,45 @@ export class PostService {
 
   constructor(private http: HttpClient) { }
 
+  // FIXED: All methods now use proper normalization
   getAllPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(this.apiUrl);
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(posts => this.normalizePosts(posts)),
+      catchError(error => {
+        console.error('❌ Error fetching all posts:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   getUserPosts(userId: number): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.apiUrl}/user/${userId}`);
+    return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`).pipe(
+      map(posts => this.normalizePosts(posts)),
+      catchError(error => {
+        console.error('❌ Error fetching user posts:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   getFeed(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.apiUrl}/feed`);
+    return this.http.get<any[]>(`${this.apiUrl}/feed`).pipe(
+      map(posts => this.normalizePosts(posts)),
+      catchError(error => {
+        console.error('❌ Error fetching feed:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   getPost(id: number): Observable<Post> {
-    return this.http.get<Post>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(post => this.normalizePost(post)),
+      catchError(error => {
+        console.error('❌ Error fetching post by ID:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   // Get single post by ID
@@ -64,10 +90,12 @@ export class PostService {
     const url = `${this.apiUrl}/${postId}`;
     console.log('🔍 Fetching single post:', url);
     
-    return this.http.get<Post>(url).pipe(
+    return this.http.get<any>(url).pipe(
       map(post => {
-        console.log('✅ Single post loaded:', post);
-        return this.normalizePost(post);
+        console.log('📦 Raw post data:', post);
+        const normalized = this.normalizePost(post);
+        console.log('✅ Single post loaded:', normalized);
+        return normalized;
       }),
       catchError(error => {
         console.error('❌ Error fetching post:', error);
@@ -127,40 +155,112 @@ export class PostService {
     return this.http.delete(`${this.uploadUrl}/${publicId}`);
   }
 
-  // Single normalizePost method that handles both cases
+  // ================================================
+  // FIXED: IMPROVED NORMALIZE POST METHOD
+  // ✅ NOW INCLUDES isHidden
+  // ================================================
   private normalizePost(post: any): Post {
-    // If it's already normalized, return as is
-    if (post.mediaUrls !== undefined && post.mediaTypes !== undefined) {
-      return {
-        id: post.id,
-        content: post.content,
-        mediaUrls: post.mediaUrls || [],
-        mediaTypes: post.mediaTypes || [],
-        authorUsername: post.authorUsername,
-        authorId: post.authorId,
-        authorProfilePicture: post.authorProfilePicture,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        likeCount: post.likeCount || 0,
-        commentCount: post.commentCount || 0,
-        likedByCurrentUser: post.likedByCurrentUser || false
-      };
+    console.log('🔍 Normalizing post - RAW DATA:', post);
+    
+    // Extract media information - handle all possible cases
+    let mediaUrls: string[] = [];
+    let mediaTypes: string[] = [];
+    
+    // CASE 1: New structure with arrays (plural)
+    if (post.mediaUrls && Array.isArray(post.mediaUrls)) {
+      console.log('📂 Using mediaUrls array');
+      mediaUrls = post.mediaUrls.filter((url: string) => url && url.trim() !== '');
+      mediaTypes = post.mediaTypes || [];
+    }
+    // CASE 2: Old structure with singular fields
+    else if (post.mediaUrl) {
+      console.log('📂 Using singular mediaUrl field');
+      mediaUrls = [post.mediaUrl].filter((url: string) => url && url.trim() !== '');
+      mediaTypes = post.mediaType ? [post.mediaType] : ['image'];
+    }
+    // CASE 3: Check for cloudinary URLs
+    else if (post.cloudinaryUrl) {
+      console.log('📂 Using cloudinaryUrl field');
+      mediaUrls = [post.cloudinaryUrl].filter((url: string) => url && url.trim() !== '');
+      mediaTypes = ['image']; // Default to image for cloudinary
+    }
+    // CASE 4: Fallback to empty arrays
+    else {
+      console.log('📂 No media URLs found');
+      mediaUrls = [];
+      mediaTypes = [];
     }
     
-    // Convert from old structure to new structure
-    return {
-      ...post,
-      mediaUrls: post.mediaUrl ? [post.mediaUrl] : [],
-      mediaTypes: post.mediaType ? [post.mediaType] : [],
-      authorUsername: post.authorUsername,
-      authorId: post.authorId,
-      authorProfilePicture: post.authorProfilePicture,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
-      likeCount: post.likeCount || 0,
-      commentCount: post.commentCount || 0,
-      likedByCurrentUser: post.likedByCurrentUser || false
+    // Ensure mediaTypes array matches mediaUrls length
+    if (mediaUrls.length > 0) {
+      if (mediaUrls.length > mediaTypes.length) {
+        console.log(`⚠️ Filling missing media types. URLs: ${mediaUrls.length}, Types: ${mediaTypes.length}`);
+        // Fill missing types with 'image' as default
+        for (let i = mediaTypes.length; i < mediaUrls.length; i++) {
+          mediaTypes.push('image');
+        }
+      }
+    }
+    
+    // Extract author information - handle different field names
+    let authorUsername = 'Anonymous';
+    let authorId = 0;
+    let authorProfilePicture = 'assets/default-avatar.png';
+    
+    if (post.authorUsername) {
+      authorUsername = post.authorUsername;
+    } else if (post.author && post.author.username) {
+      authorUsername = post.author.username;
+    } else if (post.user && post.user.username) {
+      authorUsername = post.user.username;
+    }
+    
+    if (post.authorId) {
+      authorId = post.authorId;
+    } else if (post.author && post.author.id) {
+      authorId = post.author.id;
+    } else if (post.user && post.user.id) {
+      authorId = post.user.id;
+    }
+    
+    if (post.authorProfilePicture) {
+      authorProfilePicture = post.authorProfilePicture;
+    } else if (post.author && post.author.profilePicture) {
+      authorProfilePicture = post.author.profilePicture;
+    } else if (post.user && post.user.profilePicture) {
+      authorProfilePicture = post.user.profilePicture;
+    }
+    
+    // Handle date fields with different names
+    const createdAt = post.createdAt || post.created_at || post.createdDate || new Date().toISOString();
+    const updatedAt = post.updatedAt || post.updated_at || post.updatedDate || createdAt;
+    
+    const normalizedPost: Post = {
+      id: post.id,
+      content: post.content || '',
+      mediaUrls: mediaUrls,
+      mediaTypes: mediaTypes,
+      authorUsername: authorUsername,
+      authorId: authorId,
+      authorProfilePicture: authorProfilePicture,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      likeCount: post.likeCount || post.like_count || post.likesCount || 0,
+      commentCount: post.commentCount || post.comment_count || post.commentsCount || 0,
+      likedByCurrentUser: post.likedByCurrentUser || post.liked_by_current_user || false,
+      isHidden: post.isHidden || post.is_hidden || false // ✅ NEW: Include isHidden
     };
+    
+    console.log('✅ Normalized post:', {
+      id: normalizedPost.id,
+      mediaCount: normalizedPost.mediaUrls.length,
+      mediaUrls: normalizedPost.mediaUrls,
+      mediaTypes: normalizedPost.mediaTypes,
+      author: normalizedPost.authorUsername,
+      isHidden: normalizedPost.isHidden // ✅ Log isHidden status
+    });
+    
+    return normalizedPost;
   }
 
   // Helper method to normalize an array of posts
@@ -169,9 +269,37 @@ export class PostService {
   }
 }
 
+// Utility function to get full image URL
 export function getFullImageUrl(url: string | null): string {
-  if (!url) return '/assets/default-image.png';
-  if (url.startsWith('http')) return url;
-  if (url.startsWith('data:')) return url;
+  if (!url || url.trim() === '') {
+    console.warn('⚠️ Empty media URL');
+    return '/assets/default-image.png';
+  }
+  
+  // If it's already a full URL (starts with http/https or data:)
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  
+  // Handle Cloudinary URLs (they might start with something else)
+  if (url.includes('cloudinary.com') || url.includes('res.cloudinary.com')) {
+    // Ensure it has protocol
+    if (!url.startsWith('http')) {
+      return `https://${url}`;
+    }
+    return url;
+  }
+  
+  // If it starts with /uploads, /media, /images, it's a backend path
+  if (url.startsWith('/uploads') || url.startsWith('/media') || url.startsWith('/images') || url.startsWith('/static')) {
+    return `http://localhost:8081${url}`;
+  }
+  
+  // If it doesn't start with /, add it
+  if (!url.startsWith('/')) {
+    return `http://localhost:8081/${url}`;
+  }
+  
+  // Default case
   return `http://localhost:8081${url}`;
 }

@@ -16,12 +16,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CreatePostComponent implements OnInit {
   content: string = '';
   selectedFiles: File[] = [];
-  previewUrls: {url: string, type: string, file: File}[] = [];
+  previewUrls: {url: string, type: string, file: File | null, existingUrl?: string}[] = [];
   isSubmitting: boolean = false;
   isUploading: boolean = false;
   uploadProgress: number = 0;
-
   editingPost: Post | null = null;
+  
+  // Track existing media that should be kept
+  existingMediaToKeep: string[] = [];
 
   constructor(
     private postService: PostService,
@@ -46,24 +48,47 @@ export class CreatePostComponent implements OnInit {
       console.log('📝 Loading post data for editing:', this.editingPost);
       
       this.content = this.editingPost.content || '';
+      this.existingMediaToKeep = []; // Reset
       
       // Load existing media
       if (this.editingPost.mediaUrls && this.editingPost.mediaUrls.length > 0) {
-        this.previewUrls = this.editingPost.mediaUrls.map((url, index) => ({
-          url: this.getMediaUrl(url),
-          type: this.editingPost!.mediaTypes[index],
-          file: null as any // Existing files don't have File objects
-        }));
+        this.previewUrls = [];
+        
+        // Process each existing media
+        this.editingPost.mediaUrls.forEach((url, index) => {
+          if (url) {
+            const mediaType = this.editingPost!.mediaTypes[index] || 'image';
+            const fullUrl = this.getMediaUrl(url);
+            
+            // Store the original backend URL for later use
+            const originalUrl = url.startsWith('http') ? url : url;
+            
+            this.previewUrls.push({
+              url: fullUrl,
+              type: mediaType,
+              file: null, // No File object for existing files
+              existingUrl: originalUrl // Store original URL
+            });
+            
+            // Add to keep list
+            this.existingMediaToKeep.push(originalUrl);
+          }
+        });
+        
+        console.log('📊 Existing media loaded:', this.previewUrls);
+        console.log('📊 Media to keep:', this.existingMediaToKeep);
       }
     }
   }
 
   getMediaUrl(url: string): string {
     if (!url) return '';
+    // If it's already a full URL or data URL, return as is
     if (url.startsWith('http') || url.startsWith('data:')) {
       return url;
     }
-    return `http://localhost:8081${url}`; 
+    // Otherwise, construct the full URL
+    return `http://localhost:8081${url.startsWith('/') ? url : '/' + url}`;
   }
 
   onFileSelected(event: Event): void {
@@ -98,7 +123,8 @@ export class CreatePostComponent implements OnInit {
           this.previewUrls.push({
             url: e.target.result,
             type: file.type.startsWith('image/') ? 'image' : 'video',
-            file: file
+            file: file,
+            existingUrl: undefined // New file, no existing URL
           });
         };
         reader.readAsDataURL(file);
@@ -115,6 +141,11 @@ export class CreatePostComponent implements OnInit {
     // Remove from selectedFiles if it's a new file
     if (removed.file) {
       this.selectedFiles = this.selectedFiles.filter(f => f !== removed.file);
+    }
+    
+    // Remove from existingMediaToKeep if it was an existing file
+    if (removed.existingUrl) {
+      this.existingMediaToKeep = this.existingMediaToKeep.filter(url => url !== removed.existingUrl);
     }
   }
 
@@ -133,9 +164,26 @@ export class CreatePostComponent implements OnInit {
       const mediaTypes: string[] = [];
       const cloudinaryPublicIds: string[] = [];
 
-      // Upload new files
+      // STEP 1: Add existing media URLs that we're keeping
+      if (this.existingMediaToKeep.length > 0) {
+        console.log('🔄 Adding existing media to keep:', this.existingMediaToKeep);
+        
+        // Match existing URLs with their types
+        this.existingMediaToKeep.forEach(url => {
+          // Find the corresponding preview to get the media type
+          const preview = this.previewUrls.find(p => p.existingUrl === url);
+          if (preview) {
+            mediaUrls.push(url);
+            mediaTypes.push(preview.type);
+            cloudinaryPublicIds.push(''); // Placeholder for existing files
+          }
+        });
+      }
+
+      // STEP 2: Upload new files
       if (this.selectedFiles.length > 0) {
         this.isUploading = true;
+        console.log('📤 Uploading new files:', this.selectedFiles.length);
         
         for (let i = 0; i < this.selectedFiles.length; i++) {
           const file = this.selectedFiles[i];
@@ -145,6 +193,7 @@ export class CreatePostComponent implements OnInit {
               mediaUrls.push(uploadResult.fileUrl);
               mediaTypes.push(uploadResult.mediaType);
               cloudinaryPublicIds.push(uploadResult.publicId);
+              console.log(`✅ Uploaded: ${file.name} -> ${uploadResult.fileUrl}`);
             }
             
             // Update progress
@@ -159,22 +208,14 @@ export class CreatePostComponent implements OnInit {
         }
         
         this.isUploading = false;
+        console.log('✅ All new files uploaded');
       }
 
-      // Add existing media URLs (for edit mode)
-      if (this.editingPost && this.editingPost.mediaUrls) {
-        this.editingPost.mediaUrls.forEach((url, index) => {
-          // Only add if it's not a new file (files without File objects)
-          const isExistingFile = !this.previewUrls.find(p => p.url === this.getMediaUrl(url) && !p.file);
-          if (isExistingFile) {
-            mediaUrls.push(url);
-            mediaTypes.push(this.editingPost!.mediaTypes[index]);
-            // Note: For existing files, we might not have cloudinaryPublicIds
-            // You may need to handle this differently based on your backend
-            cloudinaryPublicIds.push(''); // or get from editingPost if available
-          }
-        });
-      }
+      console.log('📊 Final media data:', {
+        mediaUrls,
+        mediaTypes,
+        cloudinaryPublicIds
+      });
 
       const postData: PostRequest = {
         content: this.content.trim(),
@@ -185,7 +226,7 @@ export class CreatePostComponent implements OnInit {
 
       // EDIT vs CREATE LOGIC
       if (this.editingPost) {
-        console.log('✏️ Updating post:', this.editingPost.id);
+        console.log('✏️ Updating post:', this.editingPost.id, postData);
         
         this.postService.updatePost(this.editingPost.id, postData).subscribe({
           next: (response) => {
@@ -200,7 +241,7 @@ export class CreatePostComponent implements OnInit {
           }
         });
       } else {
-        console.log('📝 Creating new post');
+        console.log('📝 Creating new post:', postData);
         
         this.postService.createPost(postData).subscribe({
           next: (response) => {
@@ -227,6 +268,7 @@ export class CreatePostComponent implements OnInit {
     this.content = '';
     this.selectedFiles = [];
     this.previewUrls = [];
+    this.existingMediaToKeep = [];
     this.isSubmitting = false;
     this.isUploading = false;
     this.uploadProgress = 0;
@@ -241,8 +283,8 @@ export class CreatePostComponent implements OnInit {
     this.resetFormAndNavigate();
   }
 
-  // Helper method to check if preview is an existing file (not newly uploaded)
+  // FIXED: Helper method to check if preview is an existing file
   isExistingFile(preview: any): boolean {
-    return !preview.file;
+    return preview.file === null && preview.existingUrl !== undefined;
   }
 }

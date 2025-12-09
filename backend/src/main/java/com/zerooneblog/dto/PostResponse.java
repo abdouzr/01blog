@@ -18,6 +18,7 @@ public class PostResponse {
     private Long likeCount;
     private Long commentCount;
     private boolean likedByCurrentUser;
+    private boolean isHidden; // ✅ NEW: Hidden status
 
     // Constructors
     public PostResponse() {}
@@ -25,7 +26,7 @@ public class PostResponse {
     public PostResponse(Long id, String content, List<String> mediaUrls, List<String> mediaTypes, 
             LocalDateTime createdAt, LocalDateTime updatedAt, Long authorId, 
             String authorUsername, String authorProfilePicture, Long likeCount, 
-            Long commentCount, boolean likedByCurrentUser) {
+            Long commentCount, boolean likedByCurrentUser, boolean isHidden) {
         this.id = id;
         this.content = content;
         this.mediaUrls = mediaUrls;
@@ -38,6 +39,7 @@ public class PostResponse {
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.likedByCurrentUser = likedByCurrentUser;
+        this.isHidden = isHidden;
     }
 
     // Getters and setters
@@ -76,4 +78,8 @@ public class PostResponse {
     
     public boolean isLikedByCurrentUser() { return likedByCurrentUser; }
     public void setLikedByCurrentUser(boolean likedByCurrentUser) { this.likedByCurrentUser = likedByCurrentUser; }
+    
+    // ✅ NEW: isHidden getter and setter
+    public boolean isHidden() { return isHidden; }
+    public void setHidden(boolean isHidden) { this.isHidden = isHidden; }
 }

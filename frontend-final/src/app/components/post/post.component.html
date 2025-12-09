@@ -100,7 +100,7 @@
   </div>
 
   <!-- Post Actions -->
-  <div class="post-actions">
+  <div class="post-actions" (click)="$event.stopPropagation()">
     <button 
       class="action-btn" 
       [class.liked]="post.likedByCurrentUser"

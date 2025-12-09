@@ -55,6 +55,10 @@ public class Post {
     @OrderColumn(name = "id_order") // Maintains order of IDs
     private List<String> cloudinaryPublicIds = new ArrayList<>();
 
+    // ✅ NEW: Hidden status for admin moderation
+    @Column(name = "is_hidden", nullable = false)
+    private boolean isHidden = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
@@ -115,6 +119,14 @@ public class Post {
     public void setCloudinaryPublicIds(List<String> cloudinaryPublicIds) { 
         this.cloudinaryPublicIds = cloudinaryPublicIds != null ? cloudinaryPublicIds : new ArrayList<>(); 
     }
+
+    // ✅ NEW: isHidden getter and setter
+    public boolean isHidden() { 
+        return isHidden; 
+    }
+    public void setHidden(boolean isHidden) { 
+        this.isHidden = isHidden; 
+    }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
@@ -151,6 +163,6 @@ public class Post {
     @Override
     public String toString() {
         return "Post{id=" + id + ", content='" + content + "', mediaCount=" + 
-               (mediaUrls != null ? mediaUrls.size() : 0) + "}";
+               (mediaUrls != null ? mediaUrls.size() : 0) + ", isHidden=" + isHidden + "}";
     }
 }

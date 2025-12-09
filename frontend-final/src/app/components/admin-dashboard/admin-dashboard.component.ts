@@ -135,23 +135,30 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  hidePost(postId: number): void {
-    if (confirm('Are you sure you want to hide this post?')) {
-      // If your AdminService has a hidePost method, use it
-      // Otherwise, you might need to add this endpoint to your backend
-      this.snackBar.open('Hide post functionality - implement in backend if needed', 'Close', { duration: 3000 });
+  // ✅ FIXED: Single method that handles both hide and unhide
+  toggleHidePost(postId: number): void {
+    const post = this.posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    const action = post.isHidden ? 'unhide' : 'hide';
+    const confirmMessage = `Are you sure you want to ${action} this post?`;
+    
+    if (confirm(confirmMessage)) {
+      const serviceMethod = post.isHidden 
+        ? this.adminService.unhidePost(postId) 
+        : this.adminService.hidePost(postId);
       
-      // Example implementation if you have the service method:
-      // this.adminService.hidePost(postId).subscribe({
-      //   next: () => {
-      //     this.snackBar.open('Post hidden successfully.', 'Close', { duration: 3000 });
-      //     this.loadPosts();
-      //   },
-      //   error: (err) => {
-      //     console.error('Error hiding post:', err);
-      //     this.snackBar.open('Failed to hide post.', 'Close', { duration: 3000 });
-      //   }
-      // });
+      serviceMethod.subscribe({
+        next: () => {
+          this.snackBar.open(`Post ${action}d successfully.`, 'Close', { duration: 3000 });
+          // Toggle the isHidden status locally
+          post.isHidden = !post.isHidden;
+        },
+        error: (err) => {
+          console.error(`Error ${action}ing post:`, err);
+          this.snackBar.open(`Failed to ${action} post.`, 'Close', { duration: 3000 });
+        }
+      });
     }
   }
 
@@ -160,7 +167,8 @@ export class AdminDashboardComponent implements OnInit {
       this.adminService.deletePost(postId).subscribe({
         next: () => {
           this.snackBar.open('Post deleted successfully.', 'Close', { duration: 3000 });
-          this.loadPosts();
+          // Remove the post from the local array
+          this.posts = this.posts.filter(p => p.id !== postId);
         },
         error: (err) => {
           console.error('Error deleting post:', err);

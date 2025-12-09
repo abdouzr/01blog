@@ -107,23 +107,33 @@
                 <th>Content Preview</th>
                 <th>Likes</th>
                 <th>Comments</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let post of posts">
+              <tr *ngFor="let post of posts" [class.table-warning]="post.isHidden">
                 <td>{{ post.id }}</td>
                 <td>{{ post.authorUsername }}</td>
                 <td>{{ post.content | slice:0:50 }}{{ post.content.length > 50 ? '...' : '' }}</td>
                 <td>{{ post.likeCount }}</td>
                 <td>{{ post.commentCount || 0 }}</td>
                 <td>
+                  <span *ngIf="!post.isHidden" class="badge bg-success">Visible</span>
+                  <span *ngIf="post.isHidden" class="badge bg-warning text-dark">Hidden</span>
+                </td>
+                <td>
+                  <!-- ✅ UPDATED: Hide/Unhide button now calls toggleHidePost -->
                   <button 
-                    class="btn btn-warning btn-sm me-2" 
-                    (click)="hidePost(post.id)"
-                    title="Hide Post">
-                    <i class="bi bi-eye-slash"></i> Hide
+                    class="btn btn-sm me-2" 
+                    [class.btn-warning]="!post.isHidden"
+                    [class.btn-info]="post.isHidden"
+                    (click)="toggleHidePost(post.id)"
+                    [title]="post.isHidden ? 'Unhide Post' : 'Hide Post'">
+                    <i [class]="post.isHidden ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+                    {{ post.isHidden ? 'Unhide' : 'Hide' }}
                   </button>
+                  
                   <button 
                     class="btn btn-danger btn-sm" 
                     (click)="deletePost(post.id)" 
@@ -133,7 +143,7 @@
                 </td>
               </tr>
               <tr *ngIf="posts.length === 0">
-                <td colspan="6" class="text-center">No posts found</td>
+                <td colspan="7" class="text-center">No posts found</td>
               </tr>
             </tbody>
           </table>

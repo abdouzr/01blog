@@ -49,12 +49,12 @@ export class PostDetailComponent implements OnInit {
   loadPost(postId: number): void {
     this.isLoading = true;
     this.postService.getPostById(postId).subscribe({
-      next: (post: Post) => {
+      next: (post) => {
         this.post = post;
         this.isLoading = false;
         console.log('📝 Loaded full post:', post);
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('❌ Error loading post:', error);
         this.snackBar.open('Error loading post', 'Close', { duration: 3000 });
         this.isLoading = false;
@@ -81,7 +81,7 @@ export class PostDetailComponent implements OnInit {
           }
           this.isLiking = false;
         },
-        error: (error: any) => {
+        error: () => {
           this.snackBar.open('Error unliking post', 'Close', { duration: 3000 });
           this.isLiking = false;
         }
@@ -95,7 +95,7 @@ export class PostDetailComponent implements OnInit {
           }
           this.isLiking = false;
         },
-        error: (error: any) => {
+        error: () => {
           this.snackBar.open('Error liking post', 'Close', { duration: 3000 });
           this.isLiking = false;
         }
@@ -119,7 +119,7 @@ export class PostDetailComponent implements OnInit {
           this.snackBar.open('Post deleted successfully', 'Close', { duration: 3000 });
           this.router.navigate(['/feed']);
         },
-        error: (error: any) => {
+        error: () => {
           this.snackBar.open('Error deleting post', 'Close', { duration: 3000 });
         }
       });
@@ -147,7 +147,7 @@ export class PostDetailComponent implements OnInit {
         this.toggleReportModal();
         this.isSubmittingReport = false;
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error('Report submission error:', err);
         this.snackBar.open('Failed to submit report. Please try again.', 'Close', { duration: 5000 });
         this.isSubmittingReport = false;

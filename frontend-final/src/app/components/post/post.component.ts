@@ -5,6 +5,7 @@ import { CommentsComponent } from '../comments/comments.component';
 import { ReportService } from '../../services/report.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
+import { getFullImageUrl } from '../../services/post.service';
 
 @Component({
   selector: 'app-post',
@@ -63,7 +64,8 @@ export class PostComponent implements OnInit {
   }
 
   isTruncated(): boolean {
-    return !!this.post.content && this.post.content.length > this.maxContentLength;
+    // FIX: Ensure we return only boolean, not string | boolean
+    return !!(this.post.content && this.post.content.length > this.maxContentLength);
   }
 
   getVisibleMediaUrls(): string[] {
@@ -74,7 +76,7 @@ export class PostComponent implements OnInit {
   }
 
   hasMoreMedia(): boolean {
-    return this.post.mediaUrls && this.post.mediaUrls.length > this.maxMediaToShow;
+    return !!(this.post.mediaUrls && this.post.mediaUrls.length > this.maxMediaToShow);
   }
 
   getRemainingMediaCount(): number {
@@ -183,6 +185,8 @@ export class PostComponent implements OnInit {
       console.warn('⚠️ Empty media URL');
       return '';
     }
+
+    
     
     // If it's already a full URL (starts with http/https or data:)
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {

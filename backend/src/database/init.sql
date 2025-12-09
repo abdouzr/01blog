@@ -16,6 +16,15 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Add hidden column to posts table
+ALTER TABLE posts ADD COLUMN is_hidden BOOLEAN DEFAULT FALSE;
+
+-- Ensure all rows have a value
+UPDATE posts SET is_hidden = FALSE WHERE is_hidden IS NULL;
+
+-- Make column NOT NULL after setting defaults
+ALTER TABLE posts ALTER COLUMN is_hidden SET NOT NULL;
+
 CREATE TABLE IF NOT EXISTS posts (
     id SERIAL PRIMARY KEY,
     content TEXT NOT NULL,

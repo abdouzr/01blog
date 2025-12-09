@@ -48,13 +48,22 @@ public class PostController {
 
     /**
      * Get all posts
+     * ✅ UPDATED: Filters hidden posts for non-admin users
      */
     @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         User currentUser = userService.getCurrentUser();
-        logger.info("📥 Fetching all posts for user: {}", currentUser.getUsername());
+        logger.info("🔥 Fetching all posts for user: {}", currentUser.getUsername());
         
         List<Post> posts = postService.getAllPosts();
+        
+        // ✅ Filter out hidden posts unless user is admin
+        if (!currentUser.getRole().name().equals("ADMIN")) {
+            posts = posts.stream()
+                    .filter(post -> !post.isHidden())
+                    .collect(Collectors.toList());
+        }
+        
         List<PostResponse> responses = posts.stream()
                 .map(post -> postService.convertToPostResponse(post, currentUser))
                 .collect(Collectors.toList());
@@ -65,6 +74,7 @@ public class PostController {
 
     /**
      * Get feed (posts from followed users + own posts)
+     * ✅ UPDATED: Filters hidden posts
      */
     @GetMapping("/feed")
     public ResponseEntity<List<PostResponse>> getFeed() {
@@ -85,6 +95,11 @@ public class PostController {
             posts = postService.getPostsFromSubscribedUsers(followedUsers);
         }
         
+        // ✅ Filter out hidden posts
+        posts = posts.stream()
+                .filter(post -> !post.isHidden())
+                .collect(Collectors.toList());
+        
         List<PostResponse> responses = posts.stream()
                 .map(post -> postService.convertToPostResponse(post, currentUser))
                 .collect(Collectors.toList());
@@ -95,11 +110,12 @@ public class PostController {
 
     /**
      * Get posts by a specific user
+     * ✅ UPDATED: Filters hidden posts unless admin or own profile
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PostResponse>> getPostsByUser(@PathVariable Long userId) {
         User currentUser = userService.getCurrentUser();
-        logger.info("📥 Fetching posts for user ID: {}", userId);
+        logger.info("🔥 Fetching posts for user ID: {}", userId);
         
         Optional<User> targetUser = userService.getUserById(userId);
         
@@ -109,6 +125,14 @@ public class PostController {
         }
         
         List<Post> posts = postService.getPostsByUser(targetUser.get());
+        
+        // ✅ Filter out hidden posts unless current user is admin or viewing own profile
+        if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getId().equals(userId)) {
+            posts = posts.stream()
+                    .filter(post -> !post.isHidden())
+                    .collect(Collectors.toList());
+        }
+        
         List<PostResponse> responses = posts.stream()
                 .map(post -> postService.convertToPostResponse(post, currentUser))
                 .collect(Collectors.toList());
@@ -123,7 +147,7 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         User currentUser = userService.getCurrentUser();
-        logger.info("📥 Fetching post with ID: {}", id);
+        logger.info("🔥 Fetching post with ID: {}", id);
         
         return postService.getPostById(id)
                 .map(post -> {

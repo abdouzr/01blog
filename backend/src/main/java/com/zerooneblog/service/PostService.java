@@ -84,6 +84,26 @@ public class PostService {
         postRepository.deleteById(postId);
         logger.info("✅ Post {} deleted successfully", postId);
     }
+
+    // ✅ NEW: Hide a post (admin only)
+    @Transactional
+    public void hidePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setHidden(true);
+        postRepository.save(post);
+        logger.info("✅ Post {} has been hidden", postId);
+    }
+
+    // ✅ NEW: Unhide a post (admin only)
+    @Transactional
+    public void unhidePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setHidden(false);
+        postRepository.save(post);
+        logger.info("✅ Post {} has been unhidden", postId);
+    }
     
     /**
      * Get post by ID
@@ -115,29 +135,32 @@ public class PostService {
     
     /**
      * Convert Post entity to PostResponse DTO
+     * ✅ UPDATED: Now includes isHidden field
      */
-    // In PostService.java - update the convertToPostResponse method
-public PostResponse convertToPostResponse(Post post, User currentUser) {
-    PostResponse response = new PostResponse();
-    response.setId(post.getId());
-    response.setContent(post.getContent());
-    response.setMediaUrls(post.getMediaUrls());
-    response.setMediaTypes(post.getMediaTypes());
-    response.setCreatedAt(post.getCreatedAt());
-    response.setUpdatedAt(post.getUpdatedAt());
-    
-    // Author information
-    response.setAuthorId(post.getAuthor().getId());
-    response.setAuthorUsername(post.getAuthor().getUsername());
-    response.setAuthorProfilePicture(post.getAuthor().getProfilePicture());
-    
-    // Like and comment counts
-    response.setLikeCount(likeService.getLikeCount(post));
-    response.setCommentCount((long) post.getComments().size());
-    
-    // Check if current user liked this post
-    response.setLikedByCurrentUser(likeService.hasUserLikedPost(post, currentUser));
-    
-    return response;
-}
+    public PostResponse convertToPostResponse(Post post, User currentUser) {
+        PostResponse response = new PostResponse();
+        response.setId(post.getId());
+        response.setContent(post.getContent());
+        response.setMediaUrls(post.getMediaUrls());
+        response.setMediaTypes(post.getMediaTypes());
+        response.setCreatedAt(post.getCreatedAt());
+        response.setUpdatedAt(post.getUpdatedAt());
+        
+        // Author information
+        response.setAuthorId(post.getAuthor().getId());
+        response.setAuthorUsername(post.getAuthor().getUsername());
+        response.setAuthorProfilePicture(post.getAuthor().getProfilePicture());
+        
+        // Like and comment counts
+        response.setLikeCount(likeService.getLikeCount(post));
+        response.setCommentCount((long) post.getComments().size());
+        
+        // Check if current user liked this post
+        response.setLikedByCurrentUser(likeService.hasUserLikedPost(post, currentUser));
+        
+        // ✅ NEW: Include hidden status
+        response.setHidden(post.isHidden());
+        
+        return response;
+    }
 }
