@@ -107,32 +107,34 @@
 
     <!-- Post Actions -->
     <div class="post-actions">
-      <button 
-        class="action-btn" 
+      <button
+        class="action-btn"
         [class.liked]="post.likedByCurrentUser"
         (click)="onLike()"
         [disabled]="isLiking">
         <i [class]="post.likedByCurrentUser ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
-        <span>{{ post.likeCount || 0 }}</span>
+        <span class="action-text">{{ post.likedByCurrentUser ? 'Liked' : 'Like' }}</span>
+        <span class="action-count">({{ post.likeCount || 0 }})</span>
       </button>
 
-      <button class="action-btn comments active">
+      <button class="action-btn comments">
         <i class="bi bi-chat"></i>
-        <span>{{ post.commentCount || 0 }}</span>
+        <span class="action-text">Comments</span>
+        <span class="action-count">({{ post.commentCount || 0 }})</span>
       </button>
 
-      <button 
-        class="action-btn ms-auto" 
+      <button
+        class="action-btn ms-auto"
         (click)="toggleReportModal()"
         title="Report this post">
         <i class="bi bi-flag"></i>
-        <span>Report</span>
+        <span class="action-text">Report</span>
       </button>
     </div>
 
     <!-- Comments Section - Always visible in detail view -->
     <div class="post-comments-full">
-      <app-comments [postId]="post.id"></app-comments>
+      <app-comments [postId]="post.id" [isExpanded]="true"></app-comments>
     </div>
   </div>
 

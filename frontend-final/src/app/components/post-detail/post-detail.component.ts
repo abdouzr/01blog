@@ -68,39 +68,54 @@ export class PostDetailComponent implements OnInit {
   }
 
   onLike(): void {
-    if (!this.post || this.isLiking) return;
-    
-    this.isLiking = true;
-    
-    if (this.post.likedByCurrentUser) {
-      this.postService.unlikePost(this.post.id).subscribe({
-        next: () => {
-          if (this.post) {
-            this.post.likedByCurrentUser = false;
-            this.post.likeCount--;
-          }
-          this.isLiking = false;
-        },
-        error: () => {
-          this.snackBar.open('Error unliking post', 'Close', { duration: 3000 });
-          this.isLiking = false;
-        }
-      });
-    } else {
-      this.postService.likePost(this.post.id).subscribe({
-        next: () => {
-          if (this.post) {
-            this.post.likedByCurrentUser = true;
-            this.post.likeCount++;
-          }
-          this.isLiking = false;
-        },
-        error: () => {
-          this.snackBar.open('Error liking post', 'Close', { duration: 3000 });
-          this.isLiking = false;
-        }
-      });
+    if (!this.post || this.isLiking) {
+      console.log('⚠️ Like action blocked:', { hasPost: !!this.post, isLiking: this.isLiking });
+      return;
     }
+
+    const wasLiked = this.post.likedByCurrentUser;
+    const previousLikeCount = this.post.likeCount;
+
+    console.log('👍 Like action:', {
+      postId: this.post.id,
+      wasLiked,
+      action: wasLiked ? 'unlike' : 'like',
+      previousCount: previousLikeCount
+    });
+
+    this.isLiking = true;
+
+    // Optimistic update
+    this.post.likedByCurrentUser = !wasLiked;
+    this.post.likeCount = wasLiked ? previousLikeCount - 1 : previousLikeCount + 1;
+
+    const action$ = wasLiked
+      ? this.postService.unlikePost(this.post.id)
+      : this.postService.likePost(this.post.id);
+
+    action$.subscribe({
+      next: () => {
+        console.log('✅ Like action successful:', {
+          postId: this.post?.id,
+          nowLiked: this.post?.likedByCurrentUser,
+          newCount: this.post?.likeCount
+        });
+        this.isLiking = false;
+      },
+      error: (error) => {
+        console.error('❌ Like action failed:', error);
+
+        // Revert optimistic update on error
+        if (this.post) {
+          this.post.likedByCurrentUser = wasLiked;
+          this.post.likeCount = previousLikeCount;
+        }
+
+        const message = wasLiked ? 'Error unliking post' : 'Error liking post';
+        this.snackBar.open(message, 'Close', { duration: 3000 });
+        this.isLiking = false;
+      }
+    });
   }
 
   onEditPost(): void {

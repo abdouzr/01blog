@@ -2,12 +2,9 @@
 <div class="post-card">
   <!-- Post Header -->
   <div class="post-header">
-    <img 
-      [src]="post.authorProfilePicture || 'assets/default-avatar.png'" 
-      alt="{{ post.authorUsername }}'s avatar"
-      class="post-avatar"
-      (error)="$any($event.target).src='assets/default-avatar.png'">
-    
+    <img [src]="post.authorProfilePicture || 'assets/default-avatar.png'" alt="{{ post.authorUsername }}'s avatar"
+      class="post-avatar" (error)="$any($event.target).src='assets/default-avatar.png'">
+
     <div class="post-author-info">
       <h3 class="post-author-name">{{ post.authorUsername || 'Anonymous' }}</h3>
       <span class="post-timestamp">{{ formatDate(post.createdAt) }}</span>
@@ -15,16 +12,10 @@
 
     <!-- Edit and Delete buttons (only for post owner) -->
     <div class="ms-auto d-flex gap-2" *ngIf="currentUserId === post.authorId">
-      <button 
-        class="btn btn-sm btn-outline-primary" 
-        (click)="onEditPost()"
-        title="Edit post">
+      <button class="btn btn-sm btn-outline-primary" (click)="onEditPost()" title="Edit post">
         <i class="bi bi-pencil-fill"></i> Edit
       </button>
-      <button 
-        class="btn btn-sm btn-outline-danger" 
-        (click)="onDeletePost()"
-        title="Delete post">
+      <button class="btn btn-sm btn-outline-danger" (click)="onDeletePost()" title="Delete post">
         <i class="bi bi-trash-fill"></i> Delete
       </button>
     </div>
@@ -42,19 +33,11 @@
     <div *ngIf="post.mediaUrls && post.mediaUrls.length > 0" class="post-media">
       <!-- Single media -->
       <div *ngIf="getVisibleMediaUrls().length === 1" class="single-media">
-        <img *ngIf="isImage(post.mediaTypes[0])" 
-             [src]="getMediaUrl(post.mediaUrls[0])" 
-             alt="Post media" 
-             class="post-media-single"
-             (error)="onImageError($event)"
-             loading="lazy">
-        
-        <video *ngIf="isVideo(post.mediaTypes[0])" 
-               controls 
-               class="post-media-single"
-               (error)="onVideoError($event)"
-               preload="metadata"
-               (click)="$event.stopPropagation()">
+        <img *ngIf="isImage(post.mediaTypes[0])" [src]="getMediaUrl(post.mediaUrls[0])" alt="Post media"
+          class="post-media-single" (error)="onImageError($event)" loading="lazy">
+
+        <video *ngIf="isVideo(post.mediaTypes[0])" controls class="post-media-single" (error)="onVideoError($event)"
+          preload="metadata" (click)="$event.stopPropagation()">
           <source [src]="getMediaUrl(post.mediaUrls[0])" [type]="'video/' + getFileExtension(post.mediaUrls[0])">
           Your browser does not support the video tag.
         </video>
@@ -63,107 +46,30 @@
       <!-- Multiple media - LIMITED grid layout -->
       <div *ngIf="getVisibleMediaUrls().length > 1" class="multiple-media">
         <div class="row g-1">
-          <div *ngFor="let mediaUrl of getVisibleMediaUrls(); let i = index" 
-               [class]="getMediaGridClass(getVisibleMediaUrls().length, i)"
-               class="position-relative">
+          <div *ngFor="let mediaUrl of getVisibleMediaUrls(); let i = index"
+            [class]="getMediaGridClass(getVisibleMediaUrls().length, i)" class="position-relative">
             <div class="media-container position-relative">
-              <img *ngIf="isImage(post.mediaTypes[i])" 
-                   [src]="getMediaUrl(mediaUrl)" 
-                   alt="Post media" 
-                   class="post-media-grid"
-                   (error)="onImageError($event)"
-                   loading="lazy">
-              
-              <video *ngIf="isVideo(post.mediaTypes[i])" 
-                     class="post-media-grid"
-                     (error)="onVideoError($event)"
-                     preload="metadata"
-                     (click)="$event.stopPropagation()">
+              <img *ngIf="isImage(post.mediaTypes[i])" [src]="getMediaUrl(mediaUrl)" alt="Post media"
+                class="post-media-grid" (error)="onImageError($event)" loading="lazy">
+
+              <video *ngIf="isVideo(post.mediaTypes[i])" class="post-media-grid" (error)="onVideoError($event)"
+                preload="metadata" (click)="$event.stopPropagation()">
                 <source [src]="getMediaUrl(mediaUrl)" [type]="'video/' + getFileExtension(mediaUrl)">
               </video>
-              
+
               <!-- Video play icon overlay -->
               <div *ngIf="isVideo(post.mediaTypes[i])" class="video-overlay">
                 <i class="bi bi-play-circle-fill"></i>
               </div>
 
               <!-- Show "+X more" overlay on last image if there are more -->
-              <div *ngIf="i === getVisibleMediaUrls().length - 1 && hasMoreMedia()" 
-                   class="more-media-overlay">
+              <div *ngIf="i === getVisibleMediaUrls().length - 1 && hasMoreMedia()" class="more-media-overlay">
                 <span>+{{ getRemainingMediaCount() }} more</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Post Actions -->
-  <div class="post-actions" (click)="$event.stopPropagation()">
-    <button 
-      class="action-btn" 
-      [class.liked]="post.likedByCurrentUser"
-      (click)="onLike()"
-      [disabled]="isLiking">
-      <i [class]="post.likedByCurrentUser ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
-      <span>{{ post.likeCount || 0 }}</span>
-    </button>
-
-    <button 
-      class="action-btn comments" 
-      [class.active]="showComments"
-      (click)="toggleComments()">
-      <i class="bi bi-chat"></i>
-      <span>{{ post.commentCount || 0 }}</span>
-    </button>
-
-    <button 
-      class="action-btn ms-auto" 
-      (click)="toggleReportModal()"
-      title="Report this post">
-      <i class="bi bi-flag"></i>
-      <span>Report</span>
-    </button>
-  </div>
-
-  <!-- Comments Section -->
-  <div *ngIf="showComments" class="post-comments">
-    <app-comments [postId]="post.id"></app-comments>
-  </div>
-</div>
-
-<!-- Report Modal -->
-<div *ngIf="showReportModal" class="report-modal-overlay" (click)="toggleReportModal()">
-  <div class="report-modal-content" (click)="$event.stopPropagation()">
-    <div class="report-header p-4 border-bottom">
-      <h3>Report Post</h3>
-    </div>
-    <div class="report-body p-4">
-      <p>Please provide a reason for reporting this post. Our moderation team will review it.</p>
-      <textarea 
-        #reportReason
-        class="report-textarea"
-        placeholder="Describe why you're reporting this post..."
-        maxlength="500"
-        (input)="updateCharCount(reportReason.value)"
-        [disabled]="isSubmittingReport"></textarea>
-      <div class="char-count">{{ currentCharCount }}/500</div>
-    </div>
-    <div class="report-footer p-4 border-top d-flex justify-content-end gap-2">
-      <button 
-        class="btn btn-secondary" 
-        (click)="toggleReportModal()"
-        [disabled]="isSubmittingReport">
-        Cancel
-      </button>
-      <button 
-        class="btn btn-danger" 
-        (click)="submitReport(reportReason.value)"
-        [disabled]="isSubmittingReport || !reportReason.value.trim()">
-        <span *ngIf="isSubmittingReport" class="spinner-border spinner-border-sm me-2"></span>
-        {{ isSubmittingReport ? 'Submitting...' : 'Submit Report' }}
-      </button>
     </div>
   </div>
 </div>

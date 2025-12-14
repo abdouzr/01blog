@@ -1,42 +1,35 @@
 <nav class="navbar">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/feed">
-      <i class="bi bi-journal-bookmark-fill"></i> 01Blog
+      <i class="bi bi-brightness-high-fill"></i> 01Blog
     </a>
-    
+
     <app-search-dropdown></app-search-dropdown>
-    
+
     <div class="navbar-actions">
-      
-      <button class="admin-btn" 
-              *ngIf="authService.isAdmin()" 
-              routerLink="/admin/dashboard"
-              routerLinkActive="active"
-              title="Admin Dashboard">
-        👑
+
+      <button class="admin-btn" *ngIf="authService.isAdmin()" routerLink="/admin/dashboard" routerLinkActive="active"
+        title="Admin Dashboard">
+        <i class="bi bi-shield-fill-check"></i>
+        <span>Admin</span>
       </button>
 
-      <button class="notification-btn" 
-              routerLink="/notifications" 
-              routerLinkActive="active"
-              title="Notifications">
-        ☀️
+      <button class="notification-btn" routerLink="/notifications" routerLinkActive="active" title="Notifications">
+        <i class="bi bi-bell-fill"></i>
+        <span class="btn-text">Notifications</span>
         <span class="notification-badge" *ngIf="notificationCount > 0">
           {{notificationCount}}
         </span>
       </button>
-      
-      <button class="profile-btn" 
-              (click)="navigateToProfile()"
-              title="Profile">
-        ✨
+
+      <button class="profile-btn" (click)="navigateToProfile()" title="Profile">
+        <i class="bi bi-person-fill"></i>
+        <span>Profile</span>
       </button>
-      
-      <button class="logout-btn" 
-              (click)="logout()"
-              title="Logout">
+
+      <button class="logout-btn" (click)="logout()" title="Logout">
         <i class="bi bi-box-arrow-right"></i>
-        Logout
+        <span>Logout</span>
       </button>
     </div>
   </div>

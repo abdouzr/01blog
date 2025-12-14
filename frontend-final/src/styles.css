@@ -1,69 +1,293 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles - Sun Theme */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Sun Theme Colors */
+  --color-gold: #FFD700;
+  --color-amber: #FFA500;
+  --color-deep-orange: #FF6B35;
+  --color-copper: #B87333;
+  --color-cream: #FFF8DC;
+  --color-dark-gold: #B8860B;
+  --color-sunset: #FF8C42;
+  --color-mystic: #8B4513;
+  --color-warm-brown: #A0522D;
+  --color-celestial-blue: #D2691E;
+  --color-mountain: #2C5F2D;
+  --color-card-border: #8B4513;
+  --color-antique: #D2B48C;
+
+  /* Text Colors */
+  --color-text-primary: #2E1A05;
+  --color-text-secondary: #3E2723;
+  --color-text-muted: #5D4037;
+  --color-text-white: #FFFFFF;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.1);
+  --shadow-md: 0 4px 16px rgba(139, 69, 19, 0.15);
+  --shadow-lg: 0 8px 32px rgba(139, 69, 19, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg,
+    #FFFBF0 0%,
+    #FFF4E0 25%,
+    #FFE8CC 50%,
+    #FFDDB3 75%,
+    #FFD699 100%
+  );
+  min-height: 100vh;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
 }
 
+/* Subtle background animation */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(255, 140, 66, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: backgroundShift 30s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
+}
+
+/* Card Styles */
 .card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
-}
-
-.btn-primary:hover {
-  background-color: #0b5ed7;
-  border-color: #0a58ca;
-}
-
-.spinner-border-sm {
-  width: 1rem;
-  height: 1rem;
-}
-
-
-/* Optional: Add this to your global styles.css or post.component.css */
-.card {
-  border: none;
+  background: rgba(255, 248, 220, 0.95);
+  border: 2px solid rgba(139, 69, 19, 0.1);
   border-radius: 20px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(255, 165, 0, 0.2);
+}
+
+/* Button Styles */
+.btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg,
+    var(--color-gold) 0%,
+    var(--color-amber) 50%,
+    var(--color-sunset) 100%
+  );
+  border-color: var(--color-dark-gold);
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
+  background: linear-gradient(135deg,
+    var(--color-amber) 0%,
+    var(--color-sunset) 50%,
+    var(--color-deep-orange) 100%
+  );
+  border-color: var(--color-amber);
 }
 
 .btn-outline-primary {
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid var(--color-amber);
+  color: var(--color-copper);
   border-radius: 20px;
   padding: 8px 20px;
   transition: all 0.3s ease;
 }
 
 .btn-outline-primary:hover {
+  background: linear-gradient(135deg, var(--color-amber) 0%, var(--color-gold) 100%);
+  color: white;
   transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+  border-color: var(--color-dark-gold);
 }
 
-
-/* Optional: Add to src/styles.css */
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Form Controls */
+.form-control {
+  border: 2px solid var(--color-dark-gold);
+  border-radius: 8px;
+  background: rgba(255, 248, 220, 0.9);
+  color: var(--color-text-primary);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-amber);
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.3);
+  background: rgba(255, 248, 220, 1);
 }
 
-/* Better focus states */
+.form-control::placeholder {
+  color: rgba(139, 69, 19, 0.5);
+  font-style: italic;
+}
+
+/* Better focus states for accessibility */
 .btn:focus,
 .nav-link:focus,
 .form-control:focus {
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3) !important;
-  border-color: #667eea !important;
+  outline: 2px solid rgba(255, 165, 0, 0.5);
+  outline-offset: 2px;
+}
+
+/* Spinner */
+.spinner-border {
+  border-color: rgba(255, 165, 0, 0.2);
+  border-top-color: var(--color-amber);
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+
+/* Links */
+a {
+  color: var(--color-copper);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-amber);
+  text-decoration: underline;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  color: var(--color-text-primary);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 248, 220, 0.5);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-amber) 0%, var(--color-gold) 100%);
+  border-radius: 6px;
+  border: 2px solid rgba(255, 248, 220, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-sunset) 100%);
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 215, 0, 0.3);
+  color: var(--color-text-primary);
+}
+
+::-moz-selection {
+  background: rgba(255, 215, 0, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* Utilities */
+.text-muted {
+  color: var(--color-text-muted) !important;
+}
+
+.bg-light {
+  background-color: rgba(255, 248, 220, 0.5) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+
+  .card {
+    border-radius: 15px;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  body::before {
+    animation: none;
+  }
 }

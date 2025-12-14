@@ -1,6 +1,8 @@
 package com.zerooneblog.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,12 +166,38 @@ public class AdminController {
     // --- Report Management ---
     
     @GetMapping("/reports")
-    public ResponseEntity<List<Report>> getAllNewReports() {
+    public ResponseEntity<List<Map<String, Object>>> getAllNewReports() {
         try {
             System.out.println("📋 Admin requesting all reports...");
             List<Report> reports = reportService.getAllNewReports();
             System.out.println("✅ Found " + reports.size() + " reports");
-            return ResponseEntity.ok(reports);
+
+            // Transform Report entities to include reporter information
+            List<Map<String, Object>> reportResponses = reports.stream()
+                .map(report -> {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("id", report.getId());
+                    response.put("targetType", report.getTargetType().toString());
+                    response.put("targetId", report.getTargetId());
+                    response.put("reason", report.getReason());
+                    response.put("status", report.getStatus().toString());
+                    response.put("createdAt", report.getCreatedAt());
+
+                    // Include reporter information
+                    if (report.getReporter() != null) {
+                        Map<String, Object> reporter = new HashMap<>();
+                        reporter.put("id", report.getReporter().getId());
+                        reporter.put("username", report.getReporter().getUsername());
+                        response.put("reporter", reporter);
+                    } else {
+                        response.put("reporter", null);
+                    }
+
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(reportResponses);
         } catch (Exception e) {
             System.err.println("❌ Error loading reports: " + e.getMessage());
             e.printStackTrace();

@@ -2,10 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Post } from '../../services/post.service';
 import { CommonModule } from '@angular/common';
 import { CommentsComponent } from '../comments/comments.component';
-import { ReportService } from '../../services/report.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
-import { getFullImageUrl } from '../../services/post.service';
 
 @Component({
   selector: 'app-post',
@@ -23,19 +20,14 @@ export class PostComponent implements OnInit {
 
   isLiking = false;
   showComments = false;
-  showReportModal = false;
-  isSubmittingReport = false;
-  currentCharCount = 0;
 
   // Add these properties
   maxContentLength = 200; // Show only 200 characters in feed
   maxMediaToShow = 3; // Show only 3 images in feed
 
   constructor(
-    private reportService: ReportService,
-    private snackBar: MatSnackBar,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Debug media URLs on component init
@@ -86,34 +78,6 @@ export class PostComponent implements OnInit {
 
   // === END OF MISSING METHODS ===
 
-  updateCharCount(text: string): void {
-    this.currentCharCount = text.length;
-  }
-
-  toggleReportModal(): void {
-    this.showReportModal = !this.showReportModal;
-    if (this.showReportModal) {
-      this.currentCharCount = 0;
-    }
-  }
-
-  submitReport(reason: string): void {
-    if (!reason.trim()) return;
-    this.isSubmittingReport = true;
-    this.reportService.submitReport(this.post.id, 'POST', reason.trim()).subscribe({
-      next: () => {
-        this.snackBar.open('Report submitted successfully. Thank you!', 'Close', { duration: 5000 });
-        this.toggleReportModal();
-        this.isSubmittingReport = false;
-      },
-      error: (err) => {
-        console.error('Report submission error:', err);
-        this.snackBar.open('Failed to submit report. Please try again.', 'Close', { duration: 5000 });
-        this.isSubmittingReport = false;
-      }
-    });
-  }
-
   onLike(): void {
     if (this.isLiking) return;
     this.isLiking = true;
@@ -129,7 +93,7 @@ export class PostComponent implements OnInit {
 
   onEditPost(): void {
     console.log('✏️ Editing post:', this.post);
-    this.router.navigate(['/create-post'], { 
+    this.router.navigate(['/create-post'], {
       state: { post: this.post },
       replaceUrl: false
     });
@@ -146,37 +110,37 @@ export class PostComponent implements OnInit {
   }
 
   // --- Media display functions ---
-  
+
   formatDate(dateString: string): string {
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) { 
-        return 'Invalid date'; 
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
       }
-      
+
       const now = new Date();
       const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-      
-      if (diffInSeconds < 60) { 
-        return 'Just now'; 
+
+      if (diffInSeconds < 60) {
+        return 'Just now';
       }
-      if (diffInSeconds < 3600) { 
-        const m = Math.floor(diffInSeconds / 60); 
-        return `${m} minute${m !== 1 ? 's' : ''} ago`; 
+      if (diffInSeconds < 3600) {
+        const m = Math.floor(diffInSeconds / 60);
+        return `${m} minute${m !== 1 ? 's' : ''} ago`;
       }
-      if (diffInSeconds < 86400) { 
-        const h = Math.floor(diffInSeconds / 3600); 
-        return `${h} hour${h !== 1 ? 's' : ''} ago`; 
+      if (diffInSeconds < 86400) {
+        const h = Math.floor(diffInSeconds / 3600);
+        return `${h} hour${h !== 1 ? 's' : ''} ago`;
       }
-      if (diffInSeconds < 604800) { 
-        const d = Math.floor(diffInSeconds / 86400); 
-        return `${d} day${d !== 1 ? 's' : ''} ago`; 
+      if (diffInSeconds < 604800) {
+        const d = Math.floor(diffInSeconds / 86400);
+        return `${d} day${d !== 1 ? 's' : ''} ago`;
       }
-      
+
       return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } catch (error) { 
-      console.error('Error formatting date:', error); 
-      return 'Invalid date'; 
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid date';
     }
   }
 
@@ -186,28 +150,26 @@ export class PostComponent implements OnInit {
       return '';
     }
 
-    
-    
     // If it's already a full URL (starts with http/https or data:)
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
       console.log('✅ Full URL:', url);
       return url;
     }
-    
+
     // If it starts with /uploads, it's a backend path
     if (url.startsWith('/uploads')) {
       const fullUrl = `http://localhost:8081${url}`;
       console.log('🔗 Backend URL:', fullUrl);
       return fullUrl;
     }
-    
+
     // If it doesn't start with /, add it
     if (!url.startsWith('/')) {
       const fullUrl = `http://localhost:8081/${url}`;
       console.log('🔗 Constructed URL:', fullUrl);
       return fullUrl;
     }
-    
+
     // Default case
     const fullUrl = `http://localhost:8081${url}`;
     console.log('🔗 Default URL:', fullUrl);
@@ -221,29 +183,29 @@ export class PostComponent implements OnInit {
       const extension = parts[parts.length - 1].toLowerCase();
       // Remove query parameters if any
       return extension.split('?')[0];
-    } catch (error) { 
-      console.error('Error getting file extension:', error); 
-      return ''; 
+    } catch (error) {
+      console.error('Error getting file extension:', error);
+      return '';
     }
   }
 
-  isImage(mediaType: string): boolean { 
+  isImage(mediaType: string): boolean {
     const result = mediaType === 'image';
     console.log(`🖼️ Is image? ${mediaType} => ${result}`);
     return result;
   }
-  
-  isVideo(mediaType: string): boolean { 
+
+  isVideo(mediaType: string): boolean {
     const result = mediaType === 'video';
     console.log(`🎥 Is video? ${mediaType} => ${result}`);
     return result;
   }
-  
-  onImageError(event: Event): void { 
+
+  onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     console.error('❌ Image failed to load:', img.src);
     img.style.display = 'none';
-    
+
     // Show error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'alert alert-warning mt-2';
@@ -254,12 +216,12 @@ export class PostComponent implements OnInit {
     `;
     img.parentElement?.appendChild(errorDiv);
   }
-  
-  onVideoError(event: Event): void { 
+
+  onVideoError(event: Event): void {
     const video = event.target as HTMLVideoElement;
     console.error('❌ Video failed to load:', video.src);
     video.style.display = 'none';
-    
+
     // Show error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'alert alert-warning mt-2';
