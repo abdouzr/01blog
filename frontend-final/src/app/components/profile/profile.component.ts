@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService, Post } from '../../services/post.service';
 import { UserService, UserProfile } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PostComponent } from '../post/post.component';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule, PostComponent],
+  imports: [CommonModule, RouterModule, PostComponent, ReportModalComponent, MatSnackBarModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -23,6 +24,8 @@ export class ProfileComponent implements OnInit {
   isOwnProfile = false;
   isFollowing = false;
   isProcessing = false;
+  
+  @ViewChild(ReportModalComponent) reportModal?: ReportModalComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,18 +50,16 @@ export class ProfileComponent implements OnInit {
     this.userService.getUserById(this.userId).subscribe({
       next: (user) => {
         this.user = user;
-        // FIX: Safely handle the 'boolean | undefined' type error by defaulting to false
         this.isFollowing = user.isFollowedByCurrentUser ?? false;
       },
       error: (error) => {
         this.snackBar.open('Error loading user profile', 'Close', { duration: 3000 });
-        // FIX: Fallback object now uses the correct property names
         this.user = {
           id: this.userId,
           username: `user${this.userId}`,
           email: `user${this.userId}@example.com`,
           bio: 'This user hasn\'t added a bio yet.',
-          profile_picture: '', // Was profilePicture
+          profile_picture: '',
           createdAt: new Date().toISOString(),
           followerCount: 0,
           followingCount: 0,
@@ -99,7 +100,11 @@ export class ProfileComponent implements OnInit {
           this.user.isFollowedByCurrentUser = this.isFollowing;
           this.user.followerCount += this.isFollowing ? 1 : -1;
         }
-        this.snackBar.open(this.isFollowing ? `Following ${this.user?.username}` : `Unfollowed ${this.user?.username}`, 'Close', { duration: 2000 });
+        this.snackBar.open(
+          this.isFollowing ? `Following ${this.user?.username}` : `Unfollowed ${this.user?.username}`, 
+          'Close', 
+          { duration: 2000 }
+        );
         this.isProcessing = false;
       },
       error: (err) => {
@@ -109,10 +114,28 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  reportUser(): void {
-    if (!this.user) return;
-    if (confirm(`Are you sure you want to report ${this.user.username}?`)) {
-      this.snackBar.open('User reported. Thank you for keeping our community safe.', 'Close', { duration: 4000 });
+  openReportModal(): void {
+    console.log('Opening report modal for user:', this.userId);
+    if (this.reportModal) {
+      this.reportModal.showModal();
+    } else {
+      // Fallback: Manual DOM manipulation
+      const modalElement = document.getElementById('reportUserModal');
+      if (modalElement) {
+        modalElement.style.display = 'block';
+        modalElement.classList.add('show');
+        
+        // Create backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        backdrop.id = 'reportModalBackdrop';
+        document.body.appendChild(backdrop);
+        document.body.classList.add('modal-open');
+        
+        console.log('Modal opened manually');
+      } else {
+        console.error('Modal element not found');
+      }
     }
   }
 

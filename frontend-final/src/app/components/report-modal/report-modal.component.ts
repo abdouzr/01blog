@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportService } from '../../services/report.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-report-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './report-modal.component.html',
   styleUrls: ['./report-modal.component.css']
 })
@@ -39,6 +40,36 @@ export class ReportModalComponent implements OnInit, OnDestroy {
     this.initializeModalListeners();
   }
 
+  /**
+   * Programmatically show the modal (used when Bootstrap data attributes are not triggering)
+   */
+  showModal(): void {
+    const modalElement: HTMLElement | null = document.getElementById(this.modalId);
+    if (!modalElement) return;
+
+    // Display modal
+    modalElement.style.display = 'block';
+    modalElement.classList.add('show');
+
+    // Add backdrop
+    let backdrop = document.querySelector('.modal-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'modal-backdrop fade show';
+      document.body.appendChild(backdrop);
+    }
+
+    // Prevent body scroll
+    document.body.classList.add('modal-open');
+
+    // Trigger the same logic as if modal were shown
+    try {
+      this.hideOtherPosts(this.postElementId);
+    } catch (e) {
+      // ignore
+    }
+  }
+
   ngOnDestroy(): void {
     this.showAllPosts(); // Ensure posts are restored when component is destroyed
   }
@@ -68,7 +99,7 @@ export class ReportModalComponent implements OnInit, OnDestroy {
   /**
    * Handle modal show event
    */
-  private onModalShow(event: any): void {
+  onModalShow(event: any): void {
     // Extract post ID from the clicked report button
     const triggerElement = event.relatedTarget;
     const postId = triggerElement?.getAttribute('data-post-id') || 
@@ -82,7 +113,7 @@ export class ReportModalComponent implements OnInit, OnDestroy {
   /**
    * Handle modal hide event
    */
-  private onModalHide(): void {
+  onModalHide(): void {
     // Start restoring posts when modal starts to hide
     this.showAllPosts();
   }
@@ -90,7 +121,7 @@ export class ReportModalComponent implements OnInit, OnDestroy {
   /**
    * Handle modal hidden event (after animation completes)
    */
-  private onModalHidden(): void {
+  onModalHidden(): void {
     // Ensure all posts are restored
     this.showAllPosts();
   }

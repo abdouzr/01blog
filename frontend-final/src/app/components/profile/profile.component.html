@@ -5,9 +5,12 @@
       <!-- Profile Header -->
       <div class="card mb-4" *ngIf="user">
         <div class="card-body text-center">
-          <!-- FIX: Changed user.profilePicture to user.profile_picture -->
-          <img [src]="user.profile_picture || 'assets/default-avatar.png'" alt="{{ user.username }}"
-            class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;">
+          <img [src]="user.profile_picture || 'assets/default-avatar.png'" 
+               alt="{{ user.username }}"
+               class="rounded-circle mb-3" 
+               width="120" 
+               height="120" 
+               style="object-fit: cover;">
 
           <h2 class="card-title">{{ user.username }}</h2>
           <p class="text-muted">{{ user.email }}</p>
@@ -26,16 +29,21 @@
             </span>
           </div>
 
-          <!-- Own Profile Buttons - REMOVED per user request -->
-
           <!-- Other User's Profile Buttons -->
           <div class="mt-3" *ngIf="!isOwnProfile">
-            <button class="btn btn-sm me-2" [class.btn-primary]="!isFollowing" [class.btn-outline-primary]="isFollowing"
-              (click)="toggleFollow()" [disabled]="isProcessing">
+            <button class="btn btn-sm me-2" 
+                    [class.btn-primary]="!isFollowing" 
+                    [class.btn-outline-primary]="isFollowing"
+                    (click)="toggleFollow()" 
+                    [disabled]="isProcessing">
               <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-1"></span>
               {{ isFollowing ? 'Unfollow' : 'Follow' }}
             </button>
-            <button class="btn btn-outline-danger btn-sm" (click)="reportUser()">
+            
+            <!-- ✅ WORKING: Report button with click handler -->
+            <button class="btn btn-outline-danger btn-sm" 
+                    (click)="openReportModal()"
+                    title="Report this user">
               <i class="bi bi-flag"></i> Report
             </button>
           </div>
@@ -63,8 +71,19 @@
         <a routerLink="/create-post" class="btn btn-primary" *ngIf="isOwnProfile">Create your first post</a>
       </div>
 
-      <app-post *ngFor="let post of posts" [post]="post" (like)="handleLike($event)">
+      <app-post *ngFor="let post of posts" 
+                [post]="post" 
+                (like)="handleLike($event)">
       </app-post>
     </div>
   </div>
 </div>
+
+<!-- ✅ WORKING: Report modal for USER reports -->
+<ng-container *ngIf="user && !isOwnProfile">
+  <app-report-modal 
+    [reportTargetId]="user.id" 
+    reportType="USER" 
+    modalId="reportUserModal">
+  </app-report-modal>
+</ng-container>

@@ -277,6 +277,150 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Global responsive media rules ------------------------------------------------- */
+/* Make all images and videos scale to their container by default */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* For media that should fill its container (like grid thumbnails) */
+.img-cover, .video-cover, .post-media-grid-full {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive media wrapper to preserve aspect ratio when needed */
+.media-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.media-wrapper::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%; /* 16:9 default aspect ratio */
+}
+.media-wrapper > img,
+.media-wrapper > video,
+.media-wrapper > .post-media-grid-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Make tables and pre blocks scrollable on small screens */
+pre, table {
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* Increase recommended tap target sizes for touch devices */
+button, .btn, .action-btn, .post-avatar {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+@media (pointer: coarse) {
+  .btn, button, .action-btn {
+    min-height: 44px;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+  }
+}
+
+/* Focus outlines for accessibility */
+:focus {
+  outline: 3px solid rgba(255,165,0,0.16);
+  outline-offset: 2px;
+}
+
+/* Utility helpers for responsive grids */
+.responsive-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+/* Narrow layout caps for very large screens to improve readability */
+@media (min-width: 1400px) {
+  .container, .card, .post-detail-card {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Advanced media utilities for post grids and thumbnails */
+.media-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  align-items: stretch;
+}
+
+/* When used on a grid item, this preserves an expected aspect ratio */
+.media-item-aspect {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  display: block;
+}
+
+/* Make thumbnails cover while detail view contains */
+.media-item-aspect img,
+.media-item-aspect video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-item-contain img,
+.media-item-contain video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Fallback for browsers that don't support aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+  .media-item-aspect {
+    height: 0;
+    padding-bottom: 75%; /* 4:3 ratio */
+    position: relative;
+  }
+  .media-item-aspect img,
+  .media-item-aspect video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Utility to center single media inside its container without cropping */
+.center-contained {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Improve small-screen table responsiveness globally */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+  .table tbody td {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -555,6 +555,156 @@ button:disabled {
   }
 }
 
+/* VERY NARROW SCREENS: transform tables into stacked cards for readability */
+@media (max-width: 700px) {
+  .container {
+    padding: 0.6rem 0.4rem;
+  }
+
+  /* hide table header to save space */
+  .table thead {
+    display: none !important;
+  }
+
+  .table,
+  .table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  /* Make each row a card */
+  .table tbody tr {
+    display: block;
+    background: rgba(255, 248, 220, 0.95) !important;
+    border: 1px solid var(--border-light) !important;
+    border-radius: 12px;
+    padding: 0.6rem !important;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  /* Table cells become horizontal pairs: label left (if any) and value right */
+  .table tbody td {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.35rem 0.5rem !important;
+    font-size: 0.85rem !important;
+    border: none !important;
+  }
+
+  /* Put actions in their own stacked container */
+  .table tbody td:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    align-items: stretch !important;
+    margin-top: 0.25rem !important;
+  }
+
+  .table tbody td:last-child .btn,
+  .table tbody td:last-child button {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Make badges wrap and be smaller */
+  .badge {
+    font-size: 0.68rem !important;
+    padding: 0.25rem 0.45rem !important;
+    min-width: 0 !important;
+  }
+
+  /* Compact spacing for cards */
+  .card,
+  .card-body {
+    margin-bottom: 1rem !important;
+    padding: 0.6rem !important;
+  }
+}
+
+/* EXTRA NARROW: aggressive compaction and font size reduction for <=500px */
+@media (max-width: 500px) {
+  .display-4 {
+    font-size: 1.4rem !important;
+  }
+
+  .lead {
+    font-size: 0.85rem !important;
+    padding: 0.4rem 1rem !important;
+  }
+
+  .table tbody td {
+    font-size: 0.78rem !important;
+    padding: 0.3rem 0.4rem !important;
+  }
+
+  .table tbody tr {
+    padding: 0.5rem !important;
+  }
+
+  /* Collapse non-essential columns: attempt to hide 3rd and 4th columns if present */
+  .table tbody td:nth-child(3),
+  .table tbody td:nth-child(4) {
+    display: none !important;
+  }
+
+  /* Ensure action buttons remain visible and usable */
+  .table tbody td:last-child .btn,
+  .table tbody td:last-child button {
+    padding: 0.5rem 0.6rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Stronger small-screen stacking for action columns and tables */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  /* Stack action buttons vertically for better tap targets */
+  .table tbody td:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    align-items: stretch !important;
+  }
+
+  .table tbody td:last-child .btn,
+  .table tbody td:last-child button {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+  }
+
+  /* Reduce table padding so content fits better */
+  .table tbody td {
+    padding: 0.6rem 0.6rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Make badges and small labels wrap and be readable */
+  .badge {
+    white-space: normal !important;
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.72rem !important;
+    min-width: 0 !important;
+  }
+
+  .display-4 {
+    font-size: 1.6rem;
+  }
+
+  /* Compact card spacing */
+  .card-body {
+    padding: 1rem !important;
+  }
+}
+
 @media (max-width: 576px) {
   .display-4 {
     font-size: 1.7rem;

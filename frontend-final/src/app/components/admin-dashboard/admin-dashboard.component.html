@@ -190,7 +190,7 @@
                 <td>{{ report.id }}</td>
                 <td>{{ getReporterUsername(report) }}</td>
                 <td>
-                  <span class="badge bg-info">{{ report.targetType }}</span>
+                  <span class="badge bg-info">{{ report.targetType === 'USER' ? 'Profile' : report.targetType }}</span>
                 </td>
                 <td>{{ report.targetId }}</td>
                 <td>{{ report.reason | slice:0:50 }}{{ report.reason.length > 50 ? '...' : '' }}</td>
