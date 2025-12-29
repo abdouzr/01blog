@@ -448,3 +448,158 @@
     font-size: 9px;
   }
 }
+
+/* Inline confirmation (comment) - appears next to delete button */
+.comment-inline-confirm {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  transform: translateY(-6px);
+  background: #ffffff;
+  border: 1px solid rgba(31,41,55,0.08);
+  border-radius: 10px;
+  padding: .5rem .6rem;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+  z-index: 100;
+  min-width: 220px;
+  font-size: .92rem;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  justify-content: space-between;
+}
+
+.comment-inline-confirm .msg {
+  flex: 1;
+  margin-right: .5rem;
+  color: #374151;
+  line-height: 1.2;
+}
+
+.comment-inline-confirm .actions {
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+}
+
+.inline-btn {
+  padding: .35rem .55rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: .82rem;
+}
+
+.inline-btn.cancel {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.inline-btn.delete {
+  background: linear-gradient(135deg,#ef4444,#dc2626);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(220,38,38,0.12);
+}
+
+/* position helper: comment-item must be position: relative */
+.comment-item { position: relative; }
+
+/* small arrow */
+.comment-inline-confirm::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-left: 1px solid rgba(31,41,55,0.06);
+  border-bottom: 1px solid rgba(31,41,55,0.06);
+  transform: rotate(45deg);
+  box-shadow: 0 6px 12px rgba(2,6,23,0.04);
+}
+
+/* responsive */
+@media (max-width: 480px) {
+  .comment-inline-confirm { right: 6px; min-width: 180px; top: 10px; transform: none; }
+  .inline-btn { padding: .4rem .6rem; font-size: .8rem; }
+}
+/* Inline confirmation (comment) - appears next to delete button */
+.comment-inline-confirm {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  transform: translateY(-6px);
+  background: #ffffff;
+  border: 1px solid rgba(31,41,55,0.08);
+  border-radius: 10px;
+  padding: .5rem .6rem;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+  z-index: 100;
+  min-width: 220px;
+  font-size: .92rem;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  justify-content: space-between;
+}
+
+.comment-inline-confirm .msg {
+  flex: 1;
+  margin-right: .5rem;
+  color: #374151;
+  line-height: 1.2;
+}
+
+.comment-inline-confirm .actions {
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+}
+
+.inline-btn {
+  padding: .35rem .55rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: .82rem;
+}
+
+.inline-btn.cancel {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.inline-btn.delete {
+  background: linear-gradient(135deg,#ef4444,#dc2626);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(220,38,38,0.12);
+}
+
+/* position helper: comment-item must be position: relative */
+.comment-item { position: relative; }
+
+/* small arrow */
+.comment-inline-confirm::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-left: 1px solid rgba(31,41,55,0.06);
+  border-bottom: 1px solid rgba(31,41,55,0.06);
+  transform: rotate(45deg);
+  box-shadow: 0 6px 12px rgba(2,6,23,0.04);
+}
+
+/* responsive */
+@media (max-width: 480px) {
+  .comment-inline-confirm { right: 6px; min-width: 180px; top: 10px; transform: none; }
+  .inline-btn { padding: .4rem .6rem; font-size: .8rem; }
+}

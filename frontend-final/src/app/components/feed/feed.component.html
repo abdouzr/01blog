@@ -14,16 +14,6 @@
           <p class="text-muted mt-3 mb-0 text-center text-md-start">
             "In the pursuit of knowledge, every shared experience illuminates the path for others"
           </p>
-          
-          <!-- Debug info -->
-          <div class="debug-info mt-2 p-2 bg-light rounded" *ngIf="posts.length > 0">
-            <small class="text-muted">
-              🔍 Debug: Showing {{ posts.length }} posts | User ID: {{ currentUserId }}
-            </small>
-            <button class="btn btn-sm btn-outline-secondary ms-2" (click)="debugFeed()">
-              Debug Feed
-            </button>
-          </div>
         </div>
 
         <!-- Loading state -->
@@ -56,6 +46,7 @@
             *ngFor="let post of posts; trackBy: trackByPostId" 
             [post]="post"
             [currentUserId]="currentUserId" 
+            [showDeleteButton]="false"
             (like)="handleLike($event)"
             (deletePost)="handleDeletePost($event)"
             class="post-star">

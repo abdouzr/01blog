@@ -14,12 +14,15 @@ import { Router, RouterModule } from '@angular/router';
 export class PostComponent implements OnInit {
   @Input() post!: Post;
   @Input() currentUserId: number | null = null;
+  @Input() showDeleteButton: boolean = false;
   @Output() like = new EventEmitter<Post>();
   @Output() unlike = new EventEmitter<Post>();
   @Output() deletePost = new EventEmitter<number>();
 
   isLiking = false;
   showComments = false;
+  // confirmation modal state for deleting this post
+  confirmVisible = false;
 
   // Add these properties
   maxContentLength = 200; // Show only 200 characters in feed
@@ -99,10 +102,18 @@ export class PostComponent implements OnInit {
     });
   }
 
+  // open confirmation modal (replaces browser confirm)
   onDeletePost(): void {
-    if (confirm('Are you sure you want to delete this post? This action is irreversible.')) {
-      this.deletePost.emit(this.post.id);
-    }
+    this.confirmVisible = true;
+  }
+
+  cancelDelete(): void {
+    this.confirmVisible = false;
+  }
+
+  confirmDelete(): void {
+    this.confirmVisible = false;
+    this.deletePost.emit(this.post.id);
   }
 
   toggleComments(): void {

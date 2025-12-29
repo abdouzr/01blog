@@ -53,3 +53,6 @@ A fullstack social blogging platform built with Java Spring Boot backend and Ang
    ```bash
    git clone <repository-url>
    cd 01blog
+   docker compose up
+   cd frontend-final 
+   ng serve

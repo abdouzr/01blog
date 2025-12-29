@@ -21,6 +21,9 @@ export class CommentsComponent implements OnInit, OnChanges {
   newComment: string = '';
   isLoading = false;
   isSubmitting = false;
+  // inline confirmation state for comment deletion
+  pendingDeleteCommentId: number | null = null;
+  pendingDeletePreview: string | null = null;
 
   constructor(
     private commentService: CommentService,
@@ -69,18 +72,32 @@ export class CommentsComponent implements OnInit, OnChanges {
     });
   }
 
-  deleteComment(commentId: number): void {
-    if (confirm('Are you sure you want to delete this comment?')) {
-      this.commentService.deleteComment(commentId).subscribe({
-        next: () => {
-          this.comments = this.comments.filter(c => c.id !== commentId);
-          this.snackBar.open('Comment deleted', 'Close', { duration: 2000 });
-        },
-        error: (error) => {
-          this.snackBar.open('Error deleting comment', 'Close', { duration: 3000 });
-        }
-      });
-    }
+  // show inline confirmation instead of browser confirm
+  showCommentConfirm(commentId: number, preview?: string): void {
+    this.pendingDeleteCommentId = commentId;
+    // Truncate preview to 60 characters
+    this.pendingDeletePreview = preview ? preview.substring(0, 60) : null;
+  }
+
+  cancelCommentDelete(): void {
+    this.pendingDeleteCommentId = null;
+    this.pendingDeletePreview = null;
+  }
+
+  confirmCommentDelete(): void {
+    const id = this.pendingDeleteCommentId;
+    if (id == null) return;
+    this.commentService.deleteComment(id).subscribe({
+      next: () => {
+        this.comments = this.comments.filter(c => c.id !== id);
+        this.snackBar.open('Comment deleted', 'Close', { duration: 2000 });
+        this.cancelCommentDelete();
+      },
+      error: (error) => {
+        this.snackBar.open('Error deleting comment', 'Close', { duration: 3000 });
+        this.cancelCommentDelete();
+      }
+    });
   }
 
   canDeleteComment(comment: Comment): boolean {

@@ -574,3 +574,89 @@
     animation: none;
   }
 }
+
+/* Delete confirmation modal (post) */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  z-index: 1200;
+  padding: 1rem;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.confirm-modal {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 14px 40px rgba(2,6,23,0.24);
+  color: #1f2937;
+  animation: confirmPop .12s ease-out;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.confirm-modal h4 {
+  margin: 0 0 .3rem 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.confirm-modal p {
+  margin: 0;
+  color: #374151;
+  line-height: 1.45;
+  font-size: .95rem;
+}
+
+.confirm-preview {
+  margin-top: .6rem;
+  color: #6b7280;
+  font-size: .9rem;
+  word-break: break-word;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: .5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.confirm-btn {
+  min-width: 90px;
+  padding: .45rem .8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform .08s ease, box-shadow .12s ease;
+}
+
+.confirm-btn.cancel {
+  background: #f3f4f6;
+  color: #111827;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.03);
+}
+
+.confirm-btn.delete {
+  background: linear-gradient(135deg,#ef4444,#dc2626);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(220,38,38,0.16);
+}
+
+.confirm-btn.delete:hover { transform: translateY(-2px); }
+
+@keyframes confirmPop { from { transform: translateY(8px) scale(.995); opacity: 0 } to { transform: none; opacity: 1 } }
+
+@media (max-width:480px){
+  .confirm-modal { max-width: 92%; padding: 1rem; }
+  .confirm-actions { flex-direction: column-reverse; gap:.5rem; }
+  .confirm-btn { width: 100%; }
+}

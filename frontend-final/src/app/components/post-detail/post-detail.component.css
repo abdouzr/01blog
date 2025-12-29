@@ -918,6 +918,130 @@ video.post-media-single-full {
 }
 
 /* Make icon-only buttons still accessible */
+
+/* ===================================
+   DELETE CONFIRMATION MODAL STYLING
+   =================================== */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1200;
+  padding: 1rem;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.confirm-modal {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.24);
+  color: #1f2937;
+  animation: confirmPop 0.12s ease-out;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.confirm-modal h5 {
+  margin: 0 0 0.3rem 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.confirm-modal p {
+  margin: 0;
+  color: #374151;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
+.confirm-preview {
+  margin-top: 0.6rem;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  border-radius: 6px;
+  color: #6b7280;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.confirm-btn {
+  min-width: 90px;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+.confirm-btn.cancel {
+  background: #f3f4f6;
+  color: #111827;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.confirm-btn.cancel:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.confirm-btn.delete {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.16);
+}
+
+.confirm-btn.delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(220, 38, 38, 0.24);
+}
+
+.confirm-btn.delete:active {
+  transform: translateY(0);
+}
+
+@keyframes confirmPop {
+  from {
+    transform: translateY(8px) scale(0.995);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .confirm-modal {
+    max-width: 92%;
+    padding: 1rem;
+  }
+
+  .confirm-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .confirm-btn {
+    width: 100%;
+  }
+}
 .action-btn i {
   min-width: 28px;
   text-align: center;

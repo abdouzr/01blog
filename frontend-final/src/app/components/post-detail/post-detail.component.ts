@@ -23,6 +23,8 @@ export class PostDetailComponent implements OnInit {
   showReportModal = false;
   isSubmittingReport = false;
   currentCharCount = 0;
+  // confirmation modal for deleting the post in detail view
+  confirmDeleteVisible = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -127,18 +129,26 @@ export class PostDetailComponent implements OnInit {
 
   onDeletePost(): void {
     if (!this.post) return;
-    
-    if (confirm('Are you sure you want to delete this post? This action is irreversible.')) {
-      this.postService.deletePost(this.post.id).subscribe({
-        next: () => {
-          this.snackBar.open('Post deleted successfully', 'Close', { duration: 3000 });
-          this.router.navigate(['/feed']);
-        },
-        error: () => {
-          this.snackBar.open('Error deleting post', 'Close', { duration: 3000 });
-        }
-      });
-    }
+    this.confirmDeleteVisible = true;
+  }
+
+  cancelDelete(): void {
+    this.confirmDeleteVisible = false;
+  }
+
+  confirmDelete(): void {
+    if (!this.post) return;
+    this.postService.deletePost(this.post.id).subscribe({
+      next: () => {
+        this.snackBar.open('Post deleted successfully', 'Close', { duration: 3000 });
+        this.confirmDeleteVisible = false;
+        this.router.navigate(['/feed']);
+      },
+      error: () => {
+        this.snackBar.open('Error deleting post', 'Close', { duration: 3000 });
+        this.confirmDeleteVisible = false;
+      }
+    });
   }
 
   toggleReportModal(): void {

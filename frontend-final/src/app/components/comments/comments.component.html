@@ -50,14 +50,25 @@
                 <strong class="comment-author">{{ comment.authorUsername }}</strong>
                 <p class="comment-text mb-0">{{ comment.content }}</p>
               </div>
-              <button 
-                *ngIf="canDeleteComment(comment)"
-                class="btn btn-link btn-sm text-danger p-0 ms-2"
-                (click)="deleteComment(comment.id)"
-                title="Delete comment">
-                <i class="bi bi-trash"></i>
-                <span class="delete-text">Delete</span>
-              </button>
+              <div class="position-relative ms-2">
+                <button 
+                  *ngIf="canDeleteComment(comment)"
+                  class="btn btn-link btn-sm text-danger p-0"
+                  (click)="showCommentConfirm(comment.id, comment.content)"
+                  title="Delete comment">
+                  <i class="bi bi-trash"></i>
+                  <span class="delete-text">Delete</span>
+                </button>
+
+                <!-- inline confirmation popup -->
+                <div *ngIf="pendingDeleteCommentId === comment.id" class="comment-inline-confirm">
+                  <div class="msg">Are you sure you want to delete this comment?</div>
+                  <div class="actions">
+                    <button class="inline-btn cancel" (click)="cancelCommentDelete()">Cancel</button>
+                    <button class="inline-btn delete" (click)="confirmCommentDelete()">Delete</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <small class="text-muted ms-2">{{ formatDate(comment.createdAt) }}</small>

@@ -150,7 +150,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   // Add this method to feed.component.ts
-trackByPostId(index: number, post: Post): number {
-  return post.id;
-}
+  trackByPostId(index: number, post: Post): number {
+    return post.id;
+  }
 }
